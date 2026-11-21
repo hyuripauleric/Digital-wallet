@@ -2947,6 +2947,279 @@ header.top .pills { flex: 1 1 100%; margin-top: 0; }
     return [t.date, t.kind === "in" ? "Income" : t.kind === "out" ? "Expense" : "Transfer", w.name, w.cur, t.amount, t.kind === "xfer" ? wmap[t.to].name : "", t.kind === "xfer" ? t.toAmount : "", t.cat || "", t.note || "", t.kind === "xfer" ? "" : round2(t.kind === "in" ? a : -a), t.payee || "", t.pay || "", t.labels || "", t.sub || ""];
   }
   var EH = ["Date", "Type", "Wallet", "Currency", "Amount", "To wallet", "Amount received", "Category", "Note", "Net in " + "display currency", "Payee", "Payment type", "Labels", "Subcategory"];
+  /* ===== Excel report sheets: Financial Statement, Card Installments, Expense Analysis =====
+     Totals, checks and cross-references are real Excel formulas (with the answer stored beside them so previews show numbers). */
+  var XM = "#,##0.00;-#,##0.00;-", XS = "+#,##0.00;-#,##0.00;-", XP = "0.0%;-0.0%;-", XD = "yyyy-mm-dd";
+  function sheetKit() {
+    var ws = {}, R = 0, C = 0;
+    function put(r, c, cell, z) { if (z) cell.z = z; ws[XLSX.utils.encode_cell({ r: r, c: c })] = cell; if (r + 1 > R) R = r + 1; if (c + 1 > C) C = c + 1; }
+    return {
+      ws: ws,
+      t: function (r, c, s) { if (s !== "" && s != null) put(r, c, { t: "s", v: String(s) }); },
+      n: function (r, c, v, z) { put(r, c, { t: "n", v: v }, z || XM); },
+      f: function (r, c, f, v, z) { put(r, c, typeof v === "number" ? { t: "n", v: v, f: f } : { t: "s", v: v == null ? "" : String(v), f: f }, typeof v === "number" ? (z || XM) : null); },
+      d: function (r, c, iso) { var p = iso.split("-").map(Number); put(r, c, { t: "n", v: Math.round((Date.UTC(p[0], p[1] - 1, p[2]) - Date.UTC(1899, 11, 30)) / 86400000) }, XD); },
+      done: function (cols) {
+        ws["!ref"] = XLSX.utils.encode_range({ s: { r: 0, c: 0 }, e: { r: Math.max(R, 1) - 1, c: Math.max(C, 1) - 1 } });
+        ws["!cols"] = cols.map(function (w) { return { wch: w }; });
+        return ws;
+      }
+    };
+  }
+  function xMon(ym) { var p = ym.split("-"); return RC_M[+p[1] - 1] + " " + p[0]; }
+  function xNextYM(ym) { var p = ym.split("-").map(Number); return p[1] === 12 ? (p[0] + 1) + "-01" : p[0] + "-" + pad(p[1] + 1); }
+  function xByName(a, b) { return String(a.name).localeCompare(String(b.name)); }
+  function xSum(a) { return round2(a.reduce(function (s, x) { return s + x; }, 0)); }
+  function xRef(r, c) { return XLSX.utils.encode_cell({ r: r, c: c }); }
+
+  /* Sheet 1: statement of financial position + income statement, tied together by  Assets = Liabilities + Owner's equity + Income - Expenses */
+  function sheetStatement(rep) {
+    var r = rep.r, from = rep.from, to = rep.to, disp = state.disp, K = sheetKit(), row = 0;
+    var open0 = addDays(from, -1), bo = balances(open0), bc = balances(to);
+    var inRep = state.wallets.filter(function (w) { return !w.noRep; }), skipped = state.wallets.length - inRep.length;
+    var TO = { "Cash": 1, "Bank": 2, "E-wallet": 3, "Savings": 4, "Other": 5 };
+    var assets = inRep.filter(function (w) { return !isCredit(w); }).sort(function (a, b) { return (TO[a.type] || 9) - (TO[b.type] || 9) || xByName(a, b); });
+    var cards = inRep.filter(isCredit).sort(xByName);
+    var nwOpen = 0; inRep.forEach(function (w) { nwOpen += conv(bo[w.id], w.cur, null, open0); });
+    var adj = 0; state.tx.forEach(function (t) { if (validA(t) && t.adj && t.date >= from && t.date <= to) { var a = conv(t.amount, wmap[t.wallet].cur, null, t.date); adj += t.kind === "in" ? a : -a; } });
+    var hasBefore = state.tx.some(function (t) { return validT(t) && t.date < from; });
+    function wl(w) { return "  " + w.name + " (" + w.type + (w.cur !== disp ? ", " + w.cur : "") + ")"; }
+    function B(i) { return "B" + (i + 1); }
+    function block(title, items) {
+      K.t(row, 0, title); row++;
+      var first = row, list = items.length ? items : [["  (none)", 0]];
+      list.forEach(function (it) { K.t(row, 0, it[0]); K.n(row, 1, it[1]); row++; });
+      return { first: first, last: row - 1 };
+    }
+    function total(label, b, vals) { K.t(row, 0, label); K.f(row, 1, "SUM(" + B(b.first) + ":" + B(b.last) + ")", xSum(vals)); return row++; }
+    function desc(map) { return Object.keys(map).sort(function (a, b) { return map[b] - map[a]; }); }
+
+    K.t(0, 0, "FINANCIAL STATEMENT");
+    K.t(1, 0, "Period"); K.t(1, 1, from + " to " + to);
+    K.t(2, 0, "Currency"); K.t(2, 1, disp);
+    K.t(3, 0, "Equation"); K.t(3, 1, "Assets = Liabilities + Owner's equity + Income \u2212 Expenses");
+
+    row = 5; K.t(row, 0, "STATEMENT OF FINANCIAL POSITION"); K.t(row, 1, "As at " + to); row++;
+    var aV = assets.map(function (w) { return round2(conv(bc[w.id], w.cur, null, to)); });
+    var bA = block("ASSETS", assets.map(function (w, i) { return [wl(w), aV[i]]; }));
+    var rA = total("Total assets", bA, aV); row++;
+    var lV = cards.map(function (w) { return round2(-conv(bc[w.id], w.cur, null, to)); });
+    var bL = block("LIABILITIES (credit cards owed)", cards.map(function (w, i) { return [wl(w), lV[i]]; }));
+    var rL = total("Total liabilities", bL, lV); row++;
+
+    var incK = desc(r.incC), expK = desc(r.expC);
+    var iV = incK.map(function (k) { return round2(r.incC[k]); }), eV = expK.map(function (k) { return round2(r.expC[k]); });
+    var totA = xSum(aV), totL = xSum(lV), totI = xSum(iV), totE = xSum(eV);
+    var oeOpen = round2(nwOpen), adjR = round2(adj), fx = round2(totA - totL - oeOpen - adjR - (totI - totE)), oeTot = xSum([oeOpen, adjR, fx]);
+
+    K.t(row, 0, "OWNER'S EQUITY"); row++;
+    var e0 = row;
+    K.t(row, 0, hasBefore ? "  Opening equity (net worth on " + open0 + ")" : "  Opening equity (opening balances of your accounts)"); K.n(row, 1, oeOpen); K.t(row, 2, "Assets minus liabilities at the start of the period"); row++;
+    K.t(row, 0, "  Balance adjustments in the period"); K.n(row, 1, adjR); K.t(row, 2, "Corrections made with Adjust: they change balances but are not income or spending"); row++;
+    K.t(row, 0, "  Exchange-rate revaluation and other"); K.n(row, 1, fx); K.t(row, 2, "Currency moves on balances, plus anything else that changes balances without being income or spending"); row++;
+    K.t(row, 0, "Total owner's equity"); K.f(row, 1, "SUM(" + B(e0) + ":" + B(row - 1) + ")", oeTot); var rE = row++; row++;
+
+    K.t(row, 0, "INCOME STATEMENT"); K.t(row, 1, "For the period"); row++;
+    var bI = block("INCOME", incK.map(function (k, i) { return ["  " + k, iV[i]]; }));
+    var rI = total("Total income", bI, iV); row++;
+    var bE = block("EXPENSES", expK.map(function (k, i) { return ["  " + k, eV[i]]; }));
+    var rX = total("Total expenses", bE, eV); row++;
+    K.t(row, 0, "Net income (income \u2212 expenses)"); K.f(row, 1, B(rI) + "-" + B(rX), round2(totI - totE)); var rN = row; row += 2;
+
+    var rhs = round2(totL + oeTot + totI - totE);
+    K.t(row, 0, "THE EQUATION"); row++;
+    K.t(row, 0, "Assets"); K.f(row, 1, B(rA), totA); var q1 = row++;
+    K.t(row, 0, "Liabilities + Owner's equity + Income \u2212 Expenses"); K.f(row, 1, B(rL) + "+" + B(rE) + "+" + B(rI) + "-" + B(rX), rhs); var q2 = row++;
+    var diff = round2(totA - rhs) + 0;
+    K.t(row, 0, "Difference (should be 0)"); K.f(row, 1, B(q1) + "-" + B(q2), diff); var q3 = row++;
+    K.t(row, 0, "Check"); K.f(row, 1, 'IF(ABS(' + B(q3) + ')<0.005,"Balanced","Does not balance")', Math.abs(diff) < 0.005 ? "Balanced" : "Does not balance"); row += 2;
+    K.t(row, 0, "Memo: closing owner's equity (opening equity + net income)"); K.f(row, 1, B(rE) + "+" + B(rN), round2(oeTot + totI - totE)); row++;
+    K.t(row, 0, "Memo: net worth (assets \u2212 liabilities)"); K.f(row, 1, B(rA) + "-" + B(rL), round2(totA - totL)); row++;
+    if (skipped > 0) { row++; K.t(row, 0, skipped + (skipped === 1 ? " account is" : " accounts are") + " switched off from reports and left out."); }
+    return { ws: K.done([54, 22, 80]), expRow: rX, expVal: totE };
+  }
+
+  /* Sheet 2: balance owed per card (roll-forward + what is still to be billed) and the month-by-month installment schedule */
+  function sheetCards(rep) {
+    var K = sheetKit(), disp = state.disp, from = rep.from, row = 0, i, j;
+    var asOf = rep.to > todayStr ? todayStr : rep.to, open0 = addDays(from, -1), bo = balances(open0), bc = balances(asOf);
+    var cards = state.wallets.filter(function (w) { return isCredit(w) && !w.noRep; }).sort(xByName);
+    function cv(n, w) { return round2(conv(n, w.cur, null, asOf)); }
+    function cl(w) { return w.name + (w.cur !== disp ? " (" + w.cur + ")" : ""); } /* same label in every table, so the lookups below match */
+
+    /* installment plans -> one schedule row per billing */
+    var all = (state.recs || []).filter(function (p) { return p && p.type === "installment" && p.start && wmap[p.wallet]; });
+    var paused = all.filter(function (p) { return p.active === false; }).length, offCard = 0, groups = [];
+    all.filter(function (p) { return p.active !== false; }).forEach(function (p) {
+      var w = wmap[p.wallet], n = p.count || 1, am = p.mode === "amortize", sc = instCalc(p.total || 0, n, am ? p.rateType : "none", p.rate), dates = am ? stmtDates(p) : null, rows = [], k;
+      for (k = 0; k < n; k++) {
+        rows.push({ acct: cl(w), plan: p.name || p.cat || "Installment", mode: am ? "Billed monthly" : "Full price at purchase", no: (k + 1) + "/" + n, date: am ? dates[k] : addMonths(p.start, k + 1),
+          prin: cv(sc.rows[k].prin, w), int: cv(sc.rows[k].int, w), fee: cv((p.fee || 0) + (am && k === 0 ? (p.charge || 0) : 0), w) });
+      }
+      if (rows[n - 1].date < from) return;
+      if (!isCredit(w)) offCard++;
+      groups.push(rows);
+    });
+    groups.sort(function (a, b) { return a[0].acct < b[0].acct ? -1 : a[0].acct > b[0].acct ? 1 : a[0].date < b[0].date ? -1 : a[0].date > b[0].date ? 1 : 0; });
+    var flat = []; groups.forEach(function (g) { g.forEach(function (x) { x.status = x.date <= asOf ? "Billed" : "Upcoming"; flat.push(x); }); });
+
+    K.t(0, 0, "CREDIT CARD INSTALLMENTS AND OUTSTANDING BALANCE");
+    K.t(1, 0, "Currency"); K.t(1, 1, disp);
+    K.t(2, 0, "As of"); K.d(2, 1, asOf);
+    K.t(3, 0, "Period"); K.t(3, 1, from + " to " + asOf);
+
+    /* 1a roll-forward */
+    row = 5; K.t(row, 0, "1. OUTSTANDING BALANCE RECONCILIATION"); row++;
+    K.t(row, 0, "1a. How the balance owed moved during the period (a plus raises the balance, a minus lowers it)"); row++;
+    ["Card", "Opening owed", "Purchases & fees", "Refunds & credits", "Adjustments", "Payments", "Cash advances", "Closing (calc.)", "Per ledger", "Difference"].forEach(function (h, c) { K.t(row, c, h); }); row++;
+    var rf = cards.map(function (w) {
+      var f = { pu: 0, re: 0, ad: 0, pa: 0, ou: 0 };
+      state.tx.forEach(function (t) {
+        if (!validT(t) || t.date < from || t.date > asOf) return;
+        if (t.kind === "xfer") { if (t.wallet === w.id) f.ou += t.amount; if (t.to === w.id) f.pa -= Number(t.toAmount) || 0; }
+        else if (t.wallet === w.id) { if (t.adj) f.ad += t.kind === "out" ? t.amount : -t.amount; else if (t.kind === "out") f.pu += t.amount; else f.re -= t.amount; }
+      });
+      var v = { w: w, op: cv(-bo[w.id], w), pu: cv(f.pu, w), re: cv(f.re, w), ad: cv(f.ad, w), pa: cv(f.pa, w), ou: cv(f.ou, w), led: cv(-bc[w.id], w) };
+      v.calc = xSum([v.op, v.pu, v.re, v.ad, v.pa, v.ou]); v.diff = round2(v.calc - v.led) + 0; return v;
+    });
+    var a0 = row, KEYS = ["op", "pu", "re", "ad", "pa", "ou", "calc", "led", "diff"];
+    if (!rf.length) { K.t(row, 0, "(no credit cards)"); row++; }
+    rf.forEach(function (v) {
+      K.t(row, 0, cl(v.w));
+      for (j = 0; j < 6; j++) K.n(row, 1 + j, v[KEYS[j]]);
+      K.f(row, 7, "SUM(B" + (row + 1) + ":G" + (row + 1) + ")", v.calc); K.n(row, 8, v.led); K.f(row, 9, "H" + (row + 1) + "-I" + (row + 1), v.diff); row++;
+    });
+    var a1 = row - 1;
+    if (rf.length) {
+      K.t(row, 0, "Total");
+      for (j = 0; j < 9; j++) K.f(row, 1 + j, "SUM(" + xRef(a0, 1 + j) + ":" + xRef(a1, 1 + j) + ")", xSum(rf.map(function (v) { return v[KEYS[j]]; })));
+      row++;
+    }
+    row++;
+
+    /* 1b total outstanding including what has not been billed yet */
+    K.t(row, 0, "1b. Total outstanding, including installments not billed to the card yet"); row++;
+    ["Card", "Owed per ledger", "Unbilled principal", "Interest & fees due", "Total outstanding", "Credit limit", "Available credit", "Utilisation"].forEach(function (h, c) { K.t(row, c, h); }); row++;
+    var b0 = row, nS = flat.length, bt = [];
+    if (!rf.length) { K.t(row, 0, "(no credit cards)"); row++; }
+    rf.forEach(function (v, idx) {
+      var nm = cl(v.w), un = 0, it = 0, lim = cv(v.w.limit || 0, v.w), rr = row + 1;
+      flat.forEach(function (x) { if (x.acct === nm && x.status === "Upcoming") { it += x.int + x.fee; if (x.mode === "Billed monthly") un += x.prin; } });
+      un = round2(un); it = round2(it);
+      var tot = xSum([v.led, un, it]), av = lim > 0 ? round2(lim - v.led) : "", ut = lim > 0 ? v.led / lim : "";
+      bt.push({ led: v.led, un: un, it: it, tot: tot, lim: lim });
+      K.t(row, 0, nm); K.f(row, 1, "I" + (a0 + idx + 1), v.led);
+      if (nS) {
+        K.f(row, 2, "SUMPRODUCT(($A$[S0]:$A$[S1]=$A" + (a0 + idx + 1) + ")*($J$[S0]:$J$[S1]=\"Upcoming\")*($C$[S0]:$C$[S1]=\"Billed monthly\")*$F$[S0]:$F$[S1])", un);
+        K.f(row, 3, "SUMPRODUCT(($A$[S0]:$A$[S1]=$A" + (a0 + idx + 1) + ")*($J$[S0]:$J$[S1]=\"Upcoming\")*($G$[S0]:$G$[S1]+$H$[S0]:$H$[S1]))", it);
+      } else { K.n(row, 2, 0); K.n(row, 3, 0); }
+      K.f(row, 4, "B" + rr + "+C" + rr + "+D" + rr, tot); K.n(row, 5, lim);
+      K.f(row, 6, "IF(F" + rr + ">0,F" + rr + "-B" + rr + ",\"\")", av); K.f(row, 7, "IF(F" + rr + ">0,B" + rr + "/F" + rr + ",\"\")", ut, XP); row++;
+    });
+    if (rf.length) {
+      var tr = row + 1; K.t(row, 0, "Total");
+      for (j = 1; j <= 4; j++) K.f(row, j, "SUM(" + xRef(b0, j) + ":" + xRef(row - 1, j) + ")", xSum(bt.map(function (x) { return [0, x.led, x.un, x.it, x.tot][j]; })));
+      K.f(row, 5, "SUM(F" + (b0 + 1) + ":F" + row + ")", xSum(bt.map(function (x) { return x.lim; })));
+      row++;
+    }
+    row++;
+    var notes = ["Amounts are in " + disp + ", converted at the rates for the month of " + asOf + ", so cards in other currencies line up.",
+      "Unbilled principal is the part of plans set to \"Billed monthly\" that has not reached the card yet. Plans set to \"Full price at purchase\" are already inside the balance owed.",
+      "Differences of a few cents in 1a can come from currency rounding."];
+    if (paused) notes.push(paused + (paused === 1 ? " paused plan is" : " paused plans are") + " left out of the schedule.");
+    if (offCard) notes.push(offCard + (offCard === 1 ? " plan is" : " plans are") + " on an account that is not a credit card: shown in the schedule, not in section 1.");
+    notes.forEach(function (s) { K.t(row, 0, s); row++; }); row++;
+
+    /* 2 schedule */
+    K.t(row, 0, "2. INSTALLMENT SCHEDULE (active plans, one line per billing)"); row++;
+    ["Account", "Plan", "Billing mode", "No.", "Billing date", "Principal", "Interest", "Fees", "Total due", "Status", "Principal left after"].forEach(function (h, c) { K.t(row, c, h); }); row++;
+    var s0 = row;
+    if (!nS) { K.t(row, 0, "(no active installment plans)"); row++; }
+    groups.forEach(function (g) {
+      var gs = row, ge = row + g.length - 1;
+      g.forEach(function (x, k) {
+        var rr = row + 1, left = xSum(g.slice(k + 1).map(function (y) { return y.prin; }));
+        K.t(row, 0, x.acct); K.t(row, 1, x.plan); K.t(row, 2, x.mode); K.t(row, 3, x.no); K.d(row, 4, x.date);
+        K.n(row, 5, x.prin); K.n(row, 6, x.int); K.n(row, 7, x.fee);
+        K.f(row, 8, "F" + rr + "+G" + rr + "+H" + rr, xSum([x.prin, x.int, x.fee]));
+        K.f(row, 9, "IF(E" + rr + "<=$B$3,\"Billed\",\"Upcoming\")", x.status);
+        if (row < ge) K.f(row, 10, "SUM(F" + (rr + 1) + ":F" + (ge + 1) + ")", left); else K.n(row, 10, 0);
+        row++;
+      });
+    });
+    var s1 = row - 1;
+    if (nS) {
+      var cols = ["prin", "int", "fee"], tt = {};
+      K.t(row, 0, "Total");
+      for (j = 0; j < 3; j++) { tt[cols[j]] = xSum(flat.map(function (x) { return x[cols[j]]; })); K.f(row, 5 + j, "SUM(" + xRef(s0, 5 + j) + ":" + xRef(s1, 5 + j) + ")", tt[cols[j]]); }
+      K.f(row, 8, "SUM(I" + (s0 + 1) + ":I" + (s1 + 1) + ")", xSum(flat.map(function (x) { return x.prin + x.int + x.fee; }))); row++;
+      [["Billed", "of which billed up to " + asOf], ["Upcoming", "of which still to bill"]].forEach(function (p) {
+        K.t(row, 0, p[1]);
+        for (j = 0; j < 4; j++) {
+          var cl = String.fromCharCode(70 + j), pick = flat.filter(function (x) { return x.status === p[0]; });
+          K.f(row, 5 + j, "SUMIF($J$" + (s0 + 1) + ":$J$" + (s1 + 1) + ",\"" + p[0] + "\"," + cl + (s0 + 1) + ":" + cl + (s1 + 1) + ")", xSum(pick.map(function (x) { return j === 0 ? x.prin : j === 1 ? x.int : j === 2 ? x.fee : x.prin + x.int + x.fee; })));
+        }
+        row++;
+      });
+    }
+    var ws = K.ws, keys = Object.keys(ws);
+    keys.forEach(function (k) { if (ws[k] && ws[k].f) ws[k].f = ws[k].f.replace(/\[S0\]/g, s0 + 1).replace(/\[S1\]/g, s1 + 1); });
+    return K.done([30, 22, 22, 18, 16, 18, 16, 16, 18, 16, 20]);
+  }
+
+  /* Sheet 3: expenses by category for every month of the range, with month-on-month change so the ups and downs show */
+  function sheetMonthly(rep, st) {
+    var r = rep.r, K = sheetKit(), CL = XLSX.utils.encode_col, row = 0, i, j, ms = [];
+    /* months run from the first transaction in the range to the end date (not past today), so "All time" does not add empty years */
+    var firstD = r.rows.length ? r.rows[0].date : rep.from, lastD = r.rows.length ? r.rows[r.rows.length - 1].date : rep.to, endD = todayStr > lastD ? todayStr : lastD;
+    if (endD > rep.to) endD = rep.to;
+    var ym = firstD.slice(0, 7), end = endD.slice(0, 7);
+    while (ym <= end) { ms.push(ym); ym = xNextYM(ym); }
+    var n = ms.length, mat = {};
+    r.rows.forEach(function (t) { if (t.kind !== "out") return; var k = t.cat || "Other", m = t.date.slice(0, 7), o = mat[k] || (mat[k] = {}); o[m] = (o[m] || 0) + conv(t.amount, wmap[t.wallet].cur, null, t.date); });
+    var cats = Object.keys(mat).sort(function (a, b) { return r.expC[b] - r.expC[a]; });
+    var cT = n + 1, cS = n + 2, cA = n + 3, cP = n + 4, cR = n + 5, first = CL(1), last = CL(n);
+    var vals = cats.map(function (k) { return ms.map(function (m) { return round2(mat[k][m] || 0); }); });
+    var empty = !cats.length; if (empty) { cats = ["(no expenses in this range)"]; vals = [ms.map(function () { return 0; })]; }
+    var colT = ms.map(function (m, c) { return xSum(vals.map(function (v) { return v[c]; })); }), grand = xSum(colT);
+
+    K.t(0, 0, "EXPENSE ANALYSIS BY CATEGORY"); K.t(1, 0, "Period"); K.t(1, 1, rep.from + " to " + rep.to); K.t(2, 0, "Currency"); K.t(2, 1, state.disp);
+    K.t(3, 0, "The first and last month can be partial, depending on the dates you picked.");
+    row = 5; K.t(row, 0, "1. EXPENSES BY CATEGORY AND MONTH"); row++;
+    var hr = row; K.t(row, 0, "Category"); ms.forEach(function (m, c) { K.t(row, 1 + c, xMon(m)); });
+    K.t(row, cT, "Total"); K.t(row, cS, "Share of total"); K.t(row, cA, "Monthly average"); K.t(row, cP, "Highest month"); if (n > 1) K.t(row, cR, "Latest vs previous month"); row++;
+    var d0 = row, tr = d0 + cats.length, tot = "$" + CL(cT) + "$" + (tr + 1);
+    function tail(rw, v, sum, isTot) {
+      var rng = first + (rw + 1) + ":" + last + (rw + 1), mx = Math.max.apply(null, v), pk = mx === 0 ? "" : xMon(ms[v.indexOf(mx)]), R1 = rw + 1;
+      K.f(rw, cT, "SUM(" + rng + ")", sum);
+      K.f(rw, cS, "IF(" + tot + "=0,0," + CL(cT) + R1 + "/" + tot + ")", grand ? sum / grand : 0, XP);
+      K.f(rw, cA, "AVERAGE(" + rng + ")", sum / n);
+      K.f(rw, cP, "IF(MAX(" + rng + ")=0,\"\",INDEX($" + first + "$" + (hr + 1) + ":$" + last + "$" + (hr + 1) + ",MATCH(MAX(" + rng + ")," + rng + ",0)))", pk);
+      if (n > 1) { var a = v[n - 1], b = v[n - 2]; K.f(rw, cR, "IF(" + CL(n) + R1 + ">" + CL(n - 1) + R1 + ",\"\u25B2 up\",IF(" + CL(n) + R1 + "<" + CL(n - 1) + R1 + ",\"\u25BC down\",\"\u2013 same\"))", a > b ? "\u25B2 up" : a < b ? "\u25BC down" : "\u2013 same"); }
+    }
+    cats.forEach(function (k, ri) { K.t(row, 0, k); vals[ri].forEach(function (v, c) { K.n(row, 1 + c, v); }); tail(row, vals[ri], xSum(vals[ri])); row++; });
+    K.t(row, 0, "Total"); colT.forEach(function (v, c) { K.f(row, 1 + c, "SUM(" + CL(1 + c) + (d0 + 1) + ":" + CL(1 + c) + row + ")", v); }); tail(row, colT, grand); row += 2;
+
+    if (n > 1) {
+      K.t(row, 0, "2. CHANGE FROM THE PREVIOUS MONTH (amount; a plus means you spent more)"); row++;
+      K.t(row, 0, "Category"); ms.forEach(function (m, c) { K.t(row, 1 + c, xMon(m)); }); row++;
+      var allRows = vals.concat([colT]), labels = cats.concat(["Total"]), c0 = row;
+      allRows.forEach(function (v, ri) {
+        var src = d0 + ri; K.t(row, 0, labels[ri]);
+        for (j = 1; j < n; j++) K.f(row, 1 + j, CL(1 + j) + (src + 1) + "-" + CL(j) + (src + 1), round2(v[j] - v[j - 1]), XS);
+        row++;
+      });
+      K.t(row, 0, "Total change (%)");
+      for (j = 1; j < n; j++) K.f(row, 1 + j, "IF(" + CL(j) + (tr + 1) + "=0,\"\",(" + CL(1 + j) + (tr + 1) + "-" + CL(j) + (tr + 1) + ")/" + CL(j) + (tr + 1) + ")", colT[j - 1] === 0 ? "" : (colT[j] - colT[j - 1]) / colT[j - 1], XP);
+      row += 2;
+    }
+    K.t(row, 0, "3. CHECK AGAINST THE FINANCIAL STATEMENT"); row++;
+    K.t(row, 0, "Total expenses on the Financial Statement"); K.f(row, 1, "'Financial Statement'!B" + (st.expRow + 1), st.expVal); row++;
+    K.t(row, 0, "Difference (rounding only)"); K.f(row, 1, CL(cT) + (tr + 1) + "-B" + row, round2(grand - st.expVal) + 0);
+    var w = [34]; for (i = 0; i < n; i++) w.push(14); w.push(16, 15, 16, 16, 26);
+    return K.done(w);
+  }
+
   $("#rExportX").addEventListener("click", function () {
     if (!window.XLSX) { rmsg("Excel export could not load. Connect to the internet once, then try again.", true); return; }
     var rep = ready(); if (!rep) return;
@@ -2974,11 +3247,18 @@ header.top .pills { flex: 1 1 100%; margin-top: 0; }
     Object.keys(r.incC).sort(function (a, b) { return r.incC[b] - r.incC[a]; }).forEach(function (k) { a4.push(["Income", k, round2(r.incC[k])]); });
     var ws4 = XLSX.utils.aoa_to_sheet(a4); ws4["!cols"] = [{ wch: 10 }, { wch: 22 }, { wch: 18 }];
     for (var q = 2; q <= a4.length; q++) if (ws4["C" + q]) ws4["C" + q].z = M;
-    var wb = XLSX.utils.book_new();
+    var wb = XLSX.utils.book_new(), extraErr = false;
+    /* sheets 1 to 3: the statement-style report; the detail sheets (Summary, Transactions, Daily, By category) follow */
+    try {
+      var st1 = sheetStatement(rep);
+      XLSX.utils.book_append_sheet(wb, st1.ws, "Financial Statement");
+      XLSX.utils.book_append_sheet(wb, sheetCards(rep), "Card Installments");
+      XLSX.utils.book_append_sheet(wb, sheetMonthly(rep, st1), "Expense Analysis");
+    } catch (err) { extraErr = true; wb = XLSX.utils.book_new(); try { console.error(err); } catch (e2) {} }
     XLSX.utils.book_append_sheet(wb, ws1, "Summary"); XLSX.utils.book_append_sheet(wb, ws2, "Transactions");
     XLSX.utils.book_append_sheet(wb, ws3, "Daily"); XLSX.utils.book_append_sheet(wb, ws4, "By category");
     var out = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-    saveFile("wallet-report-" + rep.from + "_to_" + rep.to + ".xlsx", out, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet").then(function (res) { done(res, "report to Excel"); });
+    saveFile("wallet-report-" + rep.from + "_to_" + rep.to + ".xlsx", out, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet").then(function (res) { done(res, "report to Excel" + (extraErr ? " (the statement sheets could not be built)" : "")); });
   });
 
   /* ===== Import (same layout as Export CSV / the Transactions sheet of Export Excel) ===== */
