@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><meta name="theme-color" content="#1d5a4d"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Wallet"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="icon" type="image/png" href="icon-192.png"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}html,body{touch-action:manipulation;-webkit-text-size-adjust:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><meta name="theme-color" id="themeColor" content="#f2f5f4"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Wallet"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="icon" type="image/png" href="icon-192.png"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}html,body{touch-action:manipulation;-webkit-text-size-adjust:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>Wallet</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,17 +24,17 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0e1513; --surface: #162120; --ink: #e5eeeb; --muted: #93a59f; --line: #26352f;
+    --bg: #0b0b0c; --surface: #161617; --ink: #ececea; --muted: #9b9b97; --line: #2a2a2c;
     --accent: #5cd1b2; --accent-ink: #08201a; --win: #3fd08f; --loss: #ff7168;
-    --blob1: #134a40; --blob2: #1a3558; --blob3: #2a3f19; --edge: rgba(255, 255, 255, 0.2);
+    --blob1: #10201c; --blob2: #131a26; --blob3: #1c2112; --edge: rgba(255, 255, 255, 0.14);
     --c1: #5cd1b2; --c2: #6fa8ff; --c3: #f0b04a; --c4: #ff8a7c; --c5: #b39cff; --c6: #93a59f; --k1: #5cd1b2; --k2: #6fa8ff; --k3: #f0b04a; --k4: #ff8a7c; --k5: #b39cff; --k6: #f08cc0; --k7: #a8d65a; --k8: #55c8e6; --k9: #c79a6b; --k10: #9fb2c4; --k11: #ff9a5c; --k12: #5fd68a; --k13: #d27fd0; --k14: #8f9cff; --k15: #e6cc5a; --k16: #e08aa8; --k17: #b9a46a; --k18: #6ec3f0; --k19: #e6a0b8; --k20: #9cc46a;
     --shadow: 0 16px 36px -18px rgba(0, 0, 0, 0.8); color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #0e1513; --surface: #162120; --ink: #e5eeeb; --muted: #93a59f; --line: #26352f;
+  --bg: #0b0b0c; --surface: #161617; --ink: #ececea; --muted: #9b9b97; --line: #2a2a2c;
   --accent: #5cd1b2; --accent-ink: #08201a; --win: #3fd08f; --loss: #ff7168;
-  --blob1: #134a40; --blob2: #1a3558; --blob3: #2a3f19; --edge: rgba(255, 255, 255, 0.2);
+  --blob1: #10201c; --blob2: #131a26; --blob3: #1c2112; --edge: rgba(255, 255, 255, 0.14);
     --c1: #5cd1b2; --c2: #6fa8ff; --c3: #f0b04a; --c4: #ff8a7c; --c5: #b39cff; --c6: #93a59f; --k1: #5cd1b2; --k2: #6fa8ff; --k3: #f0b04a; --k4: #ff8a7c; --k5: #b39cff; --k6: #f08cc0; --k7: #a8d65a; --k8: #55c8e6; --k9: #c79a6b; --k10: #9fb2c4; --k11: #ff9a5c; --k12: #5fd68a; --k13: #d27fd0; --k14: #8f9cff; --k15: #e6cc5a; --k16: #e08aa8; --k17: #b9a46a; --k18: #6ec3f0; --k19: #e6a0b8; --k20: #9cc46a;
   --shadow: 0 16px 36px -18px rgba(0, 0, 0, 0.8); color-scheme: dark;
 }
@@ -607,6 +607,10 @@ table.t { width: 100%; border-collapse: collapse; font-size: 13.5px; }
 .row2 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
 #acctDlg input, #acctDlg select, #txDlg input, #txDlg select, #recDlg input, #recDlg select, #catDlg input, #catDlg select, #pickDlg input { min-width: 0; max-width: 100%; }
 dialog input[type="date"] { -webkit-appearance: none; appearance: none; min-width: 0; width: 100%; text-align: left; }
+.bkbar { position: fixed; left: 12px; right: 12px; bottom: calc(env(safe-area-inset-bottom, 0px) + 12px); z-index: 1000; display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); }
+.bkbar .bkt { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; font-size: 13px; }
+.bkbar .bkt span { color: var(--muted); font-size: 12px; }
+.bkbar .bkgo { background: var(--accent); color: var(--accent-ink); border-color: transparent; }
 body.dlg-lock { position: fixed; left: 0; right: 0; width: 100%; overflow: hidden; }
 /* iOS Safari zooms the page when a focused field's text is under 16px: keep fields at 16px on touch screens */
 @media (hover: none) and (pointer: coarse) {
@@ -854,6 +858,7 @@ header.top .pills { flex: 1 1 100%; margin-top: 0; }
   try { t = localStorage.getItem("wl-theme"); } catch (e) {}
   if (t !== "light" && t !== "dark") t = window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
   document.documentElement.setAttribute("data-theme", t);
+  var m = document.getElementById("themeColor"); if (m) m.setAttribute("content", t === "dark" ? "#0b0b0c" : "#f2f5f4");
 })();
 </script>
 
@@ -3298,7 +3303,7 @@ header.top .pills { flex: 1 1 100%; margin-top: 0; }
       }).catch(function () {});
     } catch (e) {}
   }
-  setInterval(function () { refreshLive(true).then(function (c) { if (c) render(); }); }, 600000);
+  setInterval(function () { refreshLive(false).then(function (c) { if (c) render(); }); }, 600000);
   $("#rFetch").addEventListener("click", function () {
     var b = this; b.disabled = true; b.textContent = "Updating…";
     refreshLive(true).then(function (ok) {
@@ -4122,6 +4127,32 @@ header.top .pills { flex: 1 1 100%; margin-top: 0; }
   /* ===== Backup / Restore: everything the app keeps on this device (accounts, transactions, categories, budgets, settings) ===== */
   (function () {
     try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) {}
+    /* ===== Daily backup reminder: from 5 PM, until today's backup is saved. iOS web apps cannot run in the background or write files silently, so this asks for one tap. ===== */
+    var LASTK = "wlb-last", SNZK = "wlb-snooze", bkBar = null;
+    function lget(k) { try { return localStorage.getItem(k) || ""; } catch (e) { return ""; } }
+    function lset(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+    function hideBkBar() { if (bkBar) { bkBar.remove(); bkBar = null; } }
+    function markBackedUp() { lset(LASTK, todayStr); hideBkBar(); }
+    function showBkBar() {
+      if (bkBar) return;
+      bkBar = document.createElement("div"); bkBar.className = "bkbar"; bkBar.setAttribute("role", "alert");
+      bkBar.innerHTML = '<div class="bkt"><b>Time for your daily backup</b><span>Saves a file to Files on your iPhone</span></div><button type="button" class="btn sm bkgo">Back up now</button><button type="button" class="btn sm bklater">Later</button>';
+      bkBar.querySelector(".bkgo").addEventListener("click", function () { $("#rBackup").click(); });
+      bkBar.querySelector(".bklater").addEventListener("click", function () { lset(SNZK, String(Date.now() + 3600000)); hideBkBar(); });
+      document.body.appendChild(bkBar);
+    }
+    function checkBackup(force) {
+      if (bkBar) return;
+      if (!(RAW.wallets && RAW.wallets.length)) return;
+      if (!force) {
+        if (new Date().getHours() < 17 || lget(LASTK) === todayStr || Date.now() < (+lget(SNZK) || 0)) return;
+      }
+      showBkBar();
+    }
+    setTimeout(function () { checkBackup(/(^|[#&?])backup\b/.test(location.hash + location.search)); }, 2500);
+    setInterval(function () { checkBackup(false); }, 60000);
+    document.addEventListener("visibilitychange", function () { if (!document.hidden) checkBackup(false); });
+    window.addEventListener("pageshow", function () { checkBackup(false); });
     $("#rBackup").addEventListener("click", function () {
       var data = {}, n = 0;
       try { for (var i = 0; i < localStorage.length; i++) { var k = localStorage.key(i); if (k && k.indexOf("wl-") === 0) { data[k] = localStorage.getItem(k); n++; } } } catch (e) {}
@@ -4130,7 +4161,7 @@ header.top .pills { flex: 1 1 100%; margin-top: 0; }
       var name = "wallet-backup-" + d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()) + ".json";
       var json = JSON.stringify({ app: "wallet", version: 1, saved: d.toISOString(), data: data });
       saveFile(name, json, "application/json").then(function (res) {
-        if (res === "ok") rmsg("Backup saved: " + name + ". Keep it in Files or iCloud."); else if (res === "err") rmsg("Could not save the backup.", true);
+        if (res === "ok") { markBackedUp(); rmsg("Backup saved: " + name + ". Keep it in Files or iCloud."); } else if (res === "err") rmsg("Could not save the backup.", true);
       });
     });
     $("#rRestore").addEventListener("click", function () { $("#rRestoreFile").click(); });
@@ -4142,11 +4173,18 @@ header.top .pills { flex: 1 1 100%; margin-top: 0; }
         if (!obj || obj.app !== "wallet" || !obj.data || typeof obj.data !== "object") { rmsg("That is not a Wallet backup file.", true); inp.value = ""; return; }
         if (!window.confirm("Restore this backup? It replaces everything currently in the app on this device.")) { inp.value = ""; return; }
         try {
-          var rm = []; for (var i = 0; i < localStorage.length; i++) { var k = localStorage.key(i); if (k && k.indexOf("wl-") === 0) rm.push(k); }
-          rm.forEach(function (k) { localStorage.removeItem(k); });
-          Object.keys(obj.data).forEach(function (k) { if (k.indexOf("wl-") === 0 && typeof obj.data[k] === "string") localStorage.setItem(k, obj.data[k]); });
+          var rm = [], keep = {}; for (var i = 0; i < localStorage.length; i++) { var k = localStorage.key(i); if (k && k.indexOf("wl-") === 0) { rm.push(k); keep[k] = localStorage.getItem(k); } }
+          try {
+            rm.forEach(function (k) { localStorage.removeItem(k); });
+            Object.keys(obj.data).forEach(function (k) { if (k.indexOf("wl-") === 0 && typeof obj.data[k] === "string") localStorage.setItem(k, obj.data[k]); });
+          } catch (e2) {
+            /* put the old data back so a failed restore never leaves the app empty */
+            Object.keys(localStorage).filter(function (k) { return k.indexOf("wl-") === 0; }).forEach(function (k) { localStorage.removeItem(k); });
+            Object.keys(keep).forEach(function (k) { try { localStorage.setItem(k, keep[k]); } catch (e3) {} });
+            throw e2;
+          }
           rmsg("Backup restored. Reloading…"); setTimeout(function () { location.reload(); }, 600);
-        } catch (e) { rmsg("Could not restore the backup.", true); }
+        } catch (e) { rmsg("Could not restore the backup. Your current data was left as it was.", true); }
       };
       rd.readAsText(f);
     });
@@ -4166,12 +4204,13 @@ header.top .pills { flex: 1 1 100%; margin-top: 0; }
     var next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
     root.setAttribute("data-theme", next);
     try { localStorage.setItem("wl-theme", next); } catch (e) {}
+    var tc = document.getElementById("themeColor"); if (tc) tc.setAttribute("content", next === "dark" ? "#0b0b0c" : "#f2f5f4");
     sync();
   });
   try {
     matchMedia("(prefers-color-scheme: dark)").addEventListener("change", function (e) {
       var saved = null; try { saved = localStorage.getItem("wl-theme"); } catch (x) {}
-      if (saved !== "light" && saved !== "dark") { root.setAttribute("data-theme", e.matches ? "dark" : "light"); sync(); }
+      if (saved !== "light" && saved !== "dark") { root.setAttribute("data-theme", e.matches ? "dark" : "light"); var tc2 = document.getElementById("themeColor"); if (tc2) tc2.setAttribute("content", e.matches ? "#0b0b0c" : "#f2f5f4"); sync(); }
     });
   } catch (e) {}
   sync();
@@ -4272,7 +4311,7 @@ header.top .pills { flex: 1 1 100%; margin-top: 0; }
   var last = 0;
   document.addEventListener("touchend", function (e) {
     var now = Date.now();
-    if (now - last < 300 && e.target.closest && !e.target.closest("input, textarea, select")) e.preventDefault();
+    if (now - last < 300 && e.target.closest && !e.target.closest("input, textarea, select, button, a, label, summary, [role=button], [data-lk], [data-k]")) e.preventDefault();
     last = now;
   }, { passive: false });
 })();

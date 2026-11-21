@@ -1,6 +1,6 @@
 /* Wallet service worker: keeps a copy of the app so it opens offline.
    Bump VERSION whenever index.html changes so phones pick up the new copy. */
-var VERSION = "wallet-v50";
+var VERSION = "wallet-v52";
 var SHELL = ["./", "./index.html", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png", "./icon-maskable-512.png"];
 
 self.addEventListener("install", function (e) {
@@ -13,7 +13,7 @@ self.addEventListener("fetch", function (e) {
   var req = e.request, url = new URL(req.url);
   if (req.method !== "GET") return;
   /* live exchange rates: always the network, the app has its own fallback */
-  if (url.hostname === "api.frankfurter.app") return;
+  if (url.hostname === "api.frankfurter.app" || url.hostname === "api.frankfurter.dev" || url.hostname === "open.er-api.com") return;
   /* app pages: network first so updates arrive, cached copy when offline */
   if (url.origin === location.origin) {
     e.respondWith(fetch(req).then(function (res) {
@@ -21,8 +21,8 @@ self.addEventListener("fetch", function (e) {
     }).catch(function () { return caches.match(req).then(function (m) { return m || caches.match("./index.html"); }); }));
     return;
   }
-  /* fonts: cached after the first load */
-  if (url.hostname === "fonts.googleapis.com" || url.hostname === "fonts.gstatic.com") {
+  /* fonts and the Excel library: cached after the first load so Excel import/export works offline */
+  if (url.hostname === "fonts.googleapis.com" || url.hostname === "fonts.gstatic.com" || url.hostname === "cdnjs.cloudflare.com") {
     e.respondWith(caches.match(req).then(function (m) {
       return m || fetch(req).then(function (res) { var copy = res.clone(); caches.open(VERSION).then(function (c) { c.put(req, copy); }); return res; });
     }));
