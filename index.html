@@ -641,6 +641,9 @@ table.t { width: 100%; border-collapse: collapse; font-size: 13.5px; }
 #acctDlg .dlgmain { max-height: none; overflow: visible; }
 /* category popup: same height behaviour as the New transaction popup (fits the screen, content scrolls inside) */
 @media (min-width: 960px) { #rcDlg { overflow-x: hidden; overflow-y: auto; max-height: calc(100dvh - 72px); } }
+/* category popup: a tall sheet like New transaction, even when the list is short */
+#rcDlg { min-height: min(600px, calc(var(--vvh, 100dvh) - 24px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px))); }
+@media (max-width: 699px) { #rcDlg { min-height: min(640px, calc(var(--vvh, 100dvh) - env(safe-area-inset-top, 0px) - 12px)); } }
 @media (min-width: 960px) { #acctDlg { overflow: visible; } #acctDlg .dlgmain { max-height: calc(100dvh - 72px); overflow-y: auto; overscroll-behavior: contain; } }
 .row2 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
 #acctDlg input, #acctDlg select, #txDlg input, #txDlg select, #recDlg input, #recDlg select, #catDlg input, #catDlg select, #pickDlg input, #rcDlg input { min-width: 0; max-width: 100%; }
