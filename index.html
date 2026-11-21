@@ -655,10 +655,11 @@ table.t { width: 100%; border-collapse: collapse; font-size: 13.5px; }
   .navrow .tabs.mini .lb { opacity: 0; max-height: 0; }
 }
 @media (max-width: 699px) and (prefers-reduced-motion: no-preference) {
-  .navrow .tabs { transition: width .42s cubic-bezier(.32,.72,0,1), padding .42s cubic-bezier(.32,.72,0,1), gap .42s cubic-bezier(.32,.72,0,1), border-radius .42s, background-color .42s ease, border-color .42s ease, box-shadow .42s ease; }
-  .navrow .tabs button { transition: min-height .42s cubic-bezier(.32,.72,0,1), padding .42s cubic-bezier(.32,.72,0,1), gap .42s, background-color .3s ease, color .3s ease, transform .15s; }
-  .navrow .tabs button svg { transition: width .42s cubic-bezier(.32,.72,0,1), height .42s cubic-bezier(.32,.72,0,1); }
-  .navrow .tabs .lb { transition: opacity .25s ease, max-height .42s cubic-bezier(.32,.72,0,1); }
+  .navrow .tabs { transition: width .9s cubic-bezier(.25,.1,.25,1), padding .9s cubic-bezier(.25,.1,.25,1), gap .9s cubic-bezier(.25,.1,.25,1), border-radius .9s cubic-bezier(.25,.1,.25,1), background-color .9s ease, border-color .9s ease, box-shadow .9s ease; }
+  .navrow .tabs button { transition: min-height .9s cubic-bezier(.25,.1,.25,1), padding .9s cubic-bezier(.25,.1,.25,1), gap .9s cubic-bezier(.25,.1,.25,1), background-color .6s ease, color .6s ease, transform .15s; }
+  .navrow .tabs button svg { transition: width .9s cubic-bezier(.25,.1,.25,1), height .9s cubic-bezier(.25,.1,.25,1); }
+  .navrow .tabs .lb { transition: opacity .5s ease, max-height .9s cubic-bezier(.25,.1,.25,1); }
+}
 }
 /* category popup: a tall sheet like New transaction, even when the list is short */
 #rcDlg { min-height: min(600px, calc(var(--vvh, 100dvh) - 24px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px))); }
