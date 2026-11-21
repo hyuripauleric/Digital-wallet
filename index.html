@@ -644,9 +644,10 @@ table.t { width: 100%; border-collapse: collapse; font-size: 13.5px; }
 /* bottom tab bar (phones): shrinks to icons while scrolling down, grows back when scrolling up, like Instagram */
 @media (max-width: 699px) {
   .navrow .tabs .lb { max-height: 20px; overflow: hidden; }
-  .navrow .tabs.mini { width: min(calc(100% - 32px), 240px); padding: 4px; gap: 2px; border-radius: 22px; }
-  .navrow .tabs.mini button { min-height: 40px; padding: 4px; gap: 0; border-radius: 17px; }
-  .navrow .tabs.mini button svg { width: 20px; height: 20px; }
+  .navrow .tabs.mini { width: min(calc(100% - 48px), 236px); padding: 5px; gap: 2px; border-radius: 999px; background: color-mix(in srgb, var(--surface) 90%, transparent); }
+  .navrow .tabs.mini button { min-height: 44px; padding: 0; gap: 0; border-radius: 999px; background: transparent; color: var(--ink); }
+  .navrow .tabs.mini button[aria-pressed="true"] { background: color-mix(in srgb, var(--ink) 16%, transparent); color: var(--ink); }
+  .navrow .tabs.mini button svg { width: 24px; height: 24px; }
   .navrow .tabs.mini .lb { opacity: 0; max-height: 0; }
 }
 @media (max-width: 699px) and (prefers-reduced-motion: no-preference) {
