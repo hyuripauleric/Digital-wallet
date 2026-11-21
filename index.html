@@ -325,9 +325,9 @@ html, body { max-width: 100%; overflow-x: clip; }
 #dAccts .empty { margin: 0; grid-column: 1 / -1; }
 .asort { display: none; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); margin-left: auto; } .asort select { width: auto; padding: 4px 26px 4px 10px; font-size: 12.5px; border-radius: 10px; background-color: var(--glass-strong); }
 #dAccts .acct { cursor: pointer; user-select: none; -webkit-user-select: none; }
-#acctDlg, #txDlg, #recDlg, #catDlg, #pickDlg { width: min(520px, calc(100vw - 28px)); max-height: calc(100vh - 28px); padding: 18px 20px 20px; border: 1px solid var(--glass-line); border-radius: 22px; color: var(--ink); background: linear-gradient(180deg, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.02)), var(--surface); box-shadow: inset 0 1px 0 var(--edge), 0 30px 70px -20px rgba(0, 0, 0, 0.6); overflow: auto; }
-#acctDlg::backdrop, #txDlg::backdrop, #recDlg::backdrop, #catDlg::backdrop, #pickDlg::backdrop { background: rgba(5, 10, 9, 0.55); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
-#acctDlg[open], #txDlg[open], #recDlg[open], #catDlg[open], #pickDlg[open] { animation: dlgin 0.16s ease-out; } @keyframes dlgin { from { opacity: 0; transform: translateY(8px) scale(0.98); } to { opacity: 1; transform: none; } }
+#acctDlg, #txDlg, #recDlg, #catDlg, #pickDlg, #rcDlg { width: min(520px, calc(100vw - 28px)); max-height: calc(100vh - 28px); padding: 18px 20px 20px; border: 1px solid var(--glass-line); border-radius: 22px; color: var(--ink); background: linear-gradient(180deg, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.02)), var(--surface); box-shadow: inset 0 1px 0 var(--edge), 0 30px 70px -20px rgba(0, 0, 0, 0.6); overflow: auto; }
+#acctDlg::backdrop, #txDlg::backdrop, #recDlg::backdrop, #catDlg::backdrop, #pickDlg::backdrop, #rcDlg::backdrop { background: rgba(5, 10, 9, 0.55); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+#acctDlg[open], #txDlg[open], #recDlg[open], #catDlg[open], #pickDlg[open], #rcDlg[open] { animation: dlgin 0.16s ease-out; } @keyframes dlgin { from { opacity: 0; transform: translateY(8px) scale(0.98); } to { opacity: 1; transform: none; } }
 /* bulk select + delete */
 .bulkbar { position: sticky; top: 0; z-index: 3; display: flex; align-items: center; gap: 8px; margin: 0 0 8px; padding: 6px 8px 6px 12px; border: 1px solid var(--accent); border-radius: 12px; background: color-mix(in srgb, var(--accent) 14%, var(--surface)); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
 .bulkbar .btn { flex: none; white-space: nowrap; }
@@ -381,7 +381,7 @@ html, body { max-width: 100%; overflow-x: clip; }
   #aHist { margin-top: 16px; padding: 14px 0 0; border: 0; border-top: 1px solid var(--hair); border-radius: 0; background: none; box-shadow: none; }
   #aHist .hlist { max-height: 340px; }
 }
-@media (prefers-reduced-motion: reduce) { #acctDlg[open], #txDlg[open], #recDlg[open], #catDlg[open], #pickDlg[open] { animation: none; } }
+@media (prefers-reduced-motion: reduce) { #acctDlg[open], #txDlg[open], #recDlg[open], #catDlg[open], #pickDlg[open], #rcDlg[open] { animation: none; } }
 .dlghead { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 12px; } .dlghead h3 { font-family: var(--font-display); font-size: 18px; margin: 0; }
 #acctDlg form, #txDlg form, #recDlg form { display: flex; flex-direction: column; gap: 12px; border-top: 0; padding-top: 0; }
 .catform { display: flex; flex-direction: column; gap: 14px; }
@@ -453,6 +453,16 @@ html, body { max-width: 100%; overflow-x: clip; }
 }
 .tw { overflow: auto; max-height: 380px; border-radius: 14px; border: 1px solid var(--glass-line); background: var(--glass); }
 table.t { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+#rcDlg:focus, #rcDlg:focus-visible { outline: none; }
+.t tr.rcl { cursor: pointer; -webkit-tap-highlight-color: transparent; transition: background .15s; }
+.t tr.rcl:hover, .t tr.rcl:active { background: var(--hover); }
+.t tr.rcl .linkbtn { font-family: var(--font-body); }
+.rcrow { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; padding: 11px 0; border-top: 1px solid var(--hair); }
+.rcrow:first-child { border-top: 0; }
+.rcrow .rt { font-weight: 600; min-width: 0; overflow-wrap: anywhere; }
+.rcrow .rs { grid-column: 1; color: var(--muted); font-size: 12px; min-width: 0; overflow-wrap: anywhere; }
+.rcrow .ra { grid-row: 1; grid-column: 2; text-align: right; font-family: var(--font-num); font-variant-numeric: tabular-nums; font-weight: 600; white-space: nowrap; }
+.rcrow .ro { grid-row: 2; grid-column: 2; text-align: right; color: var(--muted); font-size: 11.5px; font-family: var(--font-num); white-space: nowrap; }
 .t th { position: sticky; top: 0; background: color-mix(in srgb, var(--surface) 70%, transparent); text-align: right; font-size: 11px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); font-weight: 600; padding: 10px 14px; border-bottom: 1px solid var(--hair); white-space: nowrap; }
 .t td { padding: 10px 14px; border-top: 1px solid var(--hair); text-align: right; font-family: var(--font-num); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .t th:first-child, .t td:first-child { text-align: left; }
@@ -622,7 +632,7 @@ table.t { width: 100%; border-collapse: collapse; font-size: 13.5px; }
 }
 
 /* Popups: stay inside the visible screen (iOS-safe), scroll inside themselves, never scroll the page behind */
-#acctDlg, #txDlg, #recDlg, #catDlg, #pickDlg {
+#acctDlg, #txDlg, #recDlg, #catDlg, #pickDlg, #rcDlg {
   box-sizing: border-box; position: fixed; inset: 0; margin: auto; height: fit-content;
   width: min(520px, calc(100% - 24px)); max-width: calc(100% - 24px);
   max-height: calc(100vh - 24px); max-height: calc(100dvh - 24px);
@@ -631,7 +641,7 @@ table.t { width: 100%; border-collapse: collapse; font-size: 13.5px; }
 #acctDlg .dlgmain { max-height: none; overflow: visible; }
 @media (min-width: 960px) { #acctDlg { overflow: visible; } #acctDlg .dlgmain { max-height: calc(100dvh - 72px); overflow-y: auto; overscroll-behavior: contain; } }
 .row2 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-#acctDlg input, #acctDlg select, #txDlg input, #txDlg select, #recDlg input, #recDlg select, #catDlg input, #catDlg select, #pickDlg input { min-width: 0; max-width: 100%; }
+#acctDlg input, #acctDlg select, #txDlg input, #txDlg select, #recDlg input, #recDlg select, #catDlg input, #catDlg select, #pickDlg input, #rcDlg input { min-width: 0; max-width: 100%; }
 dialog input[type="date"] { -webkit-appearance: none; appearance: none; min-width: 0; width: 100%; text-align: left; }
 .bkbar { position: fixed; left: 12px; right: 12px; bottom: calc(env(safe-area-inset-bottom, 0px) + 12px); z-index: 1000; display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); }
 .bkbar .bkt { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; font-size: 13px; }
@@ -643,7 +653,7 @@ body.dlg-lock { position: fixed; left: 0; right: 0; width: 100%; overflow: hidde
   input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), select, textarea { font-size: 16px !important; }
 }
 /* Popup header (with the close button) stays pinned while the popup scrolls, and the popup respects the iPhone notch / home bar and keyboard */
-#acctDlg, #txDlg, #recDlg, #catDlg, #pickDlg {
+#acctDlg, #txDlg, #recDlg, #catDlg, #pickDlg, #rcDlg {
   inset: env(safe-area-inset-top, 0px) 0 env(safe-area-inset-bottom, 0px) 0;
   max-height: calc(100dvh - 24px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
   max-height: calc(var(--vvh, 100dvh) - 24px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
@@ -797,7 +807,7 @@ header.top .pills { flex: 1 1 100%; margin-top: 0; }
 /* Bottom sheets on phones (respects the Dynamic Island and the home bar) */
 @keyframes sheetin { from { transform: translateY(100%); } to { transform: none; } }
 @keyframes bdin { from { opacity: 0; } to { opacity: 1; } }
-@media (prefers-reduced-motion: reduce) { #acctDlg[open], #txDlg[open], #recDlg[open], #catDlg[open], #pickDlg[open], dialog[open]::backdrop { animation: none !important; } }
+@media (prefers-reduced-motion: reduce) { #acctDlg[open], #txDlg[open], #recDlg[open], #catDlg[open], #pickDlg[open], #rcDlg[open], dialog[open]::backdrop { animation: none !important; } }
 
 /* Swipe left on a transaction to delete (touch) */
 .act[data-id], .act[data-hid] { position: relative; touch-action: pan-y; }
@@ -839,14 +849,14 @@ header.top .pills { flex: 1 1 100%; margin-top: 0; }
 :root { --kb: 0px; --sbar: 0px; }
 @media (max-width: 699px) and (display-mode: browser) { :root { --sbar: 76px; } :root.kbopen { --sbar: 0px; } }
 @media (max-width: 699px) {
-  #acctDlg, #txDlg, #recDlg, #catDlg, #pickDlg {
+  #acctDlg, #txDlg, #recDlg, #catDlg, #pickDlg, #rcDlg {
     inset: auto 0 var(--kb, 0px) 0; margin: 0 auto; width: 100%; max-width: 560px; height: auto;
     max-height: calc(var(--vvh, 100dvh) - env(safe-area-inset-top, 0px) - 12px);
     border-radius: 22px 22px 0 0; border-bottom: 0;
     padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px) + var(--sbar, 0px));
     scroll-padding-bottom: 24px; overscroll-behavior: contain; will-change: transform;
   }
-  #acctDlg[open], #txDlg[open], #recDlg[open], #catDlg[open], #pickDlg[open] { animation: sheetin 0.26s cubic-bezier(0.2, 0.85, 0.25, 1); }
+  #acctDlg[open], #txDlg[open], #recDlg[open], #catDlg[open], #pickDlg[open], #rcDlg[open] { animation: sheetin 0.26s cubic-bezier(0.2, 0.85, 0.25, 1); }
   dialog[open]::backdrop { animation: bdin 0.2s ease-out; }
   dialog .dlghead { padding-top: 22px; }
   dialog .dlghead::before { content: ""; position: absolute; top: 8px; left: 50%; width: 40px; height: 5px; margin-left: -20px; border-radius: 3px; background: var(--muted); opacity: 0.5; }
@@ -1332,6 +1342,12 @@ header.top .pills { flex: 1 1 100%; margin-top: 0; }
     </aside>
   </dialog>
 
+  <dialog id="rcDlg" aria-labelledby="rcT">
+    <div class="dlghead"><h3 id="rcT">Category</h3><button type="button" class="btn icon sm" id="rcClose" aria-label="Close">✕</button></div>
+    <p class="pickhint" id="rcSum"></p>
+    <div id="rcList"></div>
+  </dialog>
+
   <dialog id="pickDlg" aria-labelledby="pickT">
     <div class="dlghead"><h3 id="pickT">Select category</h3><div class="pickbtns"><button type="button" class="btn sm" id="pickClear" hidden>Clear</button><button type="button" class="btn icon sm" id="pickClose" aria-label="Close">✕</button></div></div>
     <p class="pickhint" id="pickHint"></p>
@@ -1627,7 +1643,7 @@ header.top .pills { flex: 1 1 100%; margin-top: 0; }
     return map;
   }
   function saveLocal() {
-    try { localStorage.setItem("wl-wallets", JSON.stringify(RAW.wallets)); localStorage.setItem("wl-tx", JSON.stringify(RAW.tx)); localStorage.setItem("wl-goals", JSON.stringify(RAW.goals)); localStorage.setItem("wl-recs", JSON.stringify(RAW.recs)); } catch (e) {}
+    try { localStorage.setItem("wl-wallets", JSON.stringify(RAW.wallets)); localStorage.setItem("wl-tx", JSON.stringify(RAW.tx)); localStorage.setItem("wl-goals", JSON.stringify(RAW.goals)); localStorage.setItem("wl-recs", JSON.stringify(RAW.recs)); } catch (e) { setStatus("Could not save to this device (storage may be full). Make a backup now.", true); }
   }
   function failMsg(e) { setStatus("Could not save that (" + ((e && e.code) || "error") + "). Try again.", true); return false; }
   function put(kind, obj) {
@@ -1635,7 +1651,9 @@ header.top .pills { flex: 1 1 100%; margin-top: 0; }
     if ((kind === "w" || kind === "g") && !o.ledger) o.ledger = writeLedger();
     var c = colOf(kind);
     if (c) return c.doc(id).set(o).then(function () { return id; }).catch(function (e) { failMsg(e); return null; });
-    o.id = id; state[keyOf(kind)].push(o); saveLocal(); render();
+    o.id = id; var arr = state[keyOf(kind)], ix = -1; for (var q = 0; q < arr.length; q++) { if (arr[q] && arr[q].id === id) { ix = q; break; } }
+    if (ix >= 0) arr[ix] = o; else arr.push(o); /* same id twice replaces, never duplicates */
+    saveLocal(); render();
     return Promise.resolve(id);
   }
   function patch(kind, id, f) {
@@ -2793,9 +2811,38 @@ header.top .pills { flex: 1 1 100%; margin-top: 0; }
     var keys = Object.keys(map).sort(function (a, b) { return map[b] - map[a]; });
     return table(["Category", "Amount", "Share"], keys.map(function (k) {
       var s = total ? map[k] / total : 0;
-      return tr([esc(k), '<span class="' + (inc ? "win" : "loss") + '">' + D(map[k]) + "</span>", pct(s) + '<span class="share ' + (inc ? "in" : "") + '" style="width:' + Math.round(s * 56) + 'px"></span>']);
+      return '<tr class="rcl" data-rcat="' + esc(k) + '" data-rkind="' + (inc ? "in" : "out") + '"><td><button type="button" class="linkbtn plain" aria-haspopup="dialog">' + esc(k) + ' <span class="subt">\u203a</span></button></td><td><span class="' + (inc ? "win" : "loss") + '">' + D(map[k]) + "</span></td><td>" + pct(s) + '<span class="share ' + (inc ? "in" : "") + '" style="width:' + Math.round(s * 56) + 'px"></span></td></tr>';
     }));
   }
+  /* tap a category in the report to see the transactions behind it */
+  var rcDlg = $("#rcDlg");
+  function openCatTx(cat, kind) {
+    var rep = state.rep; if (!rep) return;
+    var list = rep.r.rows.filter(function (t) { return t.kind === kind && (t.cat || (kind === "in" ? "Income" : "Other")) === cat; }).slice().reverse();
+    var total = 0; list.forEach(function (t) { total += conv(t.amount, wmap[t.wallet].cur, null, t.date); });
+    $("#rcT").textContent = cat;
+    $("#rcSum").textContent = fmtDate(rep.from) + " \u2013 " + fmtDate(rep.to) + " \u00b7 " + list.length + (list.length === 1 ? " transaction" : " transactions") + " \u00b7 " + D(total);
+    $("#rcList").innerHTML = list.length ? list.map(function (t) {
+      var w = wmap[t.wallet], a = conv(t.amount, w.cur, null, t.date), parts = [fmtDate(t.date), esc(w.name)];
+      if (t.sub) parts.push(esc(t.sub)); if (t.payee) parts.push(esc(t.payee));
+      return '<div class="rcrow"><span class="rt">' + esc(t.note || t.sub || cat) + '</span><span class="ra ' + (kind === "in" ? "win" : "loss") + '">' + D(a) + "</span>" +
+        '<span class="rs">' + parts.join(" \u00b7 ") + "</span>" + (w.cur !== state.disp ? '<span class="ro">' + money(t.amount, w.cur) + "</span>" : "") + "</div>";
+    }).join("") : '<p class="empty">No transactions in this range.</p>';
+    if (!rcDlg.open) rcDlg.showModal();
+    rcDlg.scrollTop = 0;
+  }
+  ["#rExp", "#rInc"].forEach(function (id) {
+    $(id).addEventListener("click", function (e) {
+      var row = e.target.closest && e.target.closest("tr[data-rcat]"); if (!row) return;
+      openCatTx(row.getAttribute("data-rcat"), row.getAttribute("data-rkind"));
+    });
+  });
+  $("#rcClose").addEventListener("click", function () { rcDlg.close(); });
+  rcDlg.addEventListener("click", function (e) {
+    if (e.target !== rcDlg) return;
+    var b = rcDlg.getBoundingClientRect();
+    if (e.clientX < b.left || e.clientX > b.right || e.clientY < b.top || e.clientY > b.bottom) rcDlg.close();
+  });
   function rmsg(text, warn) { var el = $("#rMsg"); el.textContent = text; el.className = "status" + (warn ? " warn" : ""); }
   function renderReport() {
     updateRangeChip();
@@ -2879,7 +2926,7 @@ header.top .pills { flex: 1 1 100%; margin-top: 0; }
   }
   var EH = ["Date", "Type", "Wallet", "Currency", "Amount", "To wallet", "Amount received", "Category", "Note", "Net in " + "display currency", "Payee", "Payment type", "Labels", "Subcategory"];
   $("#rExportX").addEventListener("click", function () {
-    if (!window.XLSX) { rmsg("Excel export could not load. Use Export CSV instead.", true); return; }
+    if (!window.XLSX) { rmsg("Excel export could not load. Connect to the internet once, then try again.", true); return; }
     var rep = ready(); if (!rep) return;
     var r = rep.r, M = "#,##0.00;-#,##0.00";
     var s1 = [["Wallet report"], ["From", rep.from], ["To", rep.to], ["Display currency", state.disp], [], ["Metric", "Value"],
