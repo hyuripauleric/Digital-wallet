@@ -644,17 +644,17 @@ table.t { width: 100%; border-collapse: collapse; font-size: 13.5px; }
 /* bottom tab bar (phones): shrinks to icons while scrolling down, grows back when scrolling up, like Instagram */
 @media (max-width: 699px) {
   .navrow .tabs .lb { max-height: 20px; overflow: hidden; }
-  .navrow .tabs.mini { width: min(calc(100% - 48px), 236px); padding: 5px; gap: 2px; border-radius: 999px; background: color-mix(in srgb, var(--surface) 90%, transparent); }
-  .navrow .tabs.mini button { min-height: 44px; padding: 0; gap: 0; border-radius: 999px; background: transparent; color: var(--ink); }
-  .navrow .tabs.mini button[aria-pressed="true"] { background: color-mix(in srgb, var(--ink) 16%, transparent); color: var(--ink); }
+  .navrow .tabs.mini { width: min(calc(100% - 48px), 236px); padding: 5px; gap: 2px; border-radius: 999px; background-color: rgba(18, 18, 20, 0.58); -webkit-backdrop-filter: blur(22px) saturate(1.4); backdrop-filter: blur(22px) saturate(1.4); border-color: rgba(255, 255, 255, 0.08); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05), 0 12px 30px -12px rgba(0, 0, 0, 0.65); }
+  .navrow .tabs.mini button { min-height: 44px; padding: 0; gap: 0; border-radius: 999px; background: transparent; color: rgba(255, 255, 255, 0.78); }
+  .navrow .tabs.mini button[aria-pressed="true"] { background: rgba(255, 255, 255, 0.17); color: #fff; }
   .navrow .tabs.mini button svg { width: 24px; height: 24px; }
   .navrow .tabs.mini .lb { opacity: 0; max-height: 0; }
 }
 @media (max-width: 699px) and (prefers-reduced-motion: no-preference) {
-  .navrow .tabs { transition: width .3s cubic-bezier(.22,1,.36,1), padding .3s cubic-bezier(.22,1,.36,1), gap .3s, border-radius .3s; }
-  .navrow .tabs button { transition: min-height .3s cubic-bezier(.22,1,.36,1), padding .3s, gap .3s, background-color .2s, color .2s, transform .15s; }
-  .navrow .tabs button svg { transition: width .3s, height .3s; }
-  .navrow .tabs .lb { transition: opacity .2s, max-height .3s; }
+  .navrow .tabs { transition: width .42s cubic-bezier(.32,.72,0,1), padding .42s cubic-bezier(.32,.72,0,1), gap .42s cubic-bezier(.32,.72,0,1), border-radius .42s, background-color .42s ease, border-color .42s ease, box-shadow .42s ease; }
+  .navrow .tabs button { transition: min-height .42s cubic-bezier(.32,.72,0,1), padding .42s cubic-bezier(.32,.72,0,1), gap .42s, background-color .3s ease, color .3s ease, transform .15s; }
+  .navrow .tabs button svg { transition: width .42s cubic-bezier(.32,.72,0,1), height .42s cubic-bezier(.32,.72,0,1); }
+  .navrow .tabs .lb { transition: opacity .25s ease, max-height .42s cubic-bezier(.32,.72,0,1); }
 }
 /* category popup: a tall sheet like New transaction, even when the list is short */
 #rcDlg { min-height: min(600px, calc(var(--vvh, 100dvh) - 24px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px))); }
