@@ -641,6 +641,20 @@ table.t { width: 100%; border-collapse: collapse; font-size: 13.5px; }
 #acctDlg .dlgmain { max-height: none; overflow: visible; }
 /* category popup: same height behaviour as the New transaction popup (fits the screen, content scrolls inside) */
 @media (min-width: 960px) { #rcDlg { overflow-x: hidden; overflow-y: auto; max-height: calc(100dvh - 72px); } }
+/* bottom tab bar (phones): shrinks to icons while scrolling down, grows back when scrolling up, like Instagram */
+@media (max-width: 699px) {
+  .navrow .tabs .lb { max-height: 20px; overflow: hidden; }
+  .navrow .tabs.mini { width: min(calc(100% - 32px), 240px); padding: 4px; gap: 2px; border-radius: 22px; }
+  .navrow .tabs.mini button { min-height: 40px; padding: 4px; gap: 0; border-radius: 17px; }
+  .navrow .tabs.mini button svg { width: 20px; height: 20px; }
+  .navrow .tabs.mini .lb { opacity: 0; max-height: 0; }
+}
+@media (max-width: 699px) and (prefers-reduced-motion: no-preference) {
+  .navrow .tabs { transition: width .3s cubic-bezier(.22,1,.36,1), padding .3s cubic-bezier(.22,1,.36,1), gap .3s, border-radius .3s; }
+  .navrow .tabs button { transition: min-height .3s cubic-bezier(.22,1,.36,1), padding .3s, gap .3s, background-color .2s, color .2s, transform .15s; }
+  .navrow .tabs button svg { transition: width .3s, height .3s; }
+  .navrow .tabs .lb { transition: opacity .2s, max-height .3s; }
+}
 /* category popup: a tall sheet like New transaction, even when the list is short */
 #rcDlg { min-height: min(600px, calc(var(--vvh, 100dvh) - 24px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px))); }
 @media (max-width: 699px) { #rcDlg { min-height: min(640px, calc(var(--vvh, 100dvh) - env(safe-area-inset-top, 0px) - 12px)); } }
@@ -4389,6 +4403,22 @@ header.top .pills { flex: 1 1 100%; margin-top: 0; }
     if (now - last < 300 && e.target.closest && !e.target.closest("input, textarea, select, button, a, label, summary, [role=button], [data-lk], [data-k]")) e.preventDefault();
     last = now;
   }, { passive: false });
+})();
+</script>
+<script>
+/* phones: shrink the bottom tab bar when scrolling down, restore it when scrolling up or back at the top */
+(function () {
+  var bar = document.querySelector(".navrow .tabs"), mq = window.matchMedia("(max-width: 699px)"), last = window.scrollY || 0, acc = 0;
+  if (!bar) return;
+  window.addEventListener("scroll", function () {
+    var y = Math.max(0, window.scrollY || 0), dy = y - last; last = y;
+    if (!mq.matches || document.body.classList.contains("dlg-lock")) return;
+    if (y < 40) { acc = 0; bar.classList.remove("mini"); return; }
+    if ((dy > 0) !== (acc > 0)) acc = 0;
+    acc += dy;
+    if (acc > 12) bar.classList.add("mini"); else if (acc < -8) bar.classList.remove("mini");
+  }, { passive: true });
+  mq.addEventListener && mq.addEventListener("change", function () { bar.classList.remove("mini"); });
 })();
 </script>
 </body></html>
