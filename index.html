@@ -641,6 +641,10 @@ table.t { width: 100%; border-collapse: collapse; font-size: 13.5px; }
 #acctDlg .dlgmain { max-height: none; overflow: visible; }
 /* category popup: same height behaviour as the New transaction popup (fits the screen, content scrolls inside) */
 @media (min-width: 960px) { #rcDlg { overflow-x: hidden; overflow-y: auto; max-height: calc(100dvh - 72px); } }
+/* tab bar, every size and every tab: black translucent matte glass with white icons and a soft bubble behind the active tab */
+.navrow .tabs { background-color: rgba(18, 18, 20, 0.58); -webkit-backdrop-filter: blur(22px) saturate(1.4); backdrop-filter: blur(22px) saturate(1.4); border-color: rgba(255, 255, 255, 0.08); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05), 0 12px 30px -12px rgba(0, 0, 0, 0.65); }
+.navrow .tabs button { background: transparent; color: rgba(255, 255, 255, 0.78); }
+.navrow .tabs button[aria-pressed="true"] { background: rgba(255, 255, 255, 0.17); color: #fff; }
 /* bottom tab bar (phones): shrinks to icons while scrolling down, grows back when scrolling up, like Instagram */
 @media (max-width: 699px) {
   .navrow .tabs .lb { max-height: 20px; overflow: hidden; }
