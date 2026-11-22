@@ -1008,6 +1008,9 @@ header.top .pills { flex: 1 1 100%; margin-top: 0; }
 }
 @keyframes vin2 { from { opacity: 0; } to { opacity: 1; } }
 @keyframes pin2 { from { opacity: 0; transform: translateY(14px); filter: blur(3px); } to { opacity: 1; transform: none; filter: blur(0); } }
+/* tile names: wrap at spaces only; JS (fitNames) shrinks long single words; .nfit = last-resort mid-word break */
+#dAccts .acct .an > span:last-child, #dCards .acct .an > span:last-child { overflow-wrap: normal; word-break: normal; hyphens: none; min-width: 0; }
+#dAccts .acct .an > span:last-child.nfit, #dCards .acct .an > span:last-child.nfit { overflow-wrap: anywhere; }
 </style>
 <script>
 (function () {
@@ -4492,6 +4495,22 @@ header.top .pills { flex: 1 1 100%; margin-top: 0; }
     }).join("");
     host.innerHTML = html || '<p class="empty">No credit cards yet. Add one with + Wallet at the top and choose Credit card as the type.</p>';
   }
+  /* Tile names: break only at spaces, shrink a long single word to fit, last resort break mid-word */
+  function fitNames() {
+    var els = document.querySelectorAll("#dAccts .acct .an > span:last-child, #dCards .acct .an > span:last-child");
+    for (var i = 0; i < els.length; i++) {
+      var e = els[i]; e.style.fontSize = ""; e.classList.remove("nfit");
+      if (!e.clientWidth) continue;
+      var fs = parseFloat(getComputedStyle(e).fontSize), min = 10.5;
+      while (e.scrollWidth > e.clientWidth + 0.5 && fs > min) { fs -= 0.5; e.style.fontSize = fs + "px"; }
+      if (e.scrollWidth > e.clientWidth + 0.5) e.classList.add("nfit");
+    }
+  }
+  var _rAcc = renderAccounts, _rCrd = renderCards;
+  renderAccounts = function () { _rAcc.apply(this, arguments); fitNames(); };
+  renderCards = function () { _rCrd.apply(this, arguments); fitNames(); };
+  window.addEventListener("resize", fitNames);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitNames);
   function renderDash() {
     applyLayout(); renderBudgets(); renderAccounts(); renderCards(); renderCashflow(); renderActivity(); renderDaily(); renderDonut(); renderGoals();
   }
