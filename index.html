@@ -912,6 +912,30 @@ header.top .pills { flex: 1 1 100%; margin-top: 0; }
 .warnbox { margin: 12px 0 0; padding: 10px 12px; border-radius: 12px; border: 1px solid rgba(217, 154, 30, 0.6); background: rgba(217, 154, 30, 0.13); font-size: 12.5px; line-height: 1.45; }
 
 #aTxForm .seg label { font-size: 12.5px; padding: 8px 2px; }
+
+/* phones: silky tab-bar shrink. Labels fade out first, then the bar closes in; on the way back the bar opens first, then labels fade in. */
+@media (max-width: 699px) {
+  .navrow .tabs { grid-auto-columns: minmax(0, 1fr); border-radius: 28px; }
+  .navrow .tabs.mini { border-radius: 28px; }
+  .navrow .tabs button { border-radius: 22px; }
+  .navrow .tabs.mini button { border-radius: 22px; }
+  .navrow .tabs .lb { display: block; height: 13px; max-height: none; opacity: 1; overflow: hidden; white-space: nowrap; transform: translateY(0); }
+  .navrow .tabs.mini .lb { height: 0; max-height: none; opacity: 0; transform: translateY(4px); }
+}
+@media (max-width: 699px) and (prefers-reduced-motion: no-preference) {
+  .navrow .tabs {
+    --tabdur: .55s; --tabease: cubic-bezier(.32, .72, 0, 1);
+    transition: width var(--tabdur) var(--tabease), padding var(--tabdur) var(--tabease), gap var(--tabdur) var(--tabease), border-radius var(--tabdur) var(--tabease), background-color var(--tabdur) ease, border-color var(--tabdur) ease, box-shadow var(--tabdur) ease;
+  }
+  .navrow .tabs button {
+    transition: min-height var(--tabdur) var(--tabease), padding var(--tabdur) var(--tabease), gap var(--tabdur) var(--tabease), border-radius var(--tabdur) var(--tabease), background-color .25s ease, color .25s ease, transform .15s;
+  }
+  .navrow .tabs button svg { transition: width var(--tabdur) var(--tabease), height var(--tabdur) var(--tabease); }
+  /* growing back: labels wait for the bar to open, then fade in */
+  .navrow .tabs .lb { transition: opacity .35s ease .2s, transform .45s var(--tabease) .2s, height var(--tabdur) var(--tabease); }
+  /* shrinking: labels fade out right away, height collapses a beat later */
+  .navrow .tabs.mini .lb { transition: opacity .18s ease, transform .3s var(--tabease), height var(--tabdur) var(--tabease) .08s; }
+}
 </style>
 <script>
 (function () {
