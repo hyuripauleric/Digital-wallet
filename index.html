@@ -913,6 +913,30 @@ header.top .pills { flex: 1 1 100%; margin-top: 0; }
 
 #aTxForm .seg label { font-size: 12.5px; padding: 8px 2px; }
 </style>
+<style id="genieCss">
+/* ===== Launch effect: the app pours out of a genie bottle (about 1.8 s, skipped when reduced motion is on) ===== */
+#genie { display: none; }
+html.gn #genie { display: block; position: fixed; inset: 0; z-index: 2147483000; pointer-events: none; overflow: hidden; animation: gnFade 0.5s ease-in 1.3s both; }
+html.gn .app { transform-origin: 50vw 44vh; animation: gnApp 1.1s cubic-bezier(0.22, 0.8, 0.25, 1) 0.7s both; }
+#genie .gb { position: absolute; left: 50%; top: 50%; width: 92px; height: 138px; margin: -69px 0 0 -46px; animation: gnBottle 1.6s ease-out both; filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.55)); }
+#genie .gcork { transform-box: fill-box; animation: gnCork 0.6s cubic-bezier(0.3, 0.7, 0.4, 1) 0.3s both; }
+#genie .gglow { animation: gnGlow 1.4s ease-in-out 0.3s both; }
+#genie .gs { position: absolute; left: 50%; top: calc(50% - 56px); width: 74px; height: 74px; margin: -37px 0 0 -37px; border-radius: 50%; opacity: 0; filter: blur(11px);
+  background: radial-gradient(circle, color-mix(in srgb, var(--accent, #5cd1b2) 75%, transparent) 0%, transparent 70%); animation: gnSmoke 1.25s ease-out both; }
+#genie .gs:nth-of-type(1) { --x: -22px; animation-delay: 0.35s; } #genie .gs:nth-of-type(2) { --x: 26px; animation-delay: 0.45s; } #genie .gs:nth-of-type(3) { --x: -38px; animation-delay: 0.55s; }
+#genie .gs:nth-of-type(4) { --x: 14px; animation-delay: 0.65s; } #genie .gs:nth-of-type(5) { --x: -8px; animation-delay: 0.75s; } #genie .gs:nth-of-type(6) { --x: 32px; animation-delay: 0.85s; }
+@keyframes gnBottle { 0% { opacity: 0; transform: scale(0.7) translateY(12px); } 22% { opacity: 1; transform: scale(1) translateY(0); } 40% { transform: rotate(-5deg); } 55% { transform: rotate(4deg); } 70%, 100% { opacity: 1; transform: rotate(0) scale(1); } }
+@keyframes gnCork { 0% { transform: translateY(0) rotate(0); opacity: 1; } 100% { transform: translateY(-46px) rotate(38deg); opacity: 0; } }
+@keyframes gnGlow { 0% { opacity: 0.2; } 45% { opacity: 1; } 100% { opacity: 0.35; } }
+@keyframes gnSmoke { 0% { opacity: 0; transform: translate(0, 0) scale(0.3); } 25% { opacity: 0.6; } 100% { opacity: 0; transform: translate(var(--x), -40vh) scale(2.8); } }
+@keyframes gnApp { 0% { opacity: 0; transform: translateY(6vh) scale(0.02, 0.01); filter: blur(12px); } 25% { opacity: 0.75; transform: translateY(3vh) scale(0.13, 0.5) skewX(7deg); filter: blur(8px); }
+  60% { opacity: 1; transform: translateY(-0.8vh) scale(0.92, 1.05) skewX(-3deg); filter: blur(2px); } 80% { transform: scale(0.99, 1.01) skewX(1deg); filter: blur(0); } 100% { opacity: 1; transform: none; filter: none; } }
+@keyframes gnFade { to { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { #genie { display: none !important; } html.gn .app { animation: none; } }
+</style>
+<script>
+try { if (!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches)) document.documentElement.classList.add("gn"); } catch (e) {}
+</script>
 <script>
 (function () {
   var t = null;
@@ -923,6 +947,18 @@ header.top .pills { flex: 1 1 100%; margin-top: 0; }
 })();
 </script>
 
+<div id="genie" aria-hidden="true">
+  <svg class="gb" viewBox="0 0 100 150" fill="none"><defs>
+    <linearGradient id="gnG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3a3a3e"/><stop offset="0.5" stop-color="#161618"/><stop offset="1" stop-color="#0a0a0b"/></linearGradient>
+    <radialGradient id="gnR" cx="0.5" cy="0.6" r="0.5"><stop offset="0" stop-color="#5cd1b2" stop-opacity="0.9"/><stop offset="1" stop-color="#5cd1b2" stop-opacity="0"/></radialGradient></defs>
+    <path d="M44 18H56V40C74 48 88 62 88 86C88 118 72 142 50 142C28 142 12 118 12 86C12 62 26 48 44 40Z" fill="url(#gnG)" stroke="rgba(255,255,255,0.22)" stroke-width="1.2"/>
+    <ellipse class="gglow" cx="50" cy="96" rx="30" ry="34" fill="url(#gnR)"/>
+    <path d="M22 78C24 66 32 58 42 52" stroke="rgba(255,255,255,0.3)" stroke-width="2.2" stroke-linecap="round"/>
+    <rect class="gcork" x="42" y="6" width="16" height="12" rx="3" fill="#3a3a3d" stroke="rgba(255,255,255,0.18)"/>
+  </svg>
+  <i class="gs"></i><i class="gs"></i><i class="gs"></i><i class="gs"></i><i class="gs"></i><i class="gs"></i>
+</div>
+<script>setTimeout(function () { document.documentElement.classList.remove("gn"); var g = document.getElementById("genie"); if (g && g.parentNode) g.parentNode.removeChild(g); }, 2000);</script>
 <div class="app">
   <header class="top">
     <h1><button type="button" id="wTitle" class="wtitle" aria-pressed="false" title="Customize layout">Wallet</button></h1>
