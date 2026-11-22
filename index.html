@@ -325,9 +325,9 @@ html, body { max-width: 100%; overflow-x: clip; }
 #dAccts .empty { margin: 0; grid-column: 1 / -1; }
 .asort { display: none; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); margin-left: auto; } .asort select { width: auto; padding: 4px 26px 4px 10px; font-size: 12.5px; border-radius: 10px; background-color: var(--glass-strong); }
 #dAccts .acct { cursor: pointer; user-select: none; -webkit-user-select: none; }
-#acctDlg, #txDlg, #recDlg, #catDlg, #pickDlg, #rcDlg { width: min(520px, calc(100vw - 28px)); max-height: calc(100vh - 28px); padding: 18px 20px 20px; border: 1px solid var(--glass-line); border-radius: 22px; color: var(--ink); background: linear-gradient(180deg, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.02)), var(--surface); box-shadow: inset 0 1px 0 var(--edge), 0 30px 70px -20px rgba(0, 0, 0, 0.6); overflow: auto; }
-#acctDlg::backdrop, #txDlg::backdrop, #recDlg::backdrop, #catDlg::backdrop, #pickDlg::backdrop, #rcDlg::backdrop { background: rgba(5, 10, 9, 0.55); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
-#acctDlg[open], #txDlg[open], #recDlg[open], #catDlg[open], #pickDlg[open], #rcDlg[open] { animation: dlgin 0.16s ease-out; } @keyframes dlgin { from { opacity: 0; transform: translateY(8px) scale(0.98); } to { opacity: 1; transform: none; } }
+#acctDlg, #txDlg, #recDlg, #catDlg, #pickDlg, #rcDlg, #expDlg { width: min(520px, calc(100vw - 28px)); max-height: calc(100vh - 28px); padding: 18px 20px 20px; border: 1px solid var(--glass-line); border-radius: 22px; color: var(--ink); background: linear-gradient(180deg, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.02)), var(--surface); box-shadow: inset 0 1px 0 var(--edge), 0 30px 70px -20px rgba(0, 0, 0, 0.6); overflow: auto; }
+#acctDlg::backdrop, #txDlg::backdrop, #recDlg::backdrop, #catDlg::backdrop, #pickDlg::backdrop, #rcDlg::backdrop, #expDlg::backdrop { background: rgba(5, 10, 9, 0.55); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+#acctDlg[open], #txDlg[open], #recDlg[open], #catDlg[open], #pickDlg[open], #rcDlg[open], #expDlg[open] { animation: dlgin 0.16s ease-out; } @keyframes dlgin { from { opacity: 0; transform: translateY(8px) scale(0.98); } to { opacity: 1; transform: none; } }
 /* bulk select + delete */
 .bulkbar { position: sticky; top: 0; z-index: 3; display: flex; align-items: center; gap: 8px; margin: 0 0 8px; padding: 6px 8px 6px 12px; border: 1px solid var(--accent); border-radius: 12px; background: color-mix(in srgb, var(--accent) 14%, var(--surface)); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
 .bulkbar .btn { flex: none; white-space: nowrap; }
@@ -381,7 +381,7 @@ html, body { max-width: 100%; overflow-x: clip; }
   #aHist { margin-top: 16px; padding: 14px 0 0; border: 0; border-top: 1px solid var(--hair); border-radius: 0; background: none; box-shadow: none; }
   #aHist .hlist { max-height: 340px; }
 }
-@media (prefers-reduced-motion: reduce) { #acctDlg[open], #txDlg[open], #recDlg[open], #catDlg[open], #pickDlg[open], #rcDlg[open] { animation: none; } }
+@media (prefers-reduced-motion: reduce) { #acctDlg[open], #txDlg[open], #recDlg[open], #catDlg[open], #pickDlg[open], #rcDlg[open], #expDlg[open] { animation: none; } }
 .dlghead { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 12px; } .dlghead h3 { font-family: var(--font-display); font-size: 18px; margin: 0; }
 #acctDlg form, #txDlg form, #recDlg form { display: flex; flex-direction: column; gap: 12px; border-top: 0; padding-top: 0; }
 .catform { display: flex; flex-direction: column; gap: 14px; }
@@ -632,7 +632,7 @@ table.t { width: 100%; border-collapse: collapse; font-size: 13.5px; }
 }
 
 /* Popups: stay inside the visible screen (iOS-safe), scroll inside themselves, never scroll the page behind */
-#acctDlg, #txDlg, #recDlg, #catDlg, #pickDlg, #rcDlg {
+#acctDlg, #txDlg, #recDlg, #catDlg, #pickDlg, #rcDlg, #expDlg {
   box-sizing: border-box; position: fixed; inset: 0; margin: auto; height: fit-content;
   width: min(520px, calc(100% - 24px)); max-width: calc(100% - 24px);
   max-height: calc(100vh - 24px); max-height: calc(100dvh - 24px);
@@ -666,7 +666,7 @@ table.t { width: 100%; border-collapse: collapse; font-size: 13.5px; }
 @media (max-width: 699px) { #rcDlg { min-height: min(640px, calc(var(--vvh, 100dvh) - env(safe-area-inset-top, 0px) - 12px)); } }
 @media (min-width: 960px) { #acctDlg { overflow: visible; } #acctDlg .dlgmain { max-height: calc(100dvh - 72px); overflow-y: auto; overscroll-behavior: contain; } }
 .row2 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-#acctDlg input, #acctDlg select, #txDlg input, #txDlg select, #recDlg input, #recDlg select, #catDlg input, #catDlg select, #pickDlg input, #rcDlg input { min-width: 0; max-width: 100%; }
+#acctDlg input, #acctDlg select, #txDlg input, #txDlg select, #recDlg input, #recDlg select, #catDlg input, #catDlg select, #pickDlg input, #rcDlg input, #expDlg input, #expDlg select { min-width: 0; max-width: 100%; }
 dialog input[type="date"] { -webkit-appearance: none; appearance: none; min-width: 0; width: 100%; text-align: left; }
 .bkbar { position: fixed; left: 12px; right: 12px; bottom: calc(env(safe-area-inset-bottom, 0px) + 12px); z-index: 1000; display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); }
 .bkbar .bkt { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; font-size: 13px; }
@@ -678,7 +678,7 @@ body.dlg-lock { position: fixed; left: 0; right: 0; width: 100%; overflow: hidde
   input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), select, textarea { font-size: 16px !important; }
 }
 /* Popup header (with the close button) stays pinned while the popup scrolls, and the popup respects the iPhone notch / home bar and keyboard */
-#acctDlg, #txDlg, #recDlg, #catDlg, #pickDlg, #rcDlg {
+#acctDlg, #txDlg, #recDlg, #catDlg, #pickDlg, #rcDlg, #expDlg {
   inset: env(safe-area-inset-top, 0px) 0 env(safe-area-inset-bottom, 0px) 0;
   max-height: calc(100dvh - 24px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
   max-height: calc(var(--vvh, 100dvh) - 24px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
@@ -832,7 +832,7 @@ header.top .pills { flex: 1 1 100%; margin-top: 0; }
 /* Bottom sheets on phones (respects the Dynamic Island and the home bar) */
 @keyframes sheetin { from { transform: translateY(100%); } to { transform: none; } }
 @keyframes bdin { from { opacity: 0; } to { opacity: 1; } }
-@media (prefers-reduced-motion: reduce) { #acctDlg[open], #txDlg[open], #recDlg[open], #catDlg[open], #pickDlg[open], #rcDlg[open], dialog[open]::backdrop { animation: none !important; } }
+@media (prefers-reduced-motion: reduce) { #acctDlg[open], #txDlg[open], #recDlg[open], #catDlg[open], #pickDlg[open], #rcDlg[open], #expDlg[open], dialog[open]::backdrop { animation: none !important; } }
 
 /* Swipe left on a transaction to delete (touch) */
 .act[data-id], .act[data-hid] { position: relative; touch-action: pan-y; }
@@ -874,14 +874,14 @@ header.top .pills { flex: 1 1 100%; margin-top: 0; }
 :root { --kb: 0px; --sbar: 0px; }
 @media (max-width: 699px) and (display-mode: browser) { :root { --sbar: 76px; } :root.kbopen { --sbar: 0px; } }
 @media (max-width: 699px) {
-  #acctDlg, #txDlg, #recDlg, #catDlg, #pickDlg, #rcDlg {
+  #acctDlg, #txDlg, #recDlg, #catDlg, #pickDlg, #rcDlg, #expDlg {
     inset: auto 0 var(--kb, 0px) 0; margin: 0 auto; width: 100%; max-width: 560px; height: auto;
     max-height: calc(var(--vvh, 100dvh) - env(safe-area-inset-top, 0px) - 12px);
     border-radius: 22px 22px 0 0; border-bottom: 0;
     padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px) + var(--sbar, 0px));
     scroll-padding-bottom: 24px; overscroll-behavior: contain; will-change: transform;
   }
-  #acctDlg[open], #txDlg[open], #recDlg[open], #catDlg[open], #pickDlg[open], #rcDlg[open] { animation: sheetin 0.26s cubic-bezier(0.2, 0.85, 0.25, 1); }
+  #acctDlg[open], #txDlg[open], #recDlg[open], #catDlg[open], #pickDlg[open], #rcDlg[open], #expDlg[open] { animation: sheetin 0.26s cubic-bezier(0.2, 0.85, 0.25, 1); }
   dialog[open]::backdrop { animation: bdin 0.2s ease-out; }
   dialog .dlghead { padding-top: 22px; }
   dialog .dlghead::before { content: ""; position: absolute; top: 8px; left: 50%; width: 40px; height: 5px; margin-left: -20px; border-radius: 3px; background: var(--muted); opacity: 0.5; }
@@ -1373,6 +1373,15 @@ header.top .pills { flex: 1 1 100%; margin-top: 0; }
     <div id="rcList"></div>
   </dialog>
 
+  <dialog id="expDlg" aria-labelledby="expT">
+    <div class="dlghead"><h3 id="expT">Export Excel report</h3><button type="button" class="btn icon sm" id="expClose" aria-label="Close">✕</button></div>
+    <p class="pickhint" id="expSum"></p>
+    <div class="field"><label for="expCur">Show all amounts in</label><select id="expCur"></select></div>
+    <fieldset class="field" id="expLedBox"><legend>Ledgers to include</legend><div id="expLeds"></div></fieldset>
+    <p class="err" id="expErr" role="alert"></p>
+    <div class="formbtns"><button class="btn primary" type="button" id="expGo">Export</button><button class="btn" type="button" id="expCancel">Cancel</button></div>
+  </dialog>
+
   <dialog id="pickDlg" aria-labelledby="pickT">
     <div class="dlghead"><h3 id="pickT">Select category</h3><div class="pickbtns"><button type="button" class="btn sm" id="pickClear" hidden>Clear</button><button type="button" class="btn icon sm" id="pickClose" aria-label="Close">✕</button></div></div>
     <p class="pickhint" id="pickHint"></p>
@@ -1460,10 +1469,12 @@ header.top .pills { flex: 1 1 100%; margin-top: 0; }
   if (!LEDGERS.some(function (l) { return l.id === "main"; })) LEDGERS.unshift({ id: "main", name: "Ledger 1" });
   try { var lcur = localStorage.getItem("wl-ledger"); if (lcur === "all" || LEDGERS.some(function (l) { return l.id === lcur; })) ledgerId = lcur; } catch (e) {}
   function inAllOK(id) { var ok = true; LEDGERS.forEach(function (l) { if (l.id === id && l.inAll === false) ok = false; }); return ok; }
+  var EXSET = null; /* while an Excel report is built: the ledgers ticked in the Export popup (null = the normal view) */
   function inScope(k, x) {
     var l = scopeOf(k, x), l2 = l;
     /* a transfer between ledgers (for example paying a card in another ledger) shows in both of them */
     if (k === "tx" && x && x.kind === "xfer" && x.to) l2 = wlMap()[x.to] || l;
+    if (EXSET) return EXSET.indexOf(l) >= 0 || EXSET.indexOf(l2) >= 0;
     return ledgerId === "all" ? (inAllOK(l) || inAllOK(l2)) : (l === ledgerId || l2 === ledgerId);
   }
   function writeLedger() { return ledgerId === "all" ? "main" : ledgerId; }
@@ -2947,30 +2958,187 @@ header.top .pills { flex: 1 1 100%; margin-top: 0; }
     return [t.date, t.kind === "in" ? "Income" : t.kind === "out" ? "Expense" : "Transfer", w.name, w.cur, t.amount, t.kind === "xfer" ? wmap[t.to].name : "", t.kind === "xfer" ? t.toAmount : "", t.cat || "", t.note || "", t.kind === "xfer" ? "" : round2(t.kind === "in" ? a : -a), t.payee || "", t.pay || "", t.labels || "", t.sub || ""];
   }
   var EH = ["Date", "Type", "Wallet", "Currency", "Amount", "To wallet", "Amount received", "Category", "Note", "Net in " + "display currency", "Payee", "Payment type", "Labels", "Subcategory"];
-  /* ===== Excel report sheets: Financial Statement, Card Installments, Expense Analysis =====
-     Totals, checks and cross-references are real Excel formulas (with the answer stored beside them so previews show numbers). */
-  var XM = "#,##0.00;-#,##0.00;-", XS = "+#,##0.00;-#,##0.00;-", XP = "0.0%;-0.0%;-", XD = "yyyy-mm-dd";
-  function sheetKit() {
-    var ws = {}, R = 0, C = 0;
-    function put(r, c, cell, z) { if (z) cell.z = z; ws[XLSX.utils.encode_cell({ r: r, c: c })] = cell; if (r + 1 > R) R = r + 1; if (c + 1 > C) C = c + 1; }
-    return {
-      ws: ws,
-      t: function (r, c, s) { if (s !== "" && s != null) put(r, c, { t: "s", v: String(s) }); },
-      n: function (r, c, v, z) { put(r, c, { t: "n", v: v }, z || XM); },
-      f: function (r, c, f, v, z) { put(r, c, typeof v === "number" ? { t: "n", v: v, f: f } : { t: "s", v: v == null ? "" : String(v), f: f }, typeof v === "number" ? (z || XM) : null); },
-      d: function (r, c, iso) { var p = iso.split("-").map(Number); put(r, c, { t: "n", v: Math.round((Date.UTC(p[0], p[1] - 1, p[2]) - Date.UTC(1899, 11, 30)) / 86400000) }, XD); },
-      done: function (cols) {
-        ws["!ref"] = XLSX.utils.encode_range({ s: { r: 0, c: 0 }, e: { r: Math.max(R, 1) - 1, c: Math.max(C, 1) - 1 } });
-        ws["!cols"] = cols.map(function (w) { return { wch: w }; });
-        return ws;
-      }
-    };
-  }
+  /* ===== Excel report =====
+     A small built-in .xlsx writer (so the report can have colours, borders, print layout) plus the report sheets.
+     Totals, checks and cross-references are real Excel formulas, with the answer stored beside them so previews show numbers. */
+  var XNAVY = "1F3A5F", XBLUE = "2F5597", XPALE = "DCE6F1", XGREY = "F2F2F2";
+  var XM = '#,##0.00_);(#,##0.00);"-"_)', XS = '+#,##0.00;-#,##0.00;"-"', XP = '0.0%;-0.0%;"-"', XD = "dd mmm yyyy", XN = "#,##0.00;-#,##0.00";
+  var XROLE = {
+    title: { f: { b: 1, sz: 16, c: "FFFFFF" }, fill: XNAVY, v: "center" },
+    band: { f: { b: 1, sz: 11, c: "FFFFFF" }, fill: XBLUE, v: "center" },
+    sub: { f: { b: 1, c: XNAVY }, fill: XPALE, bb: ["thin", XNAVY] },
+    cap: { f: { b: 1, sz: 11, c: XNAVY } },
+    head: { f: { b: 1, c: "FFFFFF" }, fill: XNAVY, v: "center", wrap: 1 },
+    item: { bb: ["hair", "A6A6A6"] },
+    itemTop: { bt: ["thin", "7F7F7F"], bb: ["hair", "A6A6A6"] },
+    total: { f: { b: 1 }, fill: XGREY, bt: ["thin", "7F7F7F"] },
+    grand: { f: { b: 1 }, fill: XPALE, bt: ["thin", XNAVY], bb: ["double", XNAVY] },
+    memo: { f: { i: 1, c: "595959" } },
+    note: { f: { i: 1, c: "7F7F7F", sz: 9 }, wrap: 1, v: "top" },
+    infoL: { f: { b: 1, c: "595959" } },
+    infoV: { f: { c: "262626" }, h: "left", v: "center", wrap: 1 },
+    check: { f: { b: 1 }, h: "center" }
+  };
+  var XDXF = { good: '<font><b/><color rgb="FF006100"/></font><fill><patternFill><bgColor rgb="FFC6EFCE"/></patternFill></fill>', bad: '<font><b/><color rgb="FF9C0006"/></font><fill><patternFill><bgColor rgb="FFFFC7CE"/></patternFill></fill>',
+    up: '<font><color rgb="FFC00000"/></font>', down: '<font><color rgb="FF00703C"/></font>', info: '<font><b/><color rgb="FF1F4E79"/></font>', muted: '<font><color rgb="FF7F7F7F"/></font>' };
+  var XDN = ["good", "bad", "up", "down", "info", "muted"];
+
+  function xCol(c) { var s = ""; c++; while (c > 0) { var m = (c - 1) % 26; s = String.fromCharCode(65 + m) + s; c = Math.floor((c - 1) / 26); } return s; }
+  function xRef(r, c) { return xCol(c) + (r + 1); }
+  function xDec(a) { var m = /^([A-Z]+)(\d+)$/.exec(a), c = 0, i; for (i = 0; i < m[1].length; i++) c = c * 26 + m[1].charCodeAt(i) - 64; return { r: +m[2] - 1, c: c - 1 }; }
+  function xEsc(s) { return String(s).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\uFFFE\uFFFF]/g, "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
+  function xDay(iso) { var p = String(iso).split("-"); return +p[2] + " " + RC_M[+p[1] - 1] + " " + p[0]; }
   function xMon(ym) { var p = ym.split("-"); return RC_M[+p[1] - 1] + " " + p[0]; }
   function xNextYM(ym) { var p = ym.split("-").map(Number); return p[1] === 12 ? (p[0] + 1) + "-01" : p[0] + "-" + pad(p[1] + 1); }
   function xByName(a, b) { return String(a.name).localeCompare(String(b.name)); }
   function xSum(a) { return round2(a.reduce(function (s, x) { return s + x; }, 0)); }
-  function xRef(r, c) { return XLSX.utils.encode_cell({ r: r, c: c }); }
+
+  /* a sheet is built with this kit: values, formulas, and "roles" that say how a whole row should look */
+  function sheetKit() {
+    var sh = { cells: {}, R: 0, C: 0, cols: [], merges: [], rows: {}, roles: [], cf: [], freeze: null, land: false, ptitle: null, filter: null, tab: "", grid: false };
+    function put(r, c, cell, z) { if (z) cell.z = z; sh.cells[xRef(r, c)] = cell; if (r + 1 > sh.R) sh.R = r + 1; if (c + 1 > sh.C) sh.C = c + 1; }
+    return {
+      sh: sh,
+      t: function (r, c, s) { if (s !== "" && s != null) put(r, c, { t: "s", v: String(s) }); },
+      n: function (r, c, v, z) { put(r, c, { t: "n", v: v }, z === undefined ? XM : z); },
+      f: function (r, c, f, v, z) { put(r, c, typeof v === "number" ? { t: "n", v: v, f: f } : { t: "s", v: v == null ? "" : String(v), f: f }, typeof v === "number" ? (z === undefined ? XM : z) : null); },
+      d: function (r, c, iso) { var p = iso.split("-").map(Number); put(r, c, { t: "n", v: Math.round((Date.UTC(p[0], p[1] - 1, p[2]) - Date.UTC(1899, 11, 30)) / 86400000) }, XD); },
+      role: function (r, role, c0, c1) { sh.roles.push({ r: r, role: role, c0: c0, c1: c1 }); if (c1 + 1 > sh.C) sh.C = c1 + 1; if (r + 1 > sh.R) sh.R = r + 1; },
+      merge: function (r0, c0, r1, c1) { if (r0 !== r1 || c0 !== c1) sh.merges.push(xRef(r0, c0) + ":" + xRef(r1, c1)); },
+      h: function (r, ht) { sh.rows[r] = ht; },
+      al: function (r, c, h) { var x = sh.cells[xRef(r, c)]; if (x) x.al = h; },
+      cf: function (sq, rules) { sh.cf.push({ sq: sq, rules: rules }); },
+      done: function (cols, o) { sh.cols = cols; if (o) Object.keys(o).forEach(function (k) { sh[k] = o[k]; }); return sh; }
+    };
+  }
+  function xTitle(K, text, last) { K.t(0, 0, text); K.role(0, "title", 0, last); K.merge(0, 0, 0, last); K.h(0, 32); }
+  function xInfo(K, r, label, value, last, wch) {
+    K.t(r, 0, label); K.role(r, "infoL", 0, 0); K.t(r, 1, value); K.role(r, "infoV", 1, last); K.merge(r, 1, r, last);
+    var lines = Math.max(1, Math.ceil(String(value || "").length / (wch || 40))); if (lines > 1) K.h(r, 15 * lines);
+  }
+  function xNote(K, r, text, last, wch) {
+    K.t(r, 0, text); K.role(r, "note", 0, last); K.merge(r, 0, r, last); K.h(r, Math.max(1, Math.ceil(text.length / wch)) * 12.5 + 2);
+  }
+
+  /* ---- zip (stored, no compression) ---- */
+  var XCRC = null;
+  function xCrc(b) {
+    if (!XCRC) { XCRC = []; for (var n = 0, c, k; n < 256; n++) { c = n; for (k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; XCRC[n] = c >>> 0; } }
+    var crc = 0xFFFFFFFF; for (var i = 0; i < b.length; i++) crc = XCRC[(crc ^ b[i]) & 255] ^ (crc >>> 8); return (crc ^ 0xFFFFFFFF) >>> 0;
+  }
+  function xZip(files) {
+    var enc = new TextEncoder(), now = new Date(), dt = ((now.getFullYear() - 1980) << 9) | ((now.getMonth() + 1) << 5) | now.getDate(), tm = (now.getHours() << 11) | (now.getMinutes() << 5) | (now.getSeconds() >> 1);
+    var parts = [], cen = [], off = 0, total = 0;
+    files.forEach(function (f) {
+      var nm = enc.encode(f.name), data = enc.encode(f.text), crc = xCrc(data), h = new DataView(new ArrayBuffer(30));
+      h.setUint32(0, 0x04034b50, true); h.setUint16(4, 20, true); h.setUint16(6, 0x0800, true); h.setUint16(8, 0, true); h.setUint16(10, tm, true); h.setUint16(12, dt, true);
+      h.setUint32(14, crc, true); h.setUint32(18, data.length, true); h.setUint32(22, data.length, true); h.setUint16(26, nm.length, true); h.setUint16(28, 0, true);
+      parts.push(new Uint8Array(h.buffer), nm, data);
+      var c = new DataView(new ArrayBuffer(46));
+      c.setUint32(0, 0x02014b50, true); c.setUint16(4, 20, true); c.setUint16(6, 20, true); c.setUint16(8, 0x0800, true); c.setUint16(10, 0, true); c.setUint16(12, tm, true); c.setUint16(14, dt, true);
+      c.setUint32(16, crc, true); c.setUint32(20, data.length, true); c.setUint32(24, data.length, true); c.setUint16(28, nm.length, true); c.setUint32(42, off, true);
+      cen.push(new Uint8Array(c.buffer), nm);
+      off += 30 + nm.length + data.length;
+    });
+    var cs = 0; cen.forEach(function (p) { cs += p.length; });
+    var e = new DataView(new ArrayBuffer(22)); e.setUint32(0, 0x06054b50, true); e.setUint16(8, files.length, true); e.setUint16(10, files.length, true); e.setUint32(12, cs, true); e.setUint32(16, off, true);
+    var all = parts.concat(cen, [new Uint8Array(e.buffer)]); all.forEach(function (p) { total += p.length; });
+    var out = new Uint8Array(total), pos = 0; all.forEach(function (p) { out.set(p, pos); pos += p.length; }); return out;
+  }
+
+  /* ---- workbook: sheets = [{ name, sh }] -> .xlsx bytes ---- */
+  function xWrite(sheets) {
+    var fonts = [], fMap = {}, fills = ["none", "gray125"], flMap = {}, borders = [{}], bMap = {}, nfs = [], nMap = {}, xfs = [], xMap = {}, sst = [], sMap = {};
+    var BUILTIN = { "General": 0, "0": 1, "0.00": 2, "#,##0": 3, "#,##0.00": 4, "0%": 9, "0.00%": 10 };
+    function idx(list, map, item) { var k = JSON.stringify(item); if (map[k] === undefined) { map[k] = list.length; list.push(item); } return map[k]; }
+    flMap[JSON.stringify("none")] = 0; flMap[JSON.stringify("gray125")] = 1; bMap[JSON.stringify({})] = 0;
+    idx(fonts, fMap, { sz: 10 }); xfs.push({ font: 0, fill: 0, border: 0, nf: 0 }); xMap[JSON.stringify(xfs[0])] = 0;
+    function nfId(z) { if (!z) return 0; if (BUILTIN[z] !== undefined) return BUILTIN[z]; return 164 + idx(nfs, nMap, z); }
+    function styleOf(cell, col) {
+      var role = cell.role, base = role ? XROLE[role] : null;
+      if (!base && !cell.z && !cell.al && !cell.ind) return 0;
+      var f = { sz: 10 }, k, b = {}, h = cell.al || (base && base.h) || (role === "head" ? (col === 0 ? "left" : "center") : undefined);
+      if (cell.ind && !h) h = "left";
+      if (base && base.f) for (k in base.f) f[k] = base.f[k];
+      if (base && base.bt) b.t = base.bt; if (base && base.bb) b.b = base.bb;
+      var xf = { font: idx(fonts, fMap, f), fill: base && base.fill ? idx(fills, flMap, base.fill) : 0, border: Object.keys(b).length ? idx(borders, bMap, b) : 0, nf: nfId(cell.z) };
+      if (h) xf.h = h; if (base && base.v) xf.v = base.v; if (base && base.wrap) xf.wrap = 1; if (cell.ind) xf.ind = 1;
+      return idx(xfs, xMap, xf);
+    }
+    var sheetXml = sheets.map(function (S, si) {
+      var sh = S.sh, cells = sh.cells, rows = {}, out = [], k, i, r, c;
+      sh.roles.forEach(function (ro) { for (c = ro.c0; c <= ro.c1; c++) { var a = xRef(ro.r, c), x = cells[a] || (cells[a] = { t: "e" }); x.role = ro.role; } });
+      Object.keys(cells).forEach(function (a) {
+        var p = xDec(a), x = cells[a];
+        if (x.role && x.t === "s" && !x.f && /^ {2}/.test(x.v)) { x.v = x.v.replace(/^ +/, ""); x.ind = 1; }
+        (rows[p.r] || (rows[p.r] = {}))[p.c] = x;
+      });
+      var maxR = 0, maxC = 0; Object.keys(rows).forEach(function (rr) { rr = +rr; if (rr + 1 > maxR) maxR = rr + 1; Object.keys(rows[rr]).forEach(function (cc) { if (+cc + 1 > maxC) maxC = +cc + 1; }); });
+      out.push('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">');
+      out.push('<sheetPr>' + (sh.tab ? '<tabColor rgb="FF' + sh.tab + '"/>' : "") + '<pageSetUpPr fitToPage="1"/></sheetPr>');
+      out.push('<dimension ref="A1:' + xRef(Math.max(maxR, 1) - 1, Math.max(maxC, 1) - 1) + '"/>');
+      var pane = "", fz = sh.freeze;
+      if (fz && (fz.r || fz.c)) {
+        var ap = fz.r && fz.c ? "bottomRight" : fz.r ? "bottomLeft" : "topRight";
+        pane = '<pane' + (fz.c ? ' xSplit="' + fz.c + '"' : "") + (fz.r ? ' ySplit="' + fz.r + '"' : "") + ' topLeftCell="' + xRef(fz.r, fz.c) + '" activePane="' + ap + '" state="frozen"/><selection pane="' + ap + '"/>';
+      }
+      out.push('<sheetViews><sheetView' + (sh.grid ? "" : ' showGridLines="0"') + (si === 0 ? ' tabSelected="1"' : "") + ' workbookViewId="0">' + pane + '</sheetView></sheetViews>');
+      out.push('<sheetFormatPr defaultRowHeight="15" customHeight="1"/>');
+      if (sh.cols.length) out.push("<cols>" + sh.cols.map(function (w, j) { return '<col min="' + (j + 1) + '" max="' + (j + 1) + '" width="' + (w + 0.7) + '" customWidth="1"/>'; }).join("") + "</cols>");
+      out.push("<sheetData>");
+      Object.keys(rows).map(Number).sort(function (a, b) { return a - b; }).forEach(function (rr) {
+        var ht = sh.rows[rr], line = ['<row r="' + (rr + 1) + '"' + (ht ? ' ht="' + ht + '" customHeight="1"' : "") + ">"];
+        Object.keys(rows[rr]).map(Number).sort(function (a, b) { return a - b; }).forEach(function (cc) {
+          var x = rows[rr][cc], s = styleOf(x, cc), sa = s ? ' s="' + s + '"' : "", ref = xRef(rr, cc);
+          if (x.t === "e") line.push('<c r="' + ref + '"' + sa + "/>");
+          else if (x.t === "n") line.push('<c r="' + ref + '"' + sa + ">" + (x.f ? "<f>" + xEsc(x.f) + "</f>" : "") + "<v>" + (isFinite(x.v) ? String(x.v) : "0") + "</v></c>");
+          else if (x.f) line.push('<c r="' + ref + '"' + sa + ' t="str"><f>' + xEsc(x.f) + "</f><v>" + xEsc(x.v) + "</v></c>");
+          else line.push('<c r="' + ref + '"' + sa + ' t="s"><v>' + idx(sst, sMap, String(x.v)) + "</v></c>");
+        });
+        line.push("</row>"); out.push(line.join(""));
+      });
+      out.push("</sheetData>");
+      if (sh.filter) out.push('<autoFilter ref="' + sh.filter + '"/>');
+      if (sh.merges.length) out.push('<mergeCells count="' + sh.merges.length + '">' + sh.merges.map(function (m) { return '<mergeCell ref="' + m + '"/>'; }).join("") + "</mergeCells>");
+      var pr = 1; sh.cf.forEach(function (g) { out.push('<conditionalFormatting sqref="' + g.sq + '">' + g.rules.map(function (u) {
+        return '<cfRule type="' + (u.t === "expr" ? "expression" : "cellIs") + '" dxfId="' + XDN.indexOf(u.d) + '" priority="' + (pr++) + '"' + (u.t === "expr" ? "" : ' operator="' + u.op + '"') + "><formula>" + xEsc(u.f) + "</formula></cfRule>"; }).join("") + "</conditionalFormatting>"); });
+      out.push('<printOptions horizontalCentered="1"/><pageMargins left="0.5" right="0.5" top="0.6" bottom="0.7" header="0.3" footer="0.3"/>');
+      out.push('<pageSetup paperSize="9" orientation="' + (sh.land ? "landscape" : "portrait") + '" fitToWidth="1" fitToHeight="' + (sh.onePage ? 1 : 0) + '"/>');
+      out.push("<headerFooter><oddFooter>&amp;L&amp;8Wallet report&amp;C&amp;8Page &amp;P of &amp;N&amp;R&amp;8&amp;D</oddFooter></headerFooter></worksheet>");
+      return out.join("");
+    });
+    var NS = 'xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"';
+    var st = ['<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<styleSheet ' + NS + ">"];
+    if (nfs.length) st.push('<numFmts count="' + nfs.length + '">' + nfs.map(function (z, i) { return '<numFmt numFmtId="' + (164 + i) + '" formatCode="' + xEsc(z) + '"/>'; }).join("") + "</numFmts>");
+    st.push('<fonts count="' + fonts.length + '">' + fonts.map(function (f) { return "<font>" + (f.b ? "<b/>" : "") + (f.i ? "<i/>" : "") + '<sz val="' + (f.sz || 10) + '"/>' + (f.c ? '<color rgb="FF' + f.c + '"/>' : "") + '<name val="Calibri"/><family val="2"/></font>'; }).join("") + "</fonts>");
+    st.push('<fills count="' + fills.length + '">' + fills.map(function (f) { return f === "none" || f === "gray125" ? '<fill><patternFill patternType="' + f + '"/></fill>' : '<fill><patternFill patternType="solid"><fgColor rgb="FF' + f + '"/><bgColor indexed="64"/></patternFill></fill>'; }).join("") + "</fills>");
+    function side(n, v) { return v ? "<" + n + ' style="' + v[0] + '"><color rgb="FF' + v[1] + '"/></' + n + ">" : "<" + n + "/>"; }
+    st.push('<borders count="' + borders.length + '">' + borders.map(function (b) { return "<border>" + side("left") + side("right") + side("top", b.t) + side("bottom", b.b) + "<diagonal/></border>"; }).join("") + "</borders>");
+    st.push('<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>');
+    st.push('<cellXfs count="' + xfs.length + '">' + xfs.map(function (x) {
+      var al = x.h || x.v || x.wrap || x.ind ? "<alignment" + (x.h ? ' horizontal="' + x.h + '"' : "") + (x.v ? ' vertical="' + x.v + '"' : "") + (x.wrap ? ' wrapText="1"' : "") + (x.ind ? ' indent="1"' : "") + "/>" : "";
+      return '<xf numFmtId="' + x.nf + '" fontId="' + x.font + '" fillId="' + x.fill + '" borderId="' + x.border + '" xfId="0" applyNumberFormat="1" applyFont="1" applyFill="1" applyBorder="1"' + (al ? ' applyAlignment="1">' + al + "</xf>" : "/>");
+    }).join("") + "</cellXfs>");
+    st.push('<cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles>');
+    st.push('<dxfs count="' + XDN.length + '">' + XDN.map(function (n) { return "<dxf>" + XDXF[n] + "</dxf>"; }).join("") + "</dxfs></styleSheet>");
+    var names = [];
+    sheets.forEach(function (S, i) { if (S.sh.ptitle) names.push('<definedName name="_xlnm.Print_Titles" localSheetId="' + i + '">\'' + xEsc(S.name).replace(/'/g, "''") + "'!$" + (S.sh.ptitle[0] + 1) + ":$" + (S.sh.ptitle[1] + 1) + "</definedName>"); });
+    var wbx = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<workbook ' + NS + ' xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><bookViews><workbookView/></bookViews><sheets>' +
+      sheets.map(function (S, i) { return '<sheet name="' + xEsc(S.name) + '" sheetId="' + (i + 1) + '" r:id="rId' + (i + 1) + '"/>'; }).join("") + "</sheets>" + (names.length ? "<definedNames>" + names.join("") + "</definedNames>" : "") + '<calcPr calcId="191029" fullCalcOnLoad="1"/></workbook>';
+    var RN = "http://schemas.openxmlformats.org/officeDocument/2006/relationships", n = sheets.length;
+    var rels = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+      sheets.map(function (S, i) { return '<Relationship Id="rId' + (i + 1) + '" Type="' + RN + '/worksheet" Target="worksheets/sheet' + (i + 1) + '.xml"/>'; }).join("") +
+      '<Relationship Id="rId' + (n + 1) + '" Type="' + RN + '/styles" Target="styles.xml"/><Relationship Id="rId' + (n + 2) + '" Type="' + RN + '/sharedStrings" Target="sharedStrings.xml"/></Relationships>';
+    var ct = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/>' +
+      '<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>' +
+      sheets.map(function (S, i) { return '<Override PartName="/xl/worksheets/sheet' + (i + 1) + '.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>'; }).join("") +
+      '<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/><Override PartName="/xl/sharedStrings.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml"/></Types>';
+    var sx = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<sst ' + NS + ' count="' + sst.length + '" uniqueCount="' + sst.length + '">' + sst.map(function (s) { return '<si><t xml:space="preserve">' + xEsc(s) + "</t></si>"; }).join("") + "</sst>";
+    var files = [{ name: "[Content_Types].xml", text: ct }, { name: "_rels/.rels", text: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="' + RN + '/officeDocument" Target="xl/workbook.xml"/></Relationships>' },
+      { name: "xl/workbook.xml", text: wbx }, { name: "xl/_rels/workbook.xml.rels", text: rels }, { name: "xl/styles.xml", text: st.join("") }, { name: "xl/sharedStrings.xml", text: sx }];
+    sheetXml.forEach(function (x, i) { files.push({ name: "xl/worksheets/sheet" + (i + 1) + ".xml", text: x }); });
+    return xZip(files);
+  }
 
   /* Sheet 1: statement of financial position + income statement, tied together by  Assets = Liabilities + Owner's equity + Income - Expenses */
   function sheetStatement(rep) {
@@ -2983,23 +3151,26 @@ header.top .pills { flex: 1 1 100%; margin-top: 0; }
     var nwOpen = 0; inRep.forEach(function (w) { nwOpen += conv(bo[w.id], w.cur, null, open0); });
     var adj = 0; state.tx.forEach(function (t) { if (validA(t) && t.adj && t.date >= from && t.date <= to) { var a = conv(t.amount, wmap[t.wallet].cur, null, t.date); adj += t.kind === "in" ? a : -a; } });
     var hasBefore = state.tx.some(function (t) { return validT(t) && t.date < from; });
-    function wl(w) { return "  " + w.name + " (" + w.type + (w.cur !== disp ? ", " + w.cur : "") + ")"; }
+    function wl(w) { var tp = String(w.name).toLowerCase() === String(w.type).toLowerCase() ? [] : [w.type]; if (w.cur !== disp) tp.push(w.cur); return "  " + w.name + (tp.length ? " (" + tp.join(", ") + ")" : ""); }
     function B(i) { return "B" + (i + 1); }
+    function sub(title) { K.t(row, 0, title); K.role(row, "sub", 0, 1); row++; }
     function block(title, items) {
-      K.t(row, 0, title); row++;
+      sub(title);
       var first = row, list = items.length ? items : [["  (none)", 0]];
-      list.forEach(function (it) { K.t(row, 0, it[0]); K.n(row, 1, it[1]); row++; });
+      list.forEach(function (it) { K.t(row, 0, it[0]); K.n(row, 1, it[1]); K.role(row, "item", 0, 1); row++; });
       return { first: first, last: row - 1 };
     }
-    function total(label, b, vals) { K.t(row, 0, label); K.f(row, 1, "SUM(" + B(b.first) + ":" + B(b.last) + ")", xSum(vals)); return row++; }
+    function total(label, b, vals) { K.t(row, 0, label); K.f(row, 1, "SUM(" + B(b.first) + ":" + B(b.last) + ")", xSum(vals)); K.role(row, "total", 0, 1); return row++; }
     function desc(map) { return Object.keys(map).sort(function (a, b) { return map[b] - map[a]; }); }
 
-    K.t(0, 0, "FINANCIAL STATEMENT");
-    K.t(1, 0, "Period"); K.t(1, 1, from + " to " + to);
-    K.t(2, 0, "Currency"); K.t(2, 1, disp);
-    K.t(3, 0, "Equation"); K.t(3, 1, "Assets = Liabilities + Owner's equity + Income \u2212 Expenses");
+    xTitle(K, "FINANCIAL STATEMENT", 1);
+    xInfo(K, 1, "Period", xDay(from) + " to " + xDay(to), 1, 34);
+    xInfo(K, 2, "Currency", disp, 1, 34);
+    xInfo(K, 3, "Ledgers", rep.ledgers || "", 1, 34);
+    xInfo(K, 4, "Prepared on", xDay(todayStr), 1, 34);
+    K.t(5, 0, "Assets = Liabilities + Owner's equity + Income \u2212 Expenses"); K.role(5, "memo", 0, 1); K.merge(5, 0, 5, 1);
 
-    row = 5; K.t(row, 0, "STATEMENT OF FINANCIAL POSITION"); K.t(row, 1, "As at " + to); row++;
+    row = 7; K.t(row, 0, "STATEMENT OF FINANCIAL POSITION"); K.t(row, 1, "As at " + xDay(to)); K.role(row, "band", 0, 1); K.al(row, 1, "right"); K.h(row, 20); row++;
     var aV = assets.map(function (w) { return round2(conv(bc[w.id], w.cur, null, to)); });
     var bA = block("ASSETS", assets.map(function (w, i) { return [wl(w), aV[i]]; }));
     var rA = total("Total assets", bA, aV); row++;
@@ -3012,40 +3183,46 @@ header.top .pills { flex: 1 1 100%; margin-top: 0; }
     var totA = xSum(aV), totL = xSum(lV), totI = xSum(iV), totE = xSum(eV);
     var oeOpen = round2(nwOpen), adjR = round2(adj), fx = round2(totA - totL - oeOpen - adjR - (totI - totE)), oeTot = xSum([oeOpen, adjR, fx]);
 
-    K.t(row, 0, "OWNER'S EQUITY"); row++;
+    sub("OWNER'S EQUITY");
     var e0 = row;
-    K.t(row, 0, hasBefore ? "  Opening equity (net worth on " + open0 + ")" : "  Opening equity (opening balances of your accounts)"); K.n(row, 1, oeOpen); K.t(row, 2, "Assets minus liabilities at the start of the period"); row++;
-    K.t(row, 0, "  Balance adjustments in the period"); K.n(row, 1, adjR); K.t(row, 2, "Corrections made with Adjust: they change balances but are not income or spending"); row++;
-    K.t(row, 0, "  Exchange-rate revaluation and other"); K.n(row, 1, fx); K.t(row, 2, "Currency moves on balances, plus anything else that changes balances without being income or spending"); row++;
-    K.t(row, 0, "Total owner's equity"); K.f(row, 1, "SUM(" + B(e0) + ":" + B(row - 1) + ")", oeTot); var rE = row++; row++;
+    K.t(row, 0, hasBefore ? "  Opening equity at " + xDay(open0) + " (1)" : "  Opening equity: account opening balances (1)"); K.n(row, 1, oeOpen); K.role(row, "item", 0, 1); row++;
+    K.t(row, 0, "  Balance adjustments in the period (2)"); K.n(row, 1, adjR); K.role(row, "item", 0, 1); row++;
+    K.t(row, 0, "  Exchange-rate revaluation and other (3)"); K.n(row, 1, fx); K.role(row, "item", 0, 1); row++;
+    K.t(row, 0, "Total owner's equity"); K.f(row, 1, "SUM(" + B(e0) + ":" + B(row - 1) + ")", oeTot); K.role(row, "total", 0, 1); var rE = row++; row++;
 
-    K.t(row, 0, "INCOME STATEMENT"); K.t(row, 1, "For the period"); row++;
+    K.t(row, 0, "INCOME STATEMENT"); K.t(row, 1, "For the period"); K.role(row, "band", 0, 1); K.al(row, 1, "right"); K.h(row, 20); row++;
     var bI = block("INCOME", incK.map(function (k, i) { return ["  " + k, iV[i]]; }));
     var rI = total("Total income", bI, iV); row++;
     var bE = block("EXPENSES", expK.map(function (k, i) { return ["  " + k, eV[i]]; }));
     var rX = total("Total expenses", bE, eV); row++;
-    K.t(row, 0, "Net income (income \u2212 expenses)"); K.f(row, 1, B(rI) + "-" + B(rX), round2(totI - totE)); var rN = row; row += 2;
+    K.t(row, 0, "Net income (income \u2212 expenses)"); K.f(row, 1, B(rI) + "-" + B(rX), round2(totI - totE)); K.role(row, "grand", 0, 1); var rN = row; row += 2;
 
-    var rhs = round2(totL + oeTot + totI - totE);
-    K.t(row, 0, "THE EQUATION"); row++;
-    K.t(row, 0, "Assets"); K.f(row, 1, B(rA), totA); var q1 = row++;
-    K.t(row, 0, "Liabilities + Owner's equity + Income \u2212 Expenses"); K.f(row, 1, B(rL) + "+" + B(rE) + "+" + B(rI) + "-" + B(rX), rhs); var q2 = row++;
-    var diff = round2(totA - rhs) + 0;
-    K.t(row, 0, "Difference (should be 0)"); K.f(row, 1, B(q1) + "-" + B(q2), diff); var q3 = row++;
-    K.t(row, 0, "Check"); K.f(row, 1, 'IF(ABS(' + B(q3) + ')<0.005,"Balanced","Does not balance")', Math.abs(diff) < 0.005 ? "Balanced" : "Does not balance"); row += 2;
-    K.t(row, 0, "Memo: closing owner's equity (opening equity + net income)"); K.f(row, 1, B(rE) + "+" + B(rN), round2(oeTot + totI - totE)); row++;
-    K.t(row, 0, "Memo: net worth (assets \u2212 liabilities)"); K.f(row, 1, B(rA) + "-" + B(rL), round2(totA - totL)); row++;
-    if (skipped > 0) { row++; K.t(row, 0, skipped + (skipped === 1 ? " account is" : " accounts are") + " switched off from reports and left out."); }
-    return { ws: K.done([54, 22, 80]), expRow: rX, expVal: totE };
+    var rhs = round2(totL + oeTot + totI - totE), diff = round2(totA - rhs) + 0, ok = Math.abs(diff) < 0.005 ? "Balanced" : "Does not balance";
+    K.t(row, 0, "THE ACCOUNTING EQUATION"); K.t(row, 1, "Amount"); K.role(row, "band", 0, 1); K.al(row, 1, "right"); K.h(row, 20); row++;
+    K.t(row, 0, "Assets"); K.f(row, 1, B(rA), totA); K.role(row, "item", 0, 1); var q1 = row++;
+    K.t(row, 0, "Liabilities + Owner's equity + Income \u2212 Expenses"); K.f(row, 1, B(rL) + "+" + B(rE) + "+" + B(rI) + "-" + B(rX), rhs); K.role(row, "item", 0, 1); var q2 = row++;
+    K.t(row, 0, "Difference (should be 0)"); K.f(row, 1, B(q1) + "-" + B(q2), diff); K.role(row, "total", 0, 1); var q3 = row++;
+    var rChk = row; K.t(row, 0, "Check"); K.f(row, 1, 'IF(ABS(' + B(q3) + ')<0.005,"Balanced","Does not balance")', ok); K.role(row, "check", 0, 1);
+    K.cf(B(row), [{ t: "cell", op: "equal", f: '"Balanced"', d: "good" }, { t: "cell", op: "notEqual", f: '"Balanced"', d: "bad" }]); row += 2;
+    K.t(row, 0, "Memo: closing owner's equity (opening equity + net income)"); K.f(row, 1, B(rE) + "+" + B(rN), round2(oeTot + totI - totE)); K.role(row, "memo", 0, 1); row++;
+    var rNW = row; K.t(row, 0, "Memo: net worth (assets \u2212 liabilities)"); K.f(row, 1, B(rA) + "-" + B(rL), round2(totA - totL)); K.role(row, "memo", 0, 1); row += 2;
+
+    K.t(row, 0, "NOTES"); K.role(row, "cap", 0, 1); row++;
+    xNote(K, row++, "(1) " + (hasBefore ? "Net worth (assets minus liabilities) at the start of the period." : "The opening balances you entered for your accounts."), 1, 90);
+    xNote(K, row++, "(2) Corrections made with Adjust. They change balances but are not income or spending.", 1, 90);
+    xNote(K, row++, "(3) Currency moves on balances, plus anything else that changes balances without being income or spending (for example a transfer to an account left out of reports).", 1, 90);
+    if (skipped > 0) xNote(K, row++, skipped + (skipped === 1 ? " account is" : " accounts are") + " switched off from reports and left out.", 1, 90);
+    return { ws: K.done([54, 30], { tab: XNAVY, onePage: K.sh.R <= 80 }), expRow: rX, expVal: totE, e0: e0, rA: rA, rL: rL, rI: rI, rX: rX, rN: rN, rNW: rNW, rChk: rChk, A: totA, L: totL, I: totI, X: totE, nw0: oeOpen, chk: ok };
   }
 
   /* Sheet 2: balance owed per card (roll-forward + what is still to be billed) and the month-by-month installment schedule */
   function sheetCards(rep) {
-    var K = sheetKit(), disp = state.disp, from = rep.from, row = 0, i, j;
+    var K = sheetKit(), disp = state.disp, from = rep.from, row = 0, j, LAST = 10;
     var asOf = rep.to > todayStr ? todayStr : rep.to, open0 = addDays(from, -1), bo = balances(open0), bc = balances(asOf);
     var cards = state.wallets.filter(function (w) { return isCredit(w) && !w.noRep; }).sort(xByName);
     function cv(n, w) { return round2(conv(n, w.cur, null, asOf)); }
     function cl(w) { return w.name + (w.cur !== disp ? " (" + w.cur + ")" : ""); } /* same label in every table, so the lookups below match */
+    function head(r, labels) { labels.forEach(function (h, c) { K.t(r, c, h); }); K.role(r, "head", 0, labels.length - 1); K.h(r, 30); }
 
     /* installment plans -> one schedule row per billing */
     var all = (state.recs || []).filter(function (p) { return p && p.type === "installment" && p.start && wmap[p.wallet]; });
@@ -3063,15 +3240,17 @@ header.top .pills { flex: 1 1 100%; margin-top: 0; }
     groups.sort(function (a, b) { return a[0].acct < b[0].acct ? -1 : a[0].acct > b[0].acct ? 1 : a[0].date < b[0].date ? -1 : a[0].date > b[0].date ? 1 : 0; });
     var flat = []; groups.forEach(function (g) { g.forEach(function (x) { x.status = x.date <= asOf ? "Billed" : "Upcoming"; flat.push(x); }); });
 
-    K.t(0, 0, "CREDIT CARD INSTALLMENTS AND OUTSTANDING BALANCE");
-    K.t(1, 0, "Currency"); K.t(1, 1, disp);
-    K.t(2, 0, "As of"); K.d(2, 1, asOf);
-    K.t(3, 0, "Period"); K.t(3, 1, from + " to " + asOf);
+    xTitle(K, "CREDIT CARD INSTALLMENTS AND OUTSTANDING BALANCE", LAST);
+    xInfo(K, 1, "Currency", disp, 4, 70);
+    K.t(2, 0, "As of"); K.role(2, "infoL", 0, 0); K.d(2, 1, asOf); K.role(2, "infoV", 1, 4); K.al(2, 1, "left"); K.merge(2, 1, 2, 4);
+    xInfo(K, 3, "Period", xDay(from) + " to " + xDay(asOf), 4, 70);
+    xInfo(K, 4, "Ledgers", rep.ledgers || "", 4, 70);
+    xInfo(K, 5, "Prepared on", xDay(todayStr), 4, 70);
 
     /* 1a roll-forward */
-    row = 5; K.t(row, 0, "1. OUTSTANDING BALANCE RECONCILIATION"); row++;
-    K.t(row, 0, "1a. How the balance owed moved during the period (a plus raises the balance, a minus lowers it)"); row++;
-    ["Card", "Opening owed", "Purchases & fees", "Refunds & credits", "Adjustments", "Payments", "Cash advances", "Closing (calc.)", "Per ledger", "Difference"].forEach(function (h, c) { K.t(row, c, h); }); row++;
+    row = 7; K.t(row, 0, "1. OUTSTANDING BALANCE RECONCILIATION"); K.role(row, "band", 0, LAST); K.h(row, 20); row++;
+    K.t(row, 0, "1a. How the balance owed moved during the period (a plus raises the balance, a minus lowers it)"); K.role(row, "cap", 0, LAST); row++;
+    head(row, ["Card", "Opening owed", "Purchases & fees", "Refunds & credits", "Adjustments", "Payments", "Cash advances", "Closing (calc.)", "Per ledger", "Difference"]); row++;
     var rf = cards.map(function (w) {
       var f = { pu: 0, re: 0, ad: 0, pa: 0, ou: 0 };
       state.tx.forEach(function (t) {
@@ -3083,25 +3262,26 @@ header.top .pills { flex: 1 1 100%; margin-top: 0; }
       v.calc = xSum([v.op, v.pu, v.re, v.ad, v.pa, v.ou]); v.diff = round2(v.calc - v.led) + 0; return v;
     });
     var a0 = row, KEYS = ["op", "pu", "re", "ad", "pa", "ou", "calc", "led", "diff"];
-    if (!rf.length) { K.t(row, 0, "(no credit cards)"); row++; }
+    if (!rf.length) { K.t(row, 0, "(no credit cards)"); K.role(row, "item", 0, 9); row++; }
     rf.forEach(function (v) {
       K.t(row, 0, cl(v.w));
       for (j = 0; j < 6; j++) K.n(row, 1 + j, v[KEYS[j]]);
-      K.f(row, 7, "SUM(B" + (row + 1) + ":G" + (row + 1) + ")", v.calc); K.n(row, 8, v.led); K.f(row, 9, "H" + (row + 1) + "-I" + (row + 1), v.diff); row++;
+      K.f(row, 7, "SUM(B" + (row + 1) + ":G" + (row + 1) + ")", v.calc); K.n(row, 8, v.led); K.f(row, 9, "H" + (row + 1) + "-I" + (row + 1), v.diff); K.role(row, "item", 0, 9); row++;
     });
     var a1 = row - 1;
     if (rf.length) {
       K.t(row, 0, "Total");
       for (j = 0; j < 9; j++) K.f(row, 1 + j, "SUM(" + xRef(a0, 1 + j) + ":" + xRef(a1, 1 + j) + ")", xSum(rf.map(function (v) { return v[KEYS[j]]; })));
-      row++;
+      K.role(row, "total", 0, 9); row++;
+      K.cf(xRef(a0, 9) + ":" + xRef(row - 1, 9), [{ t: "expr", f: "ABS(" + xRef(a0, 9) + ")>0.05", d: "bad" }]);
     }
     row++;
 
     /* 1b total outstanding including what has not been billed yet */
-    K.t(row, 0, "1b. Total outstanding, including installments not billed to the card yet"); row++;
-    ["Card", "Owed per ledger", "Unbilled principal", "Interest & fees due", "Total outstanding", "Credit limit", "Available credit", "Utilisation"].forEach(function (h, c) { K.t(row, c, h); }); row++;
+    K.t(row, 0, "1b. Total outstanding, including installments not billed to the card yet"); K.role(row, "cap", 0, LAST); row++;
+    head(row, ["Card", "Owed per ledger", "Unbilled principal", "Interest & fees due", "Total outstanding", "Credit limit", "Available credit", "Utilisation"]); row++;
     var b0 = row, nS = flat.length, bt = [];
-    if (!rf.length) { K.t(row, 0, "(no credit cards)"); row++; }
+    if (!rf.length) { K.t(row, 0, "(no credit cards)"); K.role(row, "item", 0, 7); row++; }
     rf.forEach(function (v, idx) {
       var nm = cl(v.w), un = 0, it = 0, lim = cv(v.w.limit || 0, v.w), rr = row + 1;
       flat.forEach(function (x) { if (x.acct === nm && x.status === "Upcoming") { it += x.int + x.fee; if (x.mode === "Billed monthly") un += x.prin; } });
@@ -3114,29 +3294,32 @@ header.top .pills { flex: 1 1 100%; margin-top: 0; }
         K.f(row, 3, "SUMPRODUCT(($A$[S0]:$A$[S1]=$A" + (a0 + idx + 1) + ")*($J$[S0]:$J$[S1]=\"Upcoming\")*($G$[S0]:$G$[S1]+$H$[S0]:$H$[S1]))", it);
       } else { K.n(row, 2, 0); K.n(row, 3, 0); }
       K.f(row, 4, "B" + rr + "+C" + rr + "+D" + rr, tot); K.n(row, 5, lim);
-      K.f(row, 6, "IF(F" + rr + ">0,F" + rr + "-B" + rr + ",\"\")", av); K.f(row, 7, "IF(F" + rr + ">0,B" + rr + "/F" + rr + ",\"\")", ut, XP); row++;
+      K.f(row, 6, "IF(F" + rr + ">0,F" + rr + "-B" + rr + ",\"\")", av); K.f(row, 7, "IF(F" + rr + ">0,B" + rr + "/F" + rr + ",\"\")", ut, XP); K.role(row, "item", 0, 7); row++;
     });
     if (rf.length) {
-      var tr = row + 1; K.t(row, 0, "Total");
+      K.t(row, 0, "Total");
       for (j = 1; j <= 4; j++) K.f(row, j, "SUM(" + xRef(b0, j) + ":" + xRef(row - 1, j) + ")", xSum(bt.map(function (x) { return [0, x.led, x.un, x.it, x.tot][j]; })));
       K.f(row, 5, "SUM(F" + (b0 + 1) + ":F" + row + ")", xSum(bt.map(function (x) { return x.lim; })));
+      K.role(row, "total", 0, 7);
+      K.cf(xRef(b0, 7) + ":" + xRef(row - 1, 7), [{ t: "cell", op: "greaterThanOrEqual", f: "0.8", d: "bad" }]);
       row++;
     }
     row++;
-    var notes = ["Amounts are in " + disp + ", converted at the rates for the month of " + asOf + ", so cards in other currencies line up.",
+    var notes = ["Amounts are in " + disp + ", converted at the rates for the month of " + xDay(asOf) + ", so cards in other currencies line up.",
       "Unbilled principal is the part of plans set to \"Billed monthly\" that has not reached the card yet. Plans set to \"Full price at purchase\" are already inside the balance owed.",
       "Differences of a few cents in 1a can come from currency rounding."];
     if (paused) notes.push(paused + (paused === 1 ? " paused plan is" : " paused plans are") + " left out of the schedule.");
     if (offCard) notes.push(offCard + (offCard === 1 ? " plan is" : " plans are") + " on an account that is not a credit card: shown in the schedule, not in section 1.");
-    notes.forEach(function (s) { K.t(row, 0, s); row++; }); row++;
+    K.t(row, 0, "NOTES"); K.role(row, "cap", 0, LAST); row++;
+    notes.forEach(function (s) { xNote(K, row++, s, LAST, 190); }); row++;
 
     /* 2 schedule */
-    K.t(row, 0, "2. INSTALLMENT SCHEDULE (active plans, one line per billing)"); row++;
-    ["Account", "Plan", "Billing mode", "No.", "Billing date", "Principal", "Interest", "Fees", "Total due", "Status", "Principal left after"].forEach(function (h, c) { K.t(row, c, h); }); row++;
+    K.t(row, 0, "2. INSTALLMENT SCHEDULE (active plans, one line per billing)"); K.role(row, "band", 0, LAST); K.h(row, 20); row++;
+    head(row, ["Account", "Plan", "Billing mode", "No.", "Billing date", "Principal", "Interest", "Fees", "Total due", "Status", "Principal left after"]); K.al(row, 1, "left"); K.al(row, 2, "left"); row++;
     var s0 = row;
-    if (!nS) { K.t(row, 0, "(no active installment plans)"); row++; }
-    groups.forEach(function (g) {
-      var gs = row, ge = row + g.length - 1;
+    if (!nS) { K.t(row, 0, "(no active installment plans)"); K.role(row, "item", 0, LAST); row++; }
+    groups.forEach(function (g, gi) {
+      var ge = row + g.length - 1;
       g.forEach(function (x, k) {
         var rr = row + 1, left = xSum(g.slice(k + 1).map(function (y) { return y.prin; }));
         K.t(row, 0, x.acct); K.t(row, 1, x.plan); K.t(row, 2, x.mode); K.t(row, 3, x.no); K.d(row, 4, x.date);
@@ -3144,32 +3327,34 @@ header.top .pills { flex: 1 1 100%; margin-top: 0; }
         K.f(row, 8, "F" + rr + "+G" + rr + "+H" + rr, xSum([x.prin, x.int, x.fee]));
         K.f(row, 9, "IF(E" + rr + "<=$B$3,\"Billed\",\"Upcoming\")", x.status);
         if (row < ge) K.f(row, 10, "SUM(F" + (rr + 1) + ":F" + (ge + 1) + ")", left); else K.n(row, 10, 0);
+        K.role(row, k === 0 && gi > 0 ? "itemTop" : "item", 0, LAST); K.al(row, 3, "center"); K.al(row, 4, "center"); K.al(row, 9, "center");
         row++;
       });
     });
     var s1 = row - 1;
     if (nS) {
-      var cols = ["prin", "int", "fee"], tt = {};
+      K.cf(xRef(s0, 9) + ":" + xRef(s1, 9), [{ t: "cell", op: "equal", f: '"Upcoming"', d: "info" }, { t: "cell", op: "equal", f: '"Billed"', d: "muted" }]);
+      var cols = ["prin", "int", "fee"];
       K.t(row, 0, "Total");
-      for (j = 0; j < 3; j++) { tt[cols[j]] = xSum(flat.map(function (x) { return x[cols[j]]; })); K.f(row, 5 + j, "SUM(" + xRef(s0, 5 + j) + ":" + xRef(s1, 5 + j) + ")", tt[cols[j]]); }
-      K.f(row, 8, "SUM(I" + (s0 + 1) + ":I" + (s1 + 1) + ")", xSum(flat.map(function (x) { return x.prin + x.int + x.fee; }))); row++;
-      [["Billed", "of which billed up to " + asOf], ["Upcoming", "of which still to bill"]].forEach(function (p) {
+      for (j = 0; j < 3; j++) K.f(row, 5 + j, "SUM(" + xRef(s0, 5 + j) + ":" + xRef(s1, 5 + j) + ")", xSum(flat.map(function (x) { return x[cols[j]]; })));
+      K.f(row, 8, "SUM(I" + (s0 + 1) + ":I" + (s1 + 1) + ")", xSum(flat.map(function (x) { return x.prin + x.int + x.fee; }))); K.role(row, "total", 0, LAST); row++;
+      [["Billed", "of which billed up to " + xDay(asOf)], ["Upcoming", "of which still to bill"]].forEach(function (p) {
         K.t(row, 0, p[1]);
         for (j = 0; j < 4; j++) {
-          var cl = String.fromCharCode(70 + j), pick = flat.filter(function (x) { return x.status === p[0]; });
-          K.f(row, 5 + j, "SUMIF($J$" + (s0 + 1) + ":$J$" + (s1 + 1) + ",\"" + p[0] + "\"," + cl + (s0 + 1) + ":" + cl + (s1 + 1) + ")", xSum(pick.map(function (x) { return j === 0 ? x.prin : j === 1 ? x.int : j === 2 ? x.fee : x.prin + x.int + x.fee; })));
+          var cl2 = String.fromCharCode(70 + j), pick = flat.filter(function (x) { return x.status === p[0]; });
+          K.f(row, 5 + j, "SUMIF($J$" + (s0 + 1) + ":$J$" + (s1 + 1) + ",\"" + p[0] + "\"," + cl2 + (s0 + 1) + ":" + cl2 + (s1 + 1) + ")", xSum(pick.map(function (x) { return j === 0 ? x.prin : j === 1 ? x.int : j === 2 ? x.fee : x.prin + x.int + x.fee; })));
         }
-        row++;
+        K.role(row, "item", 0, LAST); row++;
       });
     }
-    var ws = K.ws, keys = Object.keys(ws);
-    keys.forEach(function (k) { if (ws[k] && ws[k].f) ws[k].f = ws[k].f.replace(/\[S0\]/g, s0 + 1).replace(/\[S1\]/g, s1 + 1); });
-    return K.done([30, 22, 22, 18, 16, 18, 16, 16, 18, 16, 20]);
+    var ws = K.sh;
+    Object.keys(ws.cells).forEach(function (k) { var x = ws.cells[k]; if (x && x.f) x.f = x.f.replace(/\[S0\]/g, s0 + 1).replace(/\[S1\]/g, s1 + 1); });
+    return K.done([28, 20, 22, 15, 15, 16, 15, 15, 16, 14, 17], { tab: XBLUE, land: true });
   }
 
   /* Sheet 3: expenses by category for every month of the range, with month-on-month change so the ups and downs show */
   function sheetMonthly(rep, st) {
-    var r = rep.r, K = sheetKit(), CL = XLSX.utils.encode_col, row = 0, i, j, ms = [];
+    var r = rep.r, K = sheetKit(), row = 0, i, j, ms = [], CL = xCol;
     /* months run from the first transaction in the range to the end date (not past today), so "All time" does not add empty years */
     var firstD = r.rows.length ? r.rows[0].date : rep.from, lastD = r.rows.length ? r.rows[r.rows.length - 1].date : rep.to, endD = todayStr > lastD ? todayStr : lastD;
     if (endD > rep.to) endD = rep.to;
@@ -3178,88 +3363,295 @@ header.top .pills { flex: 1 1 100%; margin-top: 0; }
     var n = ms.length, mat = {};
     r.rows.forEach(function (t) { if (t.kind !== "out") return; var k = t.cat || "Other", m = t.date.slice(0, 7), o = mat[k] || (mat[k] = {}); o[m] = (o[m] || 0) + conv(t.amount, wmap[t.wallet].cur, null, t.date); });
     var cats = Object.keys(mat).sort(function (a, b) { return r.expC[b] - r.expC[a]; });
-    var cT = n + 1, cS = n + 2, cA = n + 3, cP = n + 4, cR = n + 5, first = CL(1), last = CL(n);
+    var cT = n + 1, cS = n + 2, cA = n + 3, cP = n + 4, cR = n + 5, LAST = n > 1 ? cR : cP, first = CL(1), last = CL(n);
     var vals = cats.map(function (k) { return ms.map(function (m) { return round2(mat[k][m] || 0); }); });
     var empty = !cats.length; if (empty) { cats = ["(no expenses in this range)"]; vals = [ms.map(function () { return 0; })]; }
     var colT = ms.map(function (m, c) { return xSum(vals.map(function (v) { return v[c]; })); }), grand = xSum(colT);
 
-    K.t(0, 0, "EXPENSE ANALYSIS BY CATEGORY"); K.t(1, 0, "Period"); K.t(1, 1, rep.from + " to " + rep.to); K.t(2, 0, "Currency"); K.t(2, 1, state.disp);
-    K.t(3, 0, "The first and last month can be partial, depending on the dates you picked.");
-    row = 5; K.t(row, 0, "1. EXPENSES BY CATEGORY AND MONTH"); row++;
+    xTitle(K, "EXPENSE ANALYSIS BY CATEGORY", LAST);
+    xInfo(K, 1, "Period", xDay(rep.from) + " to " + xDay(rep.to), 4, 50);
+    xInfo(K, 2, "Currency", state.disp, 4, 50);
+    xInfo(K, 3, "Ledgers", rep.ledgers || "", 4, 50);
+    xInfo(K, 4, "Prepared on", xDay(todayStr), 4, 50);
+    K.t(5, 0, "The first and last month can be partial, depending on the dates you picked."); K.role(5, "memo", 0, LAST);
+    row = 7; K.t(row, 0, "1. EXPENSES BY CATEGORY AND MONTH"); K.role(row, "band", 0, LAST); K.h(row, 20); row++;
     var hr = row; K.t(row, 0, "Category"); ms.forEach(function (m, c) { K.t(row, 1 + c, xMon(m)); });
-    K.t(row, cT, "Total"); K.t(row, cS, "Share of total"); K.t(row, cA, "Monthly average"); K.t(row, cP, "Highest month"); if (n > 1) K.t(row, cR, "Latest vs previous month"); row++;
+    K.t(row, cT, "Total"); K.t(row, cS, "Share of total"); K.t(row, cA, "Monthly average"); K.t(row, cP, "Highest month"); if (n > 1) K.t(row, cR, "Latest vs previous month");
+    K.role(row, "head", 0, LAST); K.h(row, 30); row++;
     var d0 = row, tr = d0 + cats.length, tot = "$" + CL(cT) + "$" + (tr + 1);
-    function tail(rw, v, sum, isTot) {
+    function tail(rw, v, sum) {
       var rng = first + (rw + 1) + ":" + last + (rw + 1), mx = Math.max.apply(null, v), pk = mx === 0 ? "" : xMon(ms[v.indexOf(mx)]), R1 = rw + 1;
       K.f(rw, cT, "SUM(" + rng + ")", sum);
       K.f(rw, cS, "IF(" + tot + "=0,0," + CL(cT) + R1 + "/" + tot + ")", grand ? sum / grand : 0, XP);
       K.f(rw, cA, "AVERAGE(" + rng + ")", sum / n);
-      K.f(rw, cP, "IF(MAX(" + rng + ")=0,\"\",INDEX($" + first + "$" + (hr + 1) + ":$" + last + "$" + (hr + 1) + ",MATCH(MAX(" + rng + ")," + rng + ",0)))", pk);
-      if (n > 1) { var a = v[n - 1], b = v[n - 2]; K.f(rw, cR, "IF(" + CL(n) + R1 + ">" + CL(n - 1) + R1 + ",\"\u25B2 up\",IF(" + CL(n) + R1 + "<" + CL(n - 1) + R1 + ",\"\u25BC down\",\"\u2013 same\"))", a > b ? "\u25B2 up" : a < b ? "\u25BC down" : "\u2013 same"); }
+      K.f(rw, cP, "IF(MAX(" + rng + ")=0,\"\",INDEX($" + first + "$" + (hr + 1) + ":$" + last + "$" + (hr + 1) + ",MATCH(MAX(" + rng + ")," + rng + ",0)))", pk); K.al(rw, cP, "center");
+      if (n > 1) { var a = v[n - 1], b = v[n - 2]; K.f(rw, cR, "IF(" + CL(n) + R1 + ">" + CL(n - 1) + R1 + ",\"\u25B2 up\",IF(" + CL(n) + R1 + "<" + CL(n - 1) + R1 + ",\"\u25BC down\",\"\u2013 same\"))", a > b ? "\u25B2 up" : a < b ? "\u25BC down" : "\u2013 same"); K.al(rw, cR, "center"); }
     }
-    cats.forEach(function (k, ri) { K.t(row, 0, k); vals[ri].forEach(function (v, c) { K.n(row, 1 + c, v); }); tail(row, vals[ri], xSum(vals[ri])); row++; });
-    K.t(row, 0, "Total"); colT.forEach(function (v, c) { K.f(row, 1 + c, "SUM(" + CL(1 + c) + (d0 + 1) + ":" + CL(1 + c) + row + ")", v); }); tail(row, colT, grand); row += 2;
+    cats.forEach(function (k, ri) { K.t(row, 0, k); vals[ri].forEach(function (v, c) { K.n(row, 1 + c, v); }); tail(row, vals[ri], xSum(vals[ri])); K.role(row, "item", 0, LAST); row++; });
+    K.t(row, 0, "Total"); colT.forEach(function (v, c) { K.f(row, 1 + c, "SUM(" + CL(1 + c) + (d0 + 1) + ":" + CL(1 + c) + row + ")", v); }); tail(row, colT, grand); K.role(row, "total", 0, LAST);
+    if (n > 1) K.cf(xRef(d0, cR) + ":" + xRef(tr, cR), [{ t: "expr", f: 'LEFT(' + xRef(d0, cR) + ',1)="\u25B2"', d: "up" }, { t: "expr", f: 'LEFT(' + xRef(d0, cR) + ',1)="\u25BC"', d: "down" }]);
+    row += 2;
 
     if (n > 1) {
-      K.t(row, 0, "2. CHANGE FROM THE PREVIOUS MONTH (amount; a plus means you spent more)"); row++;
-      K.t(row, 0, "Category"); ms.forEach(function (m, c) { K.t(row, 1 + c, xMon(m)); }); row++;
+      K.t(row, 0, "2. CHANGE FROM THE PREVIOUS MONTH (amount; a plus means you spent more)"); K.role(row, "band", 0, LAST); K.h(row, 20); row++;
+      K.t(row, 0, "Category"); ms.forEach(function (m, c) { K.t(row, 1 + c, xMon(m)); }); K.role(row, "head", 0, n); K.h(row, 30); row++;
       var allRows = vals.concat([colT]), labels = cats.concat(["Total"]), c0 = row;
       allRows.forEach(function (v, ri) {
         var src = d0 + ri; K.t(row, 0, labels[ri]);
         for (j = 1; j < n; j++) K.f(row, 1 + j, CL(1 + j) + (src + 1) + "-" + CL(j) + (src + 1), round2(v[j] - v[j - 1]), XS);
-        row++;
+        K.role(row, ri === allRows.length - 1 ? "total" : "item", 0, n); row++;
       });
       K.t(row, 0, "Total change (%)");
       for (j = 1; j < n; j++) K.f(row, 1 + j, "IF(" + CL(j) + (tr + 1) + "=0,\"\",(" + CL(1 + j) + (tr + 1) + "-" + CL(j) + (tr + 1) + ")/" + CL(j) + (tr + 1) + ")", colT[j - 1] === 0 ? "" : (colT[j] - colT[j - 1]) / colT[j - 1], XP);
+      K.role(row, "total", 0, n);
+      K.cf(xRef(c0, 2) + ":" + xRef(row, n), [{ t: "cell", op: "greaterThan", f: "0", d: "up" }, { t: "cell", op: "lessThan", f: "0", d: "down" }]);
       row += 2;
     }
-    K.t(row, 0, "3. CHECK AGAINST THE FINANCIAL STATEMENT"); row++;
-    K.t(row, 0, "Total expenses on the Financial Statement"); K.f(row, 1, "'Financial Statement'!B" + (st.expRow + 1), st.expVal); row++;
-    K.t(row, 0, "Difference (rounding only)"); K.f(row, 1, CL(cT) + (tr + 1) + "-B" + row, round2(grand - st.expVal) + 0);
-    var w = [34]; for (i = 0; i < n; i++) w.push(14); w.push(16, 15, 16, 16, 26);
-    return K.done(w);
+    K.t(row, 0, (n > 1 ? "3. " : "2. ") + "CHECK AGAINST THE FINANCIAL STATEMENT"); K.role(row, "band", 0, LAST); K.h(row, 20); row++;
+    K.t(row, 0, "Total expenses on the Financial Statement"); K.f(row, 1, "'Financial Statement'!B" + (st.expRow + 1), st.expVal); K.role(row, "item", 0, 1); row++;
+    K.t(row, 0, "Difference (rounding only)"); K.f(row, 1, CL(cT) + (tr + 1) + "-B" + row, round2(grand - st.expVal) + 0); K.role(row, "total", 0, 1);
+    var w = [34]; for (i = 0; i < n; i++) w.push(13); w.push(15, 13, 15, 15, 24);
+    return K.done(w, { tab: "548235", land: true, freeze: { r: hr + 1, c: 1 } });
   }
 
-  $("#rExportX").addEventListener("click", function () {
-    if (!window.XLSX) { rmsg("Excel export could not load. Connect to the internet once, then try again.", true); return; }
-    var rep = ready(); if (!rep) return;
-    var r = rep.r, M = "#,##0.00;-#,##0.00";
-    var s1 = [["Wallet report"], ["From", rep.from], ["To", rep.to], ["Display currency", state.disp], [], ["Metric", "Value"],
-      ["Net cash flow", round2(r.net)], ["Money in", round2(r.inc)], ["Money out", round2(r.exp)], ["Savings rate", r.inc > 0 ? r.net / r.inc : ""],
-      ["Transactions", r.n], ["Average daily spend", round2(r.exp / r.span)], [], ["Rates used (units per 1 USD)"]];
-    CODES.forEach(function (k) { s1.push([k, state.rates[k]]); });
-    var ws1 = XLSX.utils.aoa_to_sheet(s1); ws1["!cols"] = [{ wch: 26 }, { wch: 18 }];
-    [7, 8, 9, 12].forEach(function (n) { var c = ws1["B" + n]; if (c && typeof c.v === "number") c.z = M; });
-    if (ws1.B10 && typeof ws1.B10.v === "number") ws1.B10.z = "0%";
-    var head = EH.slice(); head[9] = "Net in " + state.disp;
-    var a2 = [head]; r.rows.forEach(function (t) { a2.push(exportRow(t)); });
+  /* ---- sheets added for the director pack: every figure is a formula that points at another sheet ---- */
+  var SUP = { acc0: 20 }; /* first account row (0-based) on Supporting Docs; Transaction Check reads the account list from there */
+  var CHK_TOTAL = "'Transaction Check'!B12";
+  function fnum(v) { return v.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+  function jv(t) { return round2(conv(t.amount, wmap[t.wallet].cur, null, t.date)); }
+  function xDateRow(K, r, label, iso, last) { K.t(r, 0, label); K.role(r, "infoL", 0, 0); K.d(r, 1, iso); K.role(r, "infoV", 1, last); K.merge(r, 1, r, last); K.al(r, 1, "left"); }
+
+  function sheetCheck(rep, M) {
+    var K = sheetKit(), rows = rep.r.rows, n = rows.length, LAST = 14, d0 = 15, d1 = d0 + n - 1, T2 = n + 1, TX = "Transactions!", tol = 0.03, i, cnt = {}, tot = 0, sums = [0, 0, 0, 0, 0];
+    var AC = "'Supporting Docs'!$A$" + (SUP.acc0 + 1) + ":$C$" + (SUP.acc0 + state.wallets.length), AN = "'Supporting Docs'!$A$" + (SUP.acc0 + 1) + ":$A$" + (SUP.acc0 + state.wallets.length);
+    var RT = "Summary!$B$" + M.rt0 + ":$B$" + M.rt1, CD = "Summary!$A$" + M.rt0 + ":$A$" + M.rt1;
+    function rg(c) { return TX + "$" + c + "$2:$" + c + "$" + T2; }
+    function key(t) { return [t.date, t.kind, t.wallet, t.amount, t.cat || ""].join("|"); }
+    rows.forEach(function (t) { cnt[key(t)] = (cnt[key(t)] || 0) + 1; });
+    xTitle(K, "TRANSACTION CHECK", LAST);
+    xDateRow(K, 1, "From", rep.from, 2); xDateRow(K, 2, "To", rep.to, 2);
+    K.t(3, 0, "Transfer rate tolerance"); K.role(3, "infoL", 0, 0); K.n(3, 1, tol, XP); K.t(3, 2, "Editable: a transfer is flagged when the amount received is further than this from the rate-based amount.");
+    K.t(5, 0, "1. SUMMARY OF CHECKS"); K.t(5, 1, "Items"); K.t(5, 2, "Result"); K.role(5, "band", 0, 2); K.h(5, 20);
+    var labels = ["Income or expense with no category", "Possible duplicate (same date, account, amount, category)", "Transfer: amount received does not match the exchange rate", "Account not found in the account register", "Date outside the report period"], cols = "IJKLM";
+    var heads = ["Date", "Type", "Account", "Amount", "Category", "Expected received", "Received", "Difference", "No category", "Duplicate", "Transfer off-rate", "Unknown account", "Outside period", "Flags", "Result"];
+    K.t(13, 0, "2. DETAIL BY TRANSACTION (one line per line on the Transactions sheet)"); K.role(13, "band", 0, LAST); K.h(13, 20);
+    heads.forEach(function (h, c) { K.t(14, c, h); }); K.role(14, "head", 0, LAST); K.h(14, 30);
+    rows.forEach(function (t, k) {
+      var r = d0 + k, R = r + 1, s = k + 2, w = wmap[t.wallet], x = t.kind === "xfer", tw = x ? wmap[t.to] : null, e = "", g = x ? t.toAmount : "", f = [0, 0, 0, 0, 0], ty = x ? "Transfer" : t.kind === "in" ? "Income" : "Expense";
+      if (x && tw) e = round2(t.amount * state.rates[tw.cur] / state.rates[w.cur]);
+      f[0] = !x && !t.cat ? 1 : 0; f[1] = cnt[key(t)] > 1 ? 1 : 0; f[2] = x ? (e === "" || g === "" || g == null || Math.abs(g - e) > tol * e ? 1 : 0) : 0;
+      K.f(r, 0, TX + "A" + s, t.date); K.f(r, 1, TX + "B" + s, ty); K.f(r, 2, TX + "C" + s, w.name); K.f(r, 3, TX + "E" + s, t.amount); K.f(r, 4, TX + "H" + s + '&""', t.cat || "");
+      K.f(r, 5, 'IF(B' + R + '<>"Transfer","",IFERROR(D' + R + "*INDEX(" + RT + ",MATCH(VLOOKUP(" + TX + "F" + s + "," + AC + ",3,0)," + CD + ",0))/INDEX(" + RT + ",MATCH(" + TX + "D" + s + "," + CD + ',0)),""))', e);
+      K.f(r, 6, 'IF(B' + R + '="Transfer",' + TX + "G" + s + ',"")', g == null ? "" : g);
+      K.f(r, 7, 'IF(OR(F' + R + '="",G' + R + '=""),"",G' + R + "-F" + R + ")", e === "" || g === "" ? "" : round2(g - e));
+      K.f(r, 8, 'IF(AND(B' + R + '<>"Transfer",E' + R + '=""),1,0)', f[0], "0");
+      K.f(r, 9, "IF(SUMPRODUCT((" + rg("A") + "=" + TX + "A" + s + ")*(" + rg("B") + "=" + TX + "B" + s + ")*(" + rg("C") + "=" + TX + "C" + s + ")*(" + rg("E") + "=" + TX + "E" + s + ")*(" + rg("H") + "=" + TX + "H" + s + "))>1,1,0)", f[1], "0");
+      K.f(r, 10, 'IF(B' + R + '<>"Transfer",0,IF(OR(F' + R + '="",G' + R + '=""),1,IF(ABS(G' + R + "-F" + R + ")>$B$4*F" + R + ",1,0)))", f[2], "0");
+      K.f(r, 11, "IF(COUNTIF(" + AN + ",C" + R + ")=0,1,0)", 0, "0");
+      K.f(r, 12, "IF(OR(DATEVALUE(A" + R + ")<$B$2,DATEVALUE(A" + R + ")>$B$3),1,0)", 0, "0");
+      var fl = f[0] + f[1] + f[2]; f.forEach(function (v, c) { sums[c] += v; }); tot += fl;
+      K.f(r, 13, "SUM(I" + R + ":M" + R + ")", fl, "0"); K.f(r, 14, 'IF(N' + R + '=0,"OK","Review")', fl ? "Review" : "OK"); K.al(r, 14, "center");
+      K.role(r, "item", 0, LAST);
+    });
+    labels.forEach(function (l, k) {
+      var r = 6 + k; K.t(r, 0, l); K.f(r, 1, "SUM(" + cols[k] + (d0 + 1) + ":" + cols[k] + (d1 + 1) + ")", sums[k], "0"); K.f(r, 2, 'IF(B' + (r + 1) + '=0,"OK","Review")', sums[k] ? "Review" : "OK"); K.al(r, 2, "center"); K.role(r, "item", 0, 2);
+    });
+    K.t(11, 0, "Total items to review"); K.f(11, 1, "SUM(B7:B11)", tot, "0"); K.f(11, 2, 'IF(B12=0,"OK","Review")', tot ? "Review" : "OK"); K.al(11, 2, "center"); K.role(11, "total", 0, 2);
+    K.cf("C7:C12", [{ t: "cell", op: "equal", f: '"OK"', d: "good" }, { t: "cell", op: "equal", f: '"Review"', d: "bad" }]);
+    K.cf("O" + (d0 + 1) + ":O" + (d1 + 1), [{ t: "cell", op: "equal", f: '"OK"', d: "good" }, { t: "cell", op: "equal", f: '"Review"', d: "bad" }]);
+    M.flags = tot;
+    return K.done([13, 10, 18, 14, 18, 16, 14, 13, 11, 10, 12, 12, 12, 8, 10], { tab: "C55A11", land: true, filter: "A" + d0 + ":O" + (d1 + 1) });
+  }
+
+  function sheetDirector(rep, st, M) {
+    var r = rep.r, disp = state.disp, K = sheetKit(), row, LAST = 2, TX = "Transactions!", n1 = M.nTx + 1, FS = "'Financial Statement'!B", BC = "'By category'!", DY = "Daily!", c = {}, i;
+    function rg(x) { return TX + "$" + x + "$2:$" + x + "$" + n1; }
+    function B(k) { return "B" + (k + 1); }
+    function band(t) { K.t(row, 0, t); K.role(row, "band", 0, LAST); K.h(row, 20); row++; }
+    function line(label, f, v, z, role) { K.t(row, 0, label); K.f(row, 1, f, v, z); K.role(row, role || "item", 0, LAST); return row++; }
+    function text(f, v, ln) { K.f(row, 0, f, v); K.role(row, "infoV", 0, LAST); K.merge(row, 0, row, LAST); K.h(row, 15 * Math.max(1, Math.ceil(ln / 85))); row++; }
+    var inc = xSum(r.rows.filter(function (t) { return t.kind === "in"; }).map(jv)), exp = xSum(r.rows.filter(function (t) { return t.kind === "out"; }).map(jv)), net = round2(inc - exp);
+    var first = r.daily[0].date, start = first > rep.from ? first : rep.from, days = Math.round((parseD(rep.to) - parseD(start)) / 86400000) + 1;
+    xTitle(K, "REPORT TO THE DIRECTOR", LAST);
+    xDateRow(K, 1, "From", rep.from, LAST); xDateRow(K, 2, "To", rep.to, LAST); xInfo(K, 3, "Currency", disp, LAST, 60); xInfo(K, 4, "Ledgers", rep.ledgers || "", LAST, 60); xDateRow(K, 5, "Prepared on", todayStr, LAST);
+    row = 7; band("1. KEY FIGURES");
+    c.inn = line("Money in", "SUMIFS(" + rg("J") + "," + rg("B") + ',"Income")', inc);
+    c.out = line("Money out", "-SUMIFS(" + rg("J") + "," + rg("B") + ',"Expense")', exp);
+    c.net = line("Net cash flow", B(c.inn) + "-" + B(c.out), net, XM, "total");
+    line("Savings rate (net cash flow / money in)", "IF(" + B(c.inn) + "=0,0," + B(c.net) + "/" + B(c.inn) + ")", inc ? net / inc : 0, XP);
+    var dd = line("Days with data in the period", "$B$3-MAX($B$2,DATEVALUE(" + DY + "$A$2))+1", days, "0");
+    line("Average daily spending", "IF(" + B(dd) + "=0,0," + B(c.out) + "/" + B(dd) + ")", round2(exp / days));
+    line("Number of transactions", "COUNTA(" + rg("A") + ")", r.n, "0"); row++;
+    band("2. FINANCIAL POSITION AT THE END OF THE PERIOD");
+    var p0 = line("Net worth at start of period", FS + (st.e0 + 1), st.nw0), pA = line("Total assets", FS + (st.rA + 1), st.A), pL = line("Total liabilities (credit cards owed)", FS + (st.rL + 1), st.L);
+    c.nw = line("Net worth at end of period", B(pA) + "-" + B(pL), round2(st.A - st.L), XM, "total");
+    line("Change in net worth", B(c.nw) + "-" + B(p0), round2(st.A - st.L - st.nw0), XS, "total"); row++;
+    band("3. WHERE THE MONEY WENT AND CAME FROM");
+    function top(title, map, base, bv, off, n, word) {
+      var ks = Object.keys(map).sort(function (a, b) { return map[b] - map[a]; }).slice(0, n), r0 = row;
+      K.t(row, 0, title); K.t(row, 1, "Amount"); K.t(row, 2, "Share of " + word); K.role(row, "head", 0, LAST); K.al(row, 1, "right"); K.al(row, 2, "right"); row++;
+      ks.forEach(function (k, j) { var a = round2(map[k]); K.f(row, 0, BC + "B" + (off + j), k); K.f(row, 1, BC + "C" + (off + j), a); K.f(row, 2, "IF(" + B(base) + "=0,0," + B(row) + "/" + B(base) + ")", bv ? a / bv : 0, XP); K.role(row, "item", 0, LAST); row++; });
+      row++; return { ks: ks, r0: r0 + 1 };
+    }
+    var te = top("Top 5 expense categories", r.expC, c.out, exp, 2, 5, "spending"), ti = top("Top 3 income sources", r.incC, c.inn, inc, 2 + M.nE, 3, "income");
+    band("4. HIGHLIGHTS");
+    var hd = r.daily.reduce(function (a, d) { return !a || d.exp > a.exp ? d : a; }, null), dr = "$D$2:$D$" + (M.nD + 1);
+    var s1 = "Income was " + fnum(inc) + " and spending " + fnum(exp) + " (" + disp + "), a net " + (net >= 0 ? "surplus" : "deficit") + " of " + fnum(Math.abs(net)) + ".";
+    text('"Income was "&TEXT(' + B(c.inn) + ',"#,##0.00")&" and spending "&TEXT(' + B(c.out) + ',"#,##0.00")&" ("&$B$4&"), a net "&IF(' + B(c.net) + '>=0,"surplus","deficit")&" of "&TEXT(ABS(' + B(c.net) + '),"#,##0.00")&"."', s1, s1.length);
+    if (te.ks.length) { var s2 = "The largest expense category was " + te.ks[0] + " at " + Math.round((exp ? r.expC[te.ks[0]] / exp : 0) * 100) + "% of spending."; text('"The largest expense category was "&A' + (te.r0 + 1) + '&" at "&TEXT(C' + (te.r0 + 1) + ',"0%")&" of spending."', s2, s2.length); }
+    var s3 = "The highest spending day was " + hd.date + " with " + fnum(round2(hd.exp)) + ".";
+    text('"The highest spending day was "&INDEX(' + DY + "$A$2:$A$" + (M.nD + 1) + ",MATCH(MAX(" + DY + dr + ")," + DY + dr + ',0))&" with "&TEXT(MAX(' + DY + dr + '),"#,##0.00")&"."', s3, s3.length);
+    var s4 = "Net worth moved from " + fnum(st.nw0) + " to " + fnum(round2(st.A - st.L)) + ".";
+    text('"Net worth moved from "&TEXT(' + B(p0) + ',"#,##0.00")&" to "&TEXT(' + B(c.nw) + ',"#,##0.00")&"."', s4, s4.length);
+    var s5 = M.flags ? "Data check: " + M.flags + " item(s) flagged for review (see Transaction Check)." : "Data check: no mismatches found in the transactions.";
+    text("IF(" + CHK_TOTAL + '=0,"Data check: no mismatches found in the transactions.","Data check: "&' + CHK_TOTAL + '&" item(s) flagged for review (see Transaction Check).")', s5, s5.length);
+    row++; band("5. APPROVAL");
+    ["Prepared by", "Reviewed by", "Approved by"].forEach(function (s, k) { K.t(row, k, s); }); K.role(row, "head", 0, LAST); row++;
+    K.role(row, "item", 0, LAST); K.h(row, 42); row++;
+    [0, 1, 2].forEach(function (k) { K.t(row, k, "Name, signature and date"); }); K.role(row, "memo", 0, LAST); row += 2;
+    xNote(K, row, "Every figure on this page is a formula that reads the Transactions, Daily, By category and Financial Statement sheets. See Supporting Docs for the tie-out.", LAST, 90);
+    c.v = { inn: inc, out: exp, net: net, nw: round2(st.A - st.L) };
+    return { ws: K.done([46, 24, 24], { tab: XNAVY, onePage: true }), c: c };
+  }
+
+  function sheetSupport(rep, st, M, dc) {
+    var K = sheetKit(), r = rep.r, row, LAST = 5, DS = "'Director Summary'!B", FS = "'Financial Statement'!B", DY = "Daily!", BC = "'By category'!", nD = M.nD + 1, nB = M.nE + M.nI + 1, nA = state.wallets.length, bc = balances(rep.to), v = dc.c.v;
+    var RT = "Summary!$B$" + M.rt0 + ":$B$" + M.rt1, CD = "Summary!$A$" + M.rt0 + ":$A$" + M.rt1;
+    var sec3 = SUP.acc0 + nA + 3, out = [];
+    state.tx.forEach(function (t) {
+      if (!t) return; var ok = validT(t), w = wmap[t.wallet];
+      if (!ok) out.push([t.date || "", t.kind === "in" ? "Income" : t.kind === "out" ? "Expense" : t.kind === "xfer" ? "Transfer" : String(t.kind || ""), w ? w.name : String(t.wallet || ""), t.amount, t.cat || "", "Could not be read: " + (w ? "invalid type, amount or date" : "account not found")]);
+      else if (t.date >= rep.from && t.date <= rep.to && (w.noRep || t.adj)) out.push([t.date, t.adj ? "Adjustment" : t.kind === "in" ? "Income" : t.kind === "out" ? "Expense" : "Transfer", w.name, t.amount, t.cat || "", t.adj ? "Balance adjustment (left out of income and spending by design)" : "Account switched off from reports"]);
+    });
+    out = out.slice(0, 300); var s0 = sec3 + 3, s1 = s0 + Math.max(out.length, 1) - 1, bad = out.filter(function (x) { return x[5].indexOf("Could not") === 0; }).length;
+    xTitle(K, "SUPPORTING DOCUMENTS", LAST);
+    xNote(K, 1, "Each figure in the Director Summary is tied to the sheet that supports it. Everything here is a live formula, so it updates if the data changes.", LAST, 110);
+    K.t(3, 0, "1. TIE-OUT OF THE DIRECTOR SUMMARY"); K.role(3, "band", 0, LAST); K.h(3, 20);
+    ["Figure", "Director Summary", "Supporting sheet", "Per supporting sheet", "Difference", "Status"].forEach(function (h, k) { K.t(4, k, h); }); K.role(4, "head", 0, LAST); K.h(4, 30);
+    var sx = function (a) { return xSum(a); }, dI = sx(r.daily.map(function (d) { return round2(d.inc); })), dO = sx(r.daily.map(function (d) { return round2(d.exp); }));
+    var ties = [
+      ["Money in", DS + (dc.c.inn + 1), v.inn, "Financial Statement: total income", FS + (st.rI + 1), st.I],
+      ["Money out", DS + (dc.c.out + 1), v.out, "Financial Statement: total expenses", FS + (st.rX + 1), st.X],
+      ["Net cash flow", DS + (dc.c.net + 1), v.net, "Financial Statement: net income", FS + (st.rN + 1), round2(st.I - st.X)],
+      ["Money in", DS + (dc.c.inn + 1), v.inn, "Daily: total of In", "SUM(" + DY + "C2:C" + nD + ")", dI],
+      ["Money out", DS + (dc.c.out + 1), v.out, "Daily: total of Out", "SUM(" + DY + "D2:D" + nD + ")", dO],
+      ["Money out", DS + (dc.c.out + 1), v.out, "By category: expenses", "SUMIFS(" + BC + "$C$2:$C$" + nB + "," + BC + "$A$2:$A$" + nB + ',"Expense")', sx(Object.keys(r.expC).map(function (k) { return round2(r.expC[k]); }))],
+      ["Money in", DS + (dc.c.inn + 1), v.inn, "By category: income", "SUMIFS(" + BC + "$C$2:$C$" + nB + "," + BC + "$A$2:$A$" + nB + ',"Income")', sx(Object.keys(r.incC).map(function (k) { return round2(r.incC[k]); }))],
+      ["Net worth at end", DS + (dc.c.nw + 1), v.nw, "Financial Statement: net worth", FS + (st.rNW + 1), round2(st.A - st.L)]
+    ];
+    ties.forEach(function (t, k) {
+      var R = 6 + k, d = round2(t[2] - t[5]); K.t(5 + k, 0, t[0]); K.f(5 + k, 1, t[1], t[2]); K.t(5 + k, 2, t[3]); K.f(5 + k, 3, t[4], t[5]);
+      K.f(5 + k, 4, "ROUND(B" + R + "-D" + R + ",2)", d, XS); K.f(5 + k, 5, 'IF(ABS(E' + R + ')<0.05,"Tied","Review")', Math.abs(d) < 0.05 ? "Tied" : "Review"); K.al(5 + k, 5, "center"); K.role(5 + k, "item", 0, LAST);
+    });
+    var rr = 5 + ties.length;
+    K.t(rr, 0, "Accounting equation"); K.t(rr, 2, "Financial Statement: check"); K.f(rr, 3, FS + (st.rChk + 1), st.chk); K.f(rr, 5, 'IF(D' + (rr + 1) + '="Balanced","Tied","Review")', st.chk === "Balanced" ? "Tied" : "Review"); K.al(rr, 5, "center"); K.role(rr, "item", 0, LAST); rr++;
+    K.t(rr, 0, "Items flagged on the transactions"); K.t(rr, 2, "Transaction Check: total"); K.f(rr, 3, CHK_TOTAL, M.flags, "0"); K.f(rr, 5, 'IF(D' + (rr + 1) + '=0,"Tied","Review")', M.flags ? "Review" : "Tied"); K.al(rr, 5, "center"); K.role(rr, "item", 0, LAST); rr++;
+    K.t(rr, 0, "Transactions the app could not read"); K.t(rr, 2, "Section 3 below"); K.f(rr, 3, 'COUNTIF($F$' + (s0 + 1) + ":$F$" + (s1 + 1) + ',"Could not be read*")', bad, "0"); K.f(rr, 5, 'IF(D' + (rr + 1) + '=0,"Tied","Review")', bad ? "Review" : "Tied"); K.al(rr, 5, "center"); K.role(rr, "item", 0, LAST); rr++;
+    var bad2 = ties.filter(function (t) { return Math.abs(round2(t[2] - t[5])) >= 0.05; }).length + (st.chk === "Balanced" ? 0 : 1) + (M.flags ? 1 : 0) + (bad ? 1 : 0);
+    K.t(rr, 0, "Result"); K.f(rr, 5, 'IF(COUNTIF(F6:F' + rr + ',"Review")=0,"All tied","Review")', bad2 ? "Review" : "All tied"); K.al(rr, 5, "center"); K.role(rr, "total", 0, LAST);
+    K.cf("F6:F" + (rr + 1), [{ t: "cell", op: "equal", f: '"Tied"', d: "good" }, { t: "cell", op: "equal", f: '"All tied"', d: "good" }, { t: "cell", op: "equal", f: '"Review"', d: "bad" }]);
+    K.t(SUP.acc0 - 2, 0, "2. ACCOUNT REGISTER AT THE END OF THE PERIOD"); K.role(SUP.acc0 - 2, "band", 0, LAST); K.h(SUP.acc0 - 2, 20);
+    ["Account", "Type", "Currency", "Closing balance", "In " + state.disp, "In reports"].forEach(function (h, k) { K.t(SUP.acc0 - 1, k, h); }); K.role(SUP.acc0 - 1, "head", 0, LAST); K.h(SUP.acc0 - 1, 30);
+    var ws = state.wallets.slice().sort(xByName), tot = 0;
+    ws.forEach(function (w, k) {
+      var q = SUP.acc0 + k, R = q + 1, b = round2(bc[w.id]), dv = round2(conv(b, w.cur, null, rep.to)); if (!w.noRep) tot += dv;
+      K.t(q, 0, w.name); K.t(q, 1, w.type); K.t(q, 2, w.cur); K.n(q, 3, b);
+      K.f(q, 4, "D" + R + "*INDEX(" + RT + ",MATCH('Director Summary'!$B$4," + CD + ",0))/INDEX(" + RT + ",MATCH(C" + R + "," + CD + ",0))", dv); K.t(q, 5, w.noRep ? "No" : "Yes"); K.al(q, 5, "center"); K.role(q, "item", 0, LAST);
+    });
+    var qt = SUP.acc0 + nA; K.t(qt, 0, "Total of accounts in reports (credit cards owed show as negative)"); K.f(qt, 4, "SUMIFS(E" + (SUP.acc0 + 1) + ":E" + qt + ",F" + (SUP.acc0 + 1) + ":F" + qt + ',"Yes")', round2(tot)); K.role(qt, "total", 0, LAST);
+    K.t(sec3 - 1, 0, "3. TRANSACTIONS LEFT OUT OF THE REPORT"); K.role(sec3 - 1, "band", 0, LAST); K.h(sec3 - 1, 20);
+    ["Date", "Type", "Account", "Amount", "Category", "Reason"].forEach(function (h, k) { K.t(sec3, k, h); }); K.role(sec3, "head", 0, LAST); K.h(sec3, 30);
+    if (!out.length) { K.t(s0, 0, "(none)"); K.role(s0, "item", 0, LAST); }
+    out.forEach(function (o, k) { o.forEach(function (x, c) { if (x === "" || x == null) return; if (typeof x === "number") K.n(s0 + k, c, x); else K.t(s0 + k, c, x); }); K.role(s0 + k, "item", 0, LAST); });
+    return K.done([46, 22, 34, 22, 20, 60], { tab: "7030A0", land: true });
+  }
+
+  /* builds the whole workbook for rep (already computed for the chosen ledgers and currency) and returns the file bytes */
+  function buildReport(rep) {
+    var r = rep.r, i, j, M = XN, sheets = [], extraErr = false;
+
+    /* Summary */
+    var K1 = sheetKit(), n1 = 0, M2 = { nTx: r.rows.length, nD: r.daily.length, nE: Object.keys(r.expC).length, nI: Object.keys(r.incC).length };
+    xTitle(K1, "WALLET REPORT", 1);
+    xInfo(K1, 1, "From", xDay(rep.from), 1, 30); xInfo(K1, 2, "To", xDay(rep.to), 1, 30); xInfo(K1, 3, "Display currency", state.disp, 1, 30); xInfo(K1, 4, "Ledgers included", rep.ledgers || "", 1, 30);
+    K1.t(6, 0, "Metric"); K1.t(6, 1, "Value"); K1.role(6, "head", 0, 1); K1.h(6, 22); K1.al(6, 1, "right");
+    var met = [["Net cash flow", round2(r.net), M], ["Money in", round2(r.inc), M], ["Money out", round2(r.exp), M], ["Savings rate", r.inc > 0 ? r.net / r.inc : "", "0%"], ["Transactions", r.n, "0"], ["Average daily spend", round2(r.exp / r.span), M]];
+    met.forEach(function (m, k) { K1.t(7 + k, 0, m[0]); if (typeof m[1] === "number") K1.n(7 + k, 1, m[1], m[2]); K1.role(7 + k, "item", 0, 1); });
+    n1 = 7 + met.length + 1;
+    K1.t(n1, 0, "Rates used (units per 1 USD)"); K1.role(n1, "sub", 0, 1); n1++; M2.rt0 = n1 + 1; M2.rt1 = n1 + CODES.length;
+    CODES.forEach(function (k) { K1.t(n1, 0, k); K1.n(n1, 1, state.rates[k], "0.0000"); K1.role(n1, "item", 0, 1); n1++; });
+    var ws1 = K1.done([30, 22], { tab: XNAVY });
+
+    /* Transactions (the same columns the import reads) */
+    var K2 = sheetKit(), head = EH.slice(); head[9] = "Net in " + state.disp;
+    head.forEach(function (h, c) { K2.t(0, c, h); }); K2.role(0, "head", 0, head.length - 1); K2.h(0, 22);
+    r.rows.forEach(function (t, k) {
+      exportRow(t).forEach(function (v, c) {
+        if (v == null || v === "") return;
+        if (typeof v === "number") K2.n(k + 1, c, v, c === 4 || c === 6 || c === 9 ? M : null); else K2.t(k + 1, c, v);
+      });
+    });
     var last = r.rows.length + 1;
-    a2.push(["", "Total", "", "", "", "", "", "", "", { t: "n", v: round2(r.net), f: "SUM(J2:J" + last + ")" }]);
-    var ws2 = XLSX.utils.aoa_to_sheet(a2);
-    ws2["!cols"] = [{ wch: 12 }, { wch: 10 }, { wch: 20 }, { wch: 9 }, { wch: 14 }, { wch: 20 }, { wch: 16 }, { wch: 14 }, { wch: 36 }, { wch: 16 }, { wch: 20 }, { wch: 14 }, { wch: 20 }, { wch: 24 }];
-    for (var i = 2; i <= last + 1; i++) ["E", "G", "J"].forEach(function (col) { var c = ws2[col + i]; if (c && typeof c.v === "number") c.z = M; });
-    var a3 = [["Date", "Items", "In", "Out", "Net", "Cumulative"]];
-    r.daily.forEach(function (d) { a3.push([d.date, d.n, round2(d.inc), round2(d.exp), round2(d.net), round2(d.cum)]); });
-    var ws3 = XLSX.utils.aoa_to_sheet(a3); ws3["!cols"] = [{ wch: 12 }, { wch: 8 }, { wch: 14 }, { wch: 14 }, { wch: 14 }, { wch: 14 }];
-    for (var j = 2; j <= r.daily.length + 1; j++) ["C", "D", "E", "F"].forEach(function (col) { var c = ws3[col + j]; if (c) c.z = M; });
-    var a4 = [["Type", "Category", "Amount in " + state.disp]];
-    Object.keys(r.expC).sort(function (a, b) { return r.expC[b] - r.expC[a]; }).forEach(function (k) { a4.push(["Expense", k, round2(r.expC[k])]); });
-    Object.keys(r.incC).sort(function (a, b) { return r.incC[b] - r.incC[a]; }).forEach(function (k) { a4.push(["Income", k, round2(r.incC[k])]); });
-    var ws4 = XLSX.utils.aoa_to_sheet(a4); ws4["!cols"] = [{ wch: 10 }, { wch: 22 }, { wch: 18 }];
-    for (var q = 2; q <= a4.length; q++) if (ws4["C" + q]) ws4["C" + q].z = M;
-    var wb = XLSX.utils.book_new(), extraErr = false;
+    K2.t(last, 1, "Total"); K2.f(last, 9, "SUM(J2:J" + last + ")", round2(r.net), M); K2.role(last, "total", 0, head.length - 1);
+    var ws2 = K2.done([12, 10, 20, 9, 14, 20, 16, 14, 36, 16, 20, 14, 20, 24], { tab: "7F7F7F", grid: true, freeze: { r: 1, c: 0 }, ptitle: [0, 0], filter: "A1:" + xRef(Math.max(last - 1, 1), head.length - 1), land: true });
+
+    /* Daily */
+    var K3 = sheetKit();
+    ["Date", "Items", "In", "Out", "Net", "Cumulative"].forEach(function (h, c) { K3.t(0, c, h); }); K3.role(0, "head", 0, 5); K3.h(0, 22);
+    r.daily.forEach(function (d, k) { K3.t(k + 1, 0, d.date); K3.n(k + 1, 1, d.n, "0"); [d.inc, d.exp, d.net, d.cum].forEach(function (v, c) { K3.n(k + 1, 2 + c, round2(v), M); }); });
+    var ws3 = K3.done([12, 8, 14, 14, 14, 14], { tab: "7F7F7F", grid: true, freeze: { r: 1, c: 0 }, ptitle: [0, 0] });
+
+    /* By category */
+    var K4 = sheetKit(), q = 1;
+    ["Type", "Category", "Amount in " + state.disp].forEach(function (h, c) { K4.t(0, c, h); }); K4.role(0, "head", 0, 2); K4.h(0, 22); K4.al(0, 2, "right");
+    Object.keys(r.expC).sort(function (a, b) { return r.expC[b] - r.expC[a]; }).forEach(function (k) { K4.t(q, 0, "Expense"); K4.t(q, 1, k); K4.n(q, 2, round2(r.expC[k]), M); q++; });
+    Object.keys(r.incC).sort(function (a, b) { return r.incC[b] - r.incC[a]; }).forEach(function (k) { K4.t(q, 0, "Income"); K4.t(q, 1, k); K4.n(q, 2, round2(r.incC[k]), M); q++; });
+    var ws4 = K4.done([10, 22, 18], { tab: "7F7F7F", grid: true, freeze: { r: 1, c: 0 } });
+
     /* sheets 1 to 3: the statement-style report; the detail sheets (Summary, Transactions, Daily, By category) follow */
     try {
-      var st1 = sheetStatement(rep);
-      XLSX.utils.book_append_sheet(wb, st1.ws, "Financial Statement");
-      XLSX.utils.book_append_sheet(wb, sheetCards(rep), "Card Installments");
-      XLSX.utils.book_append_sheet(wb, sheetMonthly(rep, st1), "Expense Analysis");
-    } catch (err) { extraErr = true; wb = XLSX.utils.book_new(); try { console.error(err); } catch (e2) {} }
-    XLSX.utils.book_append_sheet(wb, ws1, "Summary"); XLSX.utils.book_append_sheet(wb, ws2, "Transactions");
-    XLSX.utils.book_append_sheet(wb, ws3, "Daily"); XLSX.utils.book_append_sheet(wb, ws4, "By category");
-    var out = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-    saveFile("wallet-report-" + rep.from + "_to_" + rep.to + ".xlsx", out, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet").then(function (res) { done(res, "report to Excel" + (extraErr ? " (the statement sheets could not be built)" : "")); });
+      var st1 = sheetStatement(rep), wsC = sheetCards(rep), wsM = sheetMonthly(rep, st1), chk = sheetCheck(rep, M2), dir = sheetDirector(rep, st1, M2), sup = sheetSupport(rep, st1, M2, dir);
+      sheets.push({ name: "Director Summary", sh: dir.ws }, { name: "Financial Statement", sh: st1.ws }, { name: "Card Installments", sh: wsC }, { name: "Expense Analysis", sh: wsM }, { name: "Supporting Docs", sh: sup }, { name: "Transaction Check", sh: chk });
+    } catch (err) { extraErr = true; sheets = []; try { console.error(err); } catch (e2) {} }
+    sheets.push({ name: "Summary", sh: ws1 }, { name: "Transactions", sh: ws2 }, { name: "Daily", sh: ws3 }, { name: "By category", sh: ws4 });
+    return { out: xWrite(sheets), extraErr: extraErr };
+  }
+
+  /* Export Excel opens a small popup first: which currency to show and which ledgers to include */
+  var expDlg = $("#expDlg");
+  function withScope(ids, cur, fn) {
+    var oldSet = EXSET, oldCur = state.disp;
+    EXSET = ids; state.disp = cur; bumpView(); buildMap();
+    try { return fn(); } finally { EXSET = oldSet; state.disp = oldCur; bumpView(); buildMap(); }
+  }
+  $("#rExportX").addEventListener("click", function () {
+    if ($("#rErr").textContent || !state.rep) { rmsg("Fix the date range first.", true); return; }
+    var rp = state.rep, pre = ledgerId === "all" ? LEDGERS.filter(function (l) { return inAllOK(l.id); }).map(function (l) { return l.id; }) : [ledgerId];
+    $("#expCur").innerHTML = CODES.map(function (c) { return '<option value="' + c + '"' + (c === state.disp ? " selected" : "") + ">" + c + (CUR[c] && CUR[c].sym ? " (" + esc(CUR[c].sym) + ")" : "") + "</option>"; }).join("");
+    $("#expLeds").innerHTML = LEDGERS.map(function (l) { return '<label class="chk"><input type="checkbox" value="' + esc(l.id) + '"' + (pre.indexOf(l.id) >= 0 ? " checked" : "") + "> " + esc(l.name) + "</label>"; }).join("");
+    $("#expLedBox").hidden = LEDGERS.length < 2;
+    $("#expSum").textContent = fmtDate(rp.from) + " \u2013 " + fmtDate(rp.to);
+    $("#expErr").textContent = "";
+    expDlg.showModal();
   });
+  $("#expGo").addEventListener("click", function () {
+    var multi = LEDGERS.length > 1, base = state.rep, res = null, cur = $("#expCur").value;
+    var ids = multi ? Array.prototype.slice.call(document.querySelectorAll("#expLeds input:checked")).map(function (i) { return i.value; }) : LEDGERS.map(function (l) { return l.id; });
+    if (!ids.length) { $("#expErr").textContent = "Tick at least one ledger."; return; }
+    if (!base) { $("#expErr").textContent = "Fix the date range first."; return; }
+    try {
+      res = withScope(ids, cur, function () {
+        var rep = { from: base.from, to: base.to, r: compute(base.from, base.to), ledgers: ids.map(ledgerName).join(", ") };
+        return rep.r.n ? buildReport(rep) : null;
+      });
+    } catch (err) { try { console.error(err); } catch (e2) {} $("#expErr").textContent = "Could not build the report."; return; }
+    if (!res) { $("#expErr").textContent = "No transactions in this range for the ledgers you ticked."; return; }
+    expDlg.close();
+    var tag = !multi || ids.length === LEDGERS.length ? "" : ids.length === 1 ? "-" + (ledgerName(ids[0]).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "ledger") : "-selected-ledgers";
+    saveFile("wallet-report-" + base.from + "_to_" + base.to + tag + ".xlsx", res.out, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet").then(function (r2) { done(r2, "report to Excel" + (res.extraErr ? " (the statement sheets could not be built)" : "")); });
+  });
+  $("#expCancel").addEventListener("click", function () { expDlg.close(); });
+  $("#expClose").addEventListener("click", function () { expDlg.close(); });
 
   /* ===== Import (same layout as Export CSV / the Transactions sheet of Export Excel) ===== */
   function parseCSV(text) {
