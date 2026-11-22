@@ -924,7 +924,7 @@ header.top .pills { flex: 1 1 100%; margin-top: 0; }
 }
 @media (max-width: 699px) and (prefers-reduced-motion: no-preference) {
   .navrow .tabs {
-    --tabdur: .55s; --tabease: cubic-bezier(.32, .72, 0, 1);
+    --tabdur: 1s; --tabease: cubic-bezier(.45, .05, .15, 1);
     transition: width var(--tabdur) var(--tabease), padding var(--tabdur) var(--tabease), gap var(--tabdur) var(--tabease), border-radius var(--tabdur) var(--tabease), background-color var(--tabdur) ease, border-color var(--tabdur) ease, box-shadow var(--tabdur) ease;
   }
   .navrow .tabs button {
@@ -932,9 +932,9 @@ header.top .pills { flex: 1 1 100%; margin-top: 0; }
   }
   .navrow .tabs button svg { transition: width var(--tabdur) var(--tabease), height var(--tabdur) var(--tabease); }
   /* growing back: labels wait for the bar to open, then fade in */
-  .navrow .tabs .lb { transition: opacity .35s ease .2s, transform .45s var(--tabease) .2s, height var(--tabdur) var(--tabease); }
+  .navrow .tabs .lb { transition: opacity .5s ease .45s, transform .7s var(--tabease) .4s, height var(--tabdur) var(--tabease); }
   /* shrinking: labels fade out right away, height collapses a beat later */
-  .navrow .tabs.mini .lb { transition: opacity .18s ease, transform .3s var(--tabease), height var(--tabdur) var(--tabease) .08s; }
+  .navrow .tabs.mini .lb { transition: opacity .32s ease, transform .5s var(--tabease), height var(--tabdur) var(--tabease) .12s; }
 }
 </style>
 <script>
