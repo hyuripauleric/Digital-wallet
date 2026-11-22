@@ -936,6 +936,15 @@ header.top .pills { flex: 1 1 100%; margin-top: 0; }
   /* shrinking: labels fade out right away, height collapses a beat later */
   .navrow .tabs.mini .lb { transition: opacity .32s ease, transform .5s var(--tabease), height var(--tabdur) var(--tabease) .12s; }
 }
+/* smoother content fade when switching tabs (JS limits it to once every 10s) */
+@media (prefers-reduced-motion: no-preference) {
+  .view.vin { animation: vin2 .7s cubic-bezier(.22, .61, .36, 1) both; }
+  .view.vin .dp:not([hidden]) { animation: pin2 .85s cubic-bezier(.22, .61, .36, 1) both; }
+  .view.vin .dp:nth-child(2) { animation-delay: .07s; } .view.vin .dp:nth-child(3) { animation-delay: .14s; } .view.vin .dp:nth-child(4) { animation-delay: .21s; }
+  .view.vin .dp:nth-child(5) { animation-delay: .28s; } .view.vin .dp:nth-child(n+6) { animation-delay: .35s; }
+}
+@keyframes vin2 { from { opacity: 0; } to { opacity: 1; } }
+@keyframes pin2 { from { opacity: 0; transform: translateY(14px); filter: blur(3px); } to { opacity: 1; transform: none; filter: blur(0); } }
 </style>
 <script>
 (function () {
@@ -4791,7 +4800,9 @@ header.top .pills { flex: 1 1 100%; margin-top: 0; }
     Object.keys(VIEWS).forEach(function (k) { $(VIEWS[k]).hidden = VIEWS[k] !== VIEWS[v]; });
     $("#rangeHost").hidden = v !== "rep";
     Object.keys(TABS).forEach(function (k) { $(TABS[k]).setAttribute("aria-pressed", String(k === v)); });
-    var vw = $(VIEWS[v]); vw.classList.remove("vin"); void vw.offsetWidth; vw.classList.add("vin"); setTimeout(function () { vw.classList.remove("vin"); }, 900);
+    var vw = $(VIEWS[v]), nowT = Date.now();
+    /* smooth fade-in of the tab's content, played at most once every 10 seconds */
+    if (nowT - (showView.lastAnim || 0) >= 10000) { showView.lastAnim = nowT; vw.classList.remove("vin"); void vw.offsetWidth; vw.classList.add("vin"); setTimeout(function () { vw.classList.remove("vin"); }, 1500); }
     render();
   }
   /* Calendar and Report live on the dashboard now: bring a widget back if it was hidden, then scroll to it */
