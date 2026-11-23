@@ -1,6 +1,6 @@
 /* Wallet service worker: keeps a copy of the app so it opens offline.
    Bump VERSION whenever index.html changes so phones pick up the new copy. */
-var VERSION = "wallet-v79";
+var VERSION = "wallet-v83";
 var SHELL = ["./", "./index.html", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png", "./icon-maskable-512.png"];
 
 self.addEventListener("install", function (e) {
@@ -17,14 +17,14 @@ self.addEventListener("fetch", function (e) {
   /* app pages: network first so updates arrive, cached copy when offline */
   if (url.origin === location.origin) {
     e.respondWith(fetch(req).then(function (res) {
-      var copy = res.clone(); caches.open(VERSION).then(function (c) { c.put(req, copy); }); return res;
+      if (res.ok) { var copy = res.clone(); caches.open(VERSION).then(function (c) { c.put(req, copy); }); } return res;
     }).catch(function () { return caches.match(req).then(function (m) { return m || caches.match("./index.html"); }); }));
     return;
   }
   /* fonts and the Excel library: cached after the first load so Excel import/export works offline */
   if (url.hostname === "fonts.googleapis.com" || url.hostname === "fonts.gstatic.com" || url.hostname === "cdnjs.cloudflare.com") {
     e.respondWith(caches.match(req).then(function (m) {
-      return m || fetch(req).then(function (res) { var copy = res.clone(); caches.open(VERSION).then(function (c) { c.put(req, copy); }); return res; });
+      return m || fetch(req).then(function (res) { if (res.ok || res.type === "opaque") { var copy = res.clone(); caches.open(VERSION).then(function (c) { c.put(req, copy); }); } return res; });
     }));
   }
 });
