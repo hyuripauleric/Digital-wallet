@@ -87,6 +87,9 @@ select, input[type="text"], input[type="number"], input[type="date"] {
 .pill { display: inline-flex; align-items: baseline; gap: 8px; padding: 5px 12px; background: var(--glass-strong); border: 1px solid var(--line); border-radius: 999px; font-size: 12.5px; color: var(--muted); }
 .pill b { font-family: var(--font-num); font-variant-numeric: tabular-nums; font-weight: 600; color: var(--ink); }
 .pill b.win { color: var(--win); } .pill b.loss { color: var(--loss); }
+.pillbtn { font-family: inherit; cursor: pointer; text-align: left; -webkit-tap-highlight-color: transparent; }
+.pillbtn:hover, .pillbtn:focus-visible { border-color: var(--accent); outline: none; }
+.pillbtn .pcar { color: var(--accent); font-weight: 700; }
 
 .btn { background: var(--glass-strong); border: 1px solid var(--line); border-radius: 8px; min-height: 36px; padding: 0 14px; }
 .btn:hover { border-color: var(--accent); }
@@ -1046,11 +1049,6 @@ html.wl-cover dialog::backdrop { background: transparent; }
 html:not(.wl-locked) #lockGo, html:not(.wl-locked) .locksub { visibility: hidden; }
 .lockmsg { min-height: 18px; margin: 6px 0 0; font-size: 12.5px; color: var(--muted); }
 .lockmsg.bad { color: var(--loss); }
-#lockBtn svg { width: 18px; height: 18px; display: block; margin: auto; }
-#lockBtn .lo { display: none; }
-#lockBtn[aria-pressed="false"] .lc { display: none; }
-#lockBtn[aria-pressed="false"] .lo { display: block; }
-#lockBtn[aria-pressed="true"] { color: var(--accent); }
 .wltoast { position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom, 0px) + 92px); transform: translateX(-50%); z-index: 1500; max-width: calc(100% - 32px); padding: 9px 16px; border-radius: 999px; background: var(--surface); color: var(--ink); border: 1px solid var(--glass-line); box-shadow: var(--shadow); font-size: 13px; text-align: center; pointer-events: none; opacity: 0; transition: opacity 0.2s; }
 .wltoast.on { opacity: 1; }
 /* Face ID on/off switch: a row at the bottom of the Import / Export menu, so the header stays as it is */
@@ -1091,7 +1089,6 @@ html:not(.wl-locked) #lockGo, html:not(.wl-locked) .locksub { visibility: hidden
           <svg class="moon" viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 14.2A8.6 8.6 0 0 1 9.8 3.5a8.6 8.6 0 1 0 10.7 10.7z"/></svg>
         </span>
       </button>
-      <button type="button" class="btn icon" id="lockBtn" aria-pressed="false" aria-label="Turn on Face ID lock" title="Face ID lock" hidden><svg class="lo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 7.6-1.7"/></svg><svg class="lc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></button>
       <button type="button" class="btn" id="qaWallet">+ Wallet</button>
     </div>
     <div class="ledgerbar">
@@ -1124,15 +1121,14 @@ html:not(.wl-locked) #lockGo, html:not(.wl-locked) .locksub { visibility: hidden
       <button type="button" class="btn rchip" id="rangeChip" aria-expanded="false" aria-controls="rangeBar"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span id="rangeChipTxt">This month</span><span class="rcaret" aria-hidden="true">▾</span></button>
       </div>
       <div class="rangebar" id="rangeBar">
-        <div class="field" hidden><label for="rFrom">From</label><input type="date" id="rFrom"></div>
-        <div class="field" hidden><label for="rTo">To</label><input type="date" id="rTo"></div>
         <div class="presets" role="group" aria-label="Quick ranges">
           <button type="button" class="btn sm" data-preset="month" aria-pressed="false">This month</button>
           <button type="button" class="btn sm" data-preset="lastmonth" aria-pressed="false">Last month</button>
-          <button type="button" class="btn sm" data-preset="d30" aria-pressed="false">Last 30 days</button>
-          <button type="button" class="btn sm" data-preset="ytd" aria-pressed="false">Year to date</button>
           <button type="button" class="btn sm" data-preset="all" aria-pressed="false">All time</button>
+          <button type="button" class="btn sm" id="rCustom" aria-pressed="false">Custom</button>
         </div>
+        <div class="field" id="rFromF" hidden><label for="rFrom">From</label><input type="date" id="rFrom"></div>
+        <div class="field" id="rToF" hidden><label for="rTo">To</label><input type="date" id="rTo"></div>
         <div class="rexp">
           <div class="dd" id="ddIO">
             <button type="button" class="btn primary sm" id="ddBtn" aria-haspopup="menu" aria-expanded="false">Import / Export <span aria-hidden="true">▾</span></button>
@@ -1812,8 +1808,10 @@ html:not(.wl-locked) #lockGo, html:not(.wl-locked) .locksub { visibility: hidden
   function balances(upto) {
     var b = {};
     state.wallets.forEach(function (w) { b[w.id] = Number(w.opening) || 0; });
+    /* entries dated in the future "float": they show on their day but only move balances once that date arrives */
+    var lim = upto || todayStr;
     state.tx.forEach(function (t) {
-      if (!validT(t) || (upto && t.date > upto)) return;
+      if (!validT(t) || t.date > lim) return;
       var hf = b[t.wallet] !== undefined, ht = b[t.to] !== undefined;
       if (t.kind === "in") { if (hf) b[t.wallet] += t.amount; }
       else if (t.kind === "out") { if (hf) b[t.wallet] -= t.amount; }
@@ -1977,7 +1975,7 @@ html:not(.wl-locked) #lockGo, html:not(.wl-locked) .locksub { visibility: hidden
     var nw = netWorth(balances()), td = days[todayStr], ex = td ? td.exp : 0;
     $("#pills").innerHTML =
       '<span class="pill">Net worth <b>' + D(nw) + '</b></span>' +
-      '<span class="pill">Today\'s expense <b class="' + (ex > 0 ? "loss" : "") + '">' + D(ex) + '</b></span>';
+      '<button type="button" class="pill pillbtn" id="pillToday" aria-haspopup="dialog" title="Show today\'s expenses">Today\'s expense <b class="' + (ex > 0 ? "loss" : "") + '">' + D(ex) + '</b><span class="pcar" aria-hidden="true">\u203a</span></button>';
   }
   var bOpen = false;
   function fillBudget() {
@@ -2112,7 +2110,7 @@ html:not(.wl-locked) #lockGo, html:not(.wl-locked) .locksub { visibility: hidden
       });
       return;
     }
-    put("t", t).then(function () { $("#add").disabled = false; $("#amt").value = ""; $("#amt2").value = ""; $("#note").value = ""; $("#cat").value = ""; $("#sub").value = ""; updateForm(); $("#amt").focus(); });
+    put("t", t).then(function () { $("#add").disabled = false; if (t.date > todayStr) setStatus("Scheduled for " + fmtDate(t.date) + ". It will post to your balance on that day."); $("#amt").value = ""; $("#amt2").value = ""; $("#note").value = ""; $("#cat").value = ""; $("#sub").value = ""; updateForm(); $("#amt").focus(); });
   });
 
   /* ===== Subcategories: the list follows the chosen category ===== */
@@ -2495,7 +2493,7 @@ html:not(.wl-locked) #lockGo, html:not(.wl-locked) .locksub { visibility: hidden
       $("#aSave").disabled = false;
       if (!id) { err.textContent = "Could not save the transaction. Try again."; return; }
       var q = date.split("-"); state.sel = date; state.y = +q[0]; state.m = +q[1] - 1;
-      closeAcctDlg(); render(); setStatus("Added to " + w.name + ".");
+      closeAcctDlg(); render(); setStatus(date > todayStr ? "Scheduled for " + fmtDate(date) + ". It will post to " + w.name + " on that day." : "Added to " + w.name + ".");
     });
   });
   /* transactions list shown beside the account popup */
@@ -2523,7 +2521,7 @@ html:not(.wl-locked) #lockGo, html:not(.wl-locked) .locksub { visibility: hidden
       var hpk = histBulk.mode && histBulk.pick[t.id];
       var hlead = histBulk.mode ? '<label class="apick"><input type="checkbox" data-pickbox aria-label="Select transaction"' + (hpk ? " checked" : "") + '></label>' : '<span class="aic" style="--tc:' + col + '">' + svgi(AIC[t.kind]) + "</span>";
       html += '<div class="act' + (hpk ? " sel" : "") + '"' + (histBulk.mode ? "" : ' role="button" tabindex="0" title="Click to edit this transaction"') + ' data-hid="' + esc(t.id) + '">' + hlead + "<div><span>" + txTitle(t) + "</span>" +
-        (t.rid ? '<span class="rec" title="Posted automatically by a recurring item" aria-label="Recurring">↻</span>' : "") + '<div class="note">' + sub + '</div></div><span class="amt ' + ac + '">' + amt + "</span>" + SWBTN + "</div>";
+        (t.date > todayStr ? '<span class="rec" title="Scheduled: posts to your balance on this date">Scheduled</span>' : "") + (t.rid ? '<span class="rec" title="Posted automatically by a recurring item" aria-label="Recurring">↻</span>' : "") + '<div class="note">' + sub + '</div></div><span class="amt ' + ac + '">' + amt + "</span>" + SWBTN + "</div>";
     });
     if (more > 0) html += '<div class="hmore"><button type="button" class="btn sm" data-hmore>Show ' + Math.min(HIST_STEP, more) + " more</button></div>";
     renderBulk(histBulk, $("#aHistBulk"), $("#aHistSel"));
@@ -2968,11 +2966,10 @@ html:not(.wl-locked) #lockGo, html:not(.wl-locked) .locksub { visibility: hidden
   /* ===== Report ===== */
   var ALL_FROM = "1995-10-05"; /* default "From" date for the All time filter */
   function presets() {
-    var t = new Date(now.getFullYear(), now.getMonth(), now.getDate()), all = state.tx.filter(validT).map(function (x) { return x.date; }).sort(), ago = new Date(t); ago.setDate(ago.getDate() - 29);
+    var t = new Date(now.getFullYear(), now.getMonth(), now.getDate()), all = state.tx.filter(validT).map(function (x) { return x.date; }).sort();
     return {
       month: [ds(t.getFullYear(), t.getMonth(), 1), dstr(new Date(t.getFullYear(), t.getMonth() + 1, 0))],
       lastmonth: [dstr(new Date(t.getFullYear(), t.getMonth() - 1, 1)), dstr(new Date(t.getFullYear(), t.getMonth(), 0))],
-      d30: [dstr(ago), dstr(t)], ytd: [ds(t.getFullYear(), 0, 1), dstr(t)],
       all: [ALL_FROM, all.length && all[all.length - 1] > ALL_FROM ? all[all.length - 1] : dstr(t)]
     };
   }
@@ -3026,6 +3023,22 @@ html:not(.wl-locked) #lockGo, html:not(.wl-locked) .locksub { visibility: hidden
     });
   });
   $("#rcClose").addEventListener("click", function () { rcDlg.close(); });
+  /* tap "Today's expense" to see the transactions behind the number */
+  function openTodayTx() {
+    var list = state.tx.filter(function (t) { return validR(t) && t.kind === "out" && t.date === todayStr; }).sort(function (a, b) { return (b.createdAt || 0) - (a.createdAt || 0); });
+    var total = 0; list.forEach(function (t) { total += conv(t.amount, wmap[t.wallet].cur, null, t.date); });
+    $("#rcT").textContent = "Today\u2019s expense";
+    $("#rcSum").textContent = fmtDate(todayStr) + " \u00b7 " + list.length + (list.length === 1 ? " transaction" : " transactions") + " \u00b7 " + D(total);
+    $("#rcList").innerHTML = list.length ? list.map(function (t) {
+      var w = wmap[t.wallet], a = conv(t.amount, w.cur, null, t.date), cat = t.cat || "Other", parts = [esc(w.name)];
+      if (t.sub) parts.push(esc(t.sub)); if (t.payee) parts.push(esc(t.payee)); if (t.note) parts.push(esc(t.note));
+      return '<div class="rcrow"><span class="rt">' + esc(cat) + '</span><span class="ra loss">' + D(a) + "</span>" +
+        '<span class="rs">' + parts.join(" \u00b7 ") + "</span>" + (w.cur !== state.disp ? '<span class="ro">' + money(t.amount, w.cur) + "</span>" : "") + "</div>";
+    }).join("") : '<p class="empty">No expenses logged today yet.</p>';
+    if (!rcDlg.open) rcDlg.showModal();
+    rcDlg.scrollTop = 0;
+  }
+  $("#pills").addEventListener("click", function (e) { if (e.target.closest && e.target.closest("#pillToday")) openTodayTx(); });
   /* same as the New transaction popup: stays open until you tap the X (backdrop taps and Esc do nothing); swipe down on phones still closes it */
   rcDlg.addEventListener("cancel", function (e) { e.preventDefault(); });
   function rmsg(text, warn) { var el = $("#rMsg"); el.textContent = text; el.className = "status" + (warn ? " warn" : ""); }
@@ -3055,25 +3068,30 @@ html:not(.wl-locked) #lockGo, html:not(.wl-locked) .locksub { visibility: hidden
     $("#sortBtn").textContent = state.sortNew ? "Newest first ↓" : "Oldest first ↑";
   }
   $("#sortBtn").addEventListener("click", function () { state.sortNew = !state.sortNew; renderReport(); });
-  $("#rFrom").addEventListener("change", function () { syncMonth(); render(); }); $("#rTo").addEventListener("change", function () { syncMonth(); render(); });
-  document.querySelectorAll("[data-preset]").forEach(function (b) { b.addEventListener("click", function () { var p = presets()[b.getAttribute("data-preset")]; $("#rFrom").value = p[0]; $("#rTo").value = p[1]; rmsg(""); syncMonth(); render(); }); });
+  $("#rFrom").addEventListener("change", function () { customOpen = true; syncMonth(); render(); }); $("#rTo").addEventListener("change", function () { customOpen = true; syncMonth(); render(); });
+  document.querySelectorAll("[data-preset]").forEach(function (b) { b.addEventListener("click", function () { var p = presets()[b.getAttribute("data-preset")]; customOpen = false; $("#rFrom").value = p[0]; $("#rTo").value = p[1]; rmsg(""); syncMonth(); render(); }); });
   /* ===== Installable web app: offline copy of the app ===== */
   if ("serviceWorker" in navigator && /^https?:$/.test(location.protocol)) { window.addEventListener("load", function () { navigator.serviceWorker.register("sw.js").catch(function () {}); }); }
 
   /* ===== Collapsible date range (phones) ===== */
   var rcHost = $("#rangeHost"), rcChip = $("#rangeChip"), rcTimer = null;
   var RC_M = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-  var RC_NAMES = { month: "This month", lastmonth: "Last month", d30: "Last 30 days", ytd: "Year to date", all: "All time" };
+  var RC_NAMES = { month: "This month", lastmonth: "Last month", all: "All time" };
+  var customOpen = false; /* true while the person is choosing their own From / To dates */
   function rangeNarrow() { return window.matchMedia("(max-width: 699px)").matches; }
   function setRangeOpen(o) { rcHost.classList.toggle("rc", !o); rcChip.setAttribute("aria-expanded", String(o)); clearTimeout(rcTimer); }
   function updateRangeChip() {
     var from = $("#rFrom").value, to = $("#rTo").value, pr = presets(), name = "", txt;
     Object.keys(RC_NAMES).forEach(function (k) { if (!name && pr[k][0] === from && pr[k][1] === to) name = RC_NAMES[k]; });
+    var custom = customOpen || !name;
+    $("#rFromF").hidden = !custom; $("#rToF").hidden = !custom; $("#rCustom").setAttribute("aria-pressed", String(custom));
+    function cf(d, withY) { var q = d.split("-"); return RC_M[+q[1] - 1] + " " + (+q[2]) + (withY ? ", " + q[0] : ""); }
     if (!from || !to) txt = "Pick dates";
-    else if (name === "All time") txt = name;
-    else txt = name || "This month";
+    else if (name) txt = name;
+    else txt = from.slice(0, 4) === to.slice(0, 4) && from.slice(0, 4) === String(now.getFullYear()) ? cf(from) + " \u2013 " + cf(to) : cf(from, true) + " \u2013 " + cf(to, true);
     $("#rangeChipTxt").textContent = txt;
   }
+  $("#rCustom").addEventListener("click", function () { customOpen = true; updateRangeChip(); $("#rFrom").focus(); });
   rcChip.addEventListener("click", function (e) { e.stopPropagation(); setRangeOpen(rcHost.classList.contains("rc")); });
   document.querySelectorAll("[data-preset]").forEach(function (b) { b.addEventListener("click", function () { if (rangeNarrow()) setRangeOpen(false); }); });
   ["#rFrom", "#rTo"].forEach(function (sel) {
@@ -4374,7 +4392,7 @@ html:not(.wl-locked) #lockGo, html:not(.wl-locked) .locksub { visibility: hidden
       var col = t.kind === "xfer" ? "var(--c6)" : colorVar(t.cat), on = !actBulk.mode && t.id === actSel, pk = actBulk.mode && actBulk.pick[t.id];
       var lead = actBulk.mode ? '<label class="apick"><input type="checkbox" data-pickbox aria-label="Select transaction"' + (pk ? " checked" : "") + '></label>' : '<span class="aic" style="--tc:' + col + '" title="' + esc(t.kind === "xfer" ? "Transfer" : t.cat || "Other") + '">' + svgi(AIC[t.kind]) + '</span>';
       html += '<div class="act' + (on || pk ? " sel" : "") + '" data-id="' + esc(t.id) + '">' + lead + '<div><button type="button" class="linkbtn plain" data-pick="' + esc(t.id) + '" aria-expanded="' + on + '">' + txTitle(t) + "</button>" +
-        (t.rid ? '<span class="rec" title="Posted automatically by a recurring item" aria-label="Recurring">↻</span>' : "") + '<div class="note">' + sub + "</div></div>" +
+        (t.date > todayStr ? '<span class="rec" title="Scheduled: posts to your balance on this date">Scheduled</span>' : "") + (t.rid ? '<span class="rec" title="Posted automatically by a recurring item" aria-label="Recurring">↻</span>' : "") + '<div class="note">' + sub + "</div></div>" +
         '<span class="amt ' + ac + '">' + amt + "</span>" + SWBTN + "</div>";
       if (on) html += '<div class="actrow"><button type="button" class="btn sm" data-aedit="' + esc(t.id) + '">Edit</button><button type="button" class="btn sm" data-adel="' + esc(t.id) + '">Delete</button></div>';
     });
@@ -5271,7 +5289,7 @@ html:not(.wl-locked) #lockGo, html:not(.wl-locked) .locksub { visibility: hidden
 /* Face ID lock. Uses the phone's built-in passkey check (WebAuthn): Face ID, with the device passcode as the fallback.
    Settings live under "wlsec-" so backups and restores never copy the lock to another device. */
 (function () {
-  var root = document.documentElement, scr = document.getElementById("lockScr"), btn = document.getElementById("lockBtn");
+  var root = document.documentElement, scr = document.getElementById("lockScr"), btn = document.getElementById("lockBtn") || document.createElement("button"); /* header button removed: a detached stand-in keeps the menu toggle working */
   var go = document.getElementById("lockGo"), msg = document.getElementById("lockMsg"), mi = document.getElementById("lockMenu");
   if (!scr || !btn || !go) return;
   var K_ON = "wlsec-on", K_ID = "wlsec-id", GRACE = 60000; /* ask again after the app was away for a minute */
