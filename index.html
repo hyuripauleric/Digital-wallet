@@ -1062,6 +1062,19 @@ html:not(.wl-locked) #lockGo, html:not(.wl-locked) .locksub { visibility: hidden
 .lksw::after { content: ""; position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 50%; background: var(--muted); transition: transform 0.2s, background 0.2s; }
 .lkrow[aria-checked="true"] .lksw { background: var(--accent); border-color: var(--accent); }
 .lkrow[aria-checked="true"] .lksw::after { transform: translateX(14px); background: #fff; }
+/* Credit cards: tiles stretch to fill the panel when it is resized; 1 to 3 cards use the full row, a single card fills the whole panel */
+.dp[data-pid="cards"] > .panel { display: flex; flex-direction: column; }
+.dp[data-pid="cards"] > .panel > .phead { flex: none; }
+#dCards { flex: 1 1 auto; min-height: 0; grid-auto-rows: 1fr; align-items: stretch; }
+#dCards .acct { justify-content: space-between; }
+#dCards:has(> .acct:only-child) { grid-template-columns: minmax(0, 1fr); }
+#dCards:has(> .acct:nth-child(2):last-child) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+#dCards:has(> .acct:nth-child(3):last-child) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+#dCards:has(> .acct:only-child) .acct { padding: 18px 20px; gap: 8px; border-radius: 18px; justify-content: space-between; }
+#dCards:has(> .acct:only-child) .acct .an { font-size: clamp(15px, 3.6cqw, 24px); gap: 12px; }
+#dCards:has(> .acct:only-child) .acct .an .wi.lg { width: clamp(34px, 7cqw, 56px); height: clamp(34px, 7cqw, 56px); border-radius: 14px; }
+#dCards:has(> .acct:only-child) .acct .ab { font-size: clamp(22px, 10cqw, 60px); }
+#dCards:has(> .acct:only-child) .acct .as, #dCards:has(> .acct:only-child) .acct .ao { font-size: clamp(12px, 2.4cqw, 16px); }
 </style>
 <script>
 (function () {
@@ -4572,6 +4585,8 @@ html:not(.wl-locked) #lockGo, html:not(.wl-locked) .locksub { visibility: hidden
   renderAccounts = function () { _rAcc.apply(this, arguments); fitNames(); };
   renderCards = function () { _rCrd.apply(this, arguments); fitNames(); };
   window.addEventListener("resize", fitNames);
+  /* re-fit names and amounts whenever the credit cards grid changes size (panel resized, cards added or removed) */
+  if (window.ResizeObserver) { var _fnRaf = 0; new ResizeObserver(function () { cancelAnimationFrame(_fnRaf); _fnRaf = requestAnimationFrame(fitNames); }).observe($("#dCards")); }
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitNames);
   function renderDash() {
     applyLayout(); renderBudgets(); renderAccounts(); renderCards(); renderCashflow(); renderActivity(); renderDaily(); renderDonut(); renderGoals();
