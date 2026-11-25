@@ -1097,6 +1097,11 @@ html:not(.wl-locked) #lockGo, html:not(.wl-locked) .locksub { visibility: hidden
 .blurrng::-moz-range-track { height: 16px; background: transparent; }
 .blurrng::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 2px; height: 16px; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
 .blurrng::-moz-range-thumb { width: 2px; height: 16px; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+/* tab bar shrink: names and the blur slider move in step with the bar (same length, same easing, no delay, both directions) */
+@media (max-width: 699px) and (prefers-reduced-motion: no-preference) {
+  .navrow .tabs .lb, .navrow .tabs.mini .lb { transition: opacity var(--tabdur) var(--tabease), transform var(--tabdur) var(--tabease), height var(--tabdur) var(--tabease); }
+  .navrow .tabs .blurwrap { transition: opacity var(--tabdur) var(--tabease); }
+}
 </style>
 <script>
 (function () {
