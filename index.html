@@ -1079,7 +1079,7 @@ html:not(.wl-locked) #lockGo, html:not(.wl-locked) .locksub { visibility: hidden
 .navrow .tabs { padding-bottom: 22px; }
 @media (min-width: 1100px) { .navrow .tabs { padding-bottom: 28px; } }
 @media (max-width: 699px) { .navrow .tabs.mini { padding-bottom: 5px; } .navrow .tabs.mini .blurwrap { opacity: 0; pointer-events: none; } }
-.blurwrap { --p: 35%; position: absolute; left: 16px; right: 16px; bottom: 4px; height: 16px; opacity: 0.85; transition: opacity .3s ease; }
+.blurwrap { --p: 100%; position: absolute; left: 16px; right: 16px; bottom: 4px; height: 16px; opacity: 0.85; transition: opacity .3s ease; }
 @media (min-width: 1100px) { .blurwrap { left: 9px; right: 9px; bottom: 8px; } }
 .blurwrap:hover, .blurwrap:focus-within { opacity: 1; }
 .blurwrap::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 5px; margin-top: -3.5px; border-top: 1px solid rgba(255, 255, 255, 0.34); border-bottom: 1px solid rgba(255, 255, 255, 0.34); pointer-events: none; }
@@ -1104,7 +1104,7 @@ html:not(.wl-locked) #lockGo, html:not(.wl-locked) .locksub { visibility: hidden
   try { t = localStorage.getItem("wl-theme"); } catch (e) {}
   if (t !== "light" && t !== "dark") t = window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
   document.documentElement.setAttribute("data-theme", t);
-  try { var bl = localStorage.getItem("wl-blur"); if (bl !== null && bl !== "" && isFinite(+bl)) document.documentElement.style.setProperty("--bgblur", Math.max(0, Math.min(40, +bl)) + "px"); } catch (e) {}
+  try { var bl = localStorage.getItem("wl-blur2"); if (bl !== null && bl !== "" && isFinite(+bl)) document.documentElement.style.setProperty("--bgblur", (Math.max(0, Math.min(100, +bl)) * 0.14) + "px"); } catch (e) {}
   var m = document.getElementById("themeColor"); if (m) m.setAttribute("content", t === "dark" ? "#0b0b0c" : "#f2f5f4");
 })();
 </script>
@@ -1152,7 +1152,7 @@ html:not(.wl-locked) #lockGo, html:not(.wl-locked) .locksub { visibility: hidden
       <button type="button" id="tabRep" aria-pressed="false" title="Reports"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg><span class="lb">Reports</span></button>
       <button type="button" id="tabRec" aria-pressed="false" title="Recurring"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span class="lb">Recurring</span></button>
       <button type="button" id="tabRates" aria-pressed="false" title="Rates"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h12l-3-3M17 17H5l3 3"/></svg><span class="lb">Rates</span></button>
-      <div class="blurwrap" id="blurWrap"><i class="blurfill" aria-hidden="true"></i><input type="range" id="blurRange" class="blurrng" min="0" max="40" step="1" value="14" aria-label="Background blur"></div>
+      <div class="blurwrap" id="blurWrap"><i class="blurfill" aria-hidden="true"></i><input type="range" id="blurRange" class="blurrng" min="0" max="100" step="1" value="100" aria-label="Background blur"></div>
     </div>
   </div>
 
@@ -4612,11 +4612,12 @@ html:not(.wl-locked) #lockGo, html:not(.wl-locked) .locksub { visibility: hidden
   /* background blur slider (saved on this device) */
   (function () {
     var r = document.getElementById("blurRange"); if (!r) return;
-    var v = 14; try { var sv = localStorage.getItem("wl-blur"); if (sv !== null && sv !== "" && isFinite(+sv)) v = Math.max(0, Math.min(40, +sv)); } catch (e) {}
-    function apply(x) { document.documentElement.style.setProperty("--bgblur", x + "px"); r.parentNode.style.setProperty("--p", (x / 40 * 100) + "%"); r.parentNode.title = "Background blur: " + x; r.setAttribute("aria-valuetext", x + " pixels"); }
+    var v = 100; try { var sv = localStorage.getItem("wl-blur2"); if (sv !== null && sv !== "" && isFinite(+sv)) v = Math.max(0, Math.min(100, +sv)); } catch (e) {}
+    /* 100% = the standard background blur (14px); lower values soften it down to none */
+    function apply(x) { document.documentElement.style.setProperty("--bgblur", (x * 0.14) + "px"); r.parentNode.style.setProperty("--p", x + "%"); r.parentNode.title = "Background blur: " + x + "%"; r.setAttribute("aria-valuetext", x + " percent"); }
     r.value = v; apply(v);
     r.addEventListener("input", function () { apply(+r.value); });
-    r.addEventListener("change", function () { try { localStorage.setItem("wl-blur", r.value); } catch (e) {} });
+    r.addEventListener("change", function () { try { localStorage.setItem("wl-blur2", r.value); } catch (e) {} });
   })();
   /* re-fit names and amounts whenever the credit cards grid changes size (panel resized, cards added or removed) */
   if (window.ResizeObserver) { var _fnRaf = 0; new ResizeObserver(function () { cancelAnimationFrame(_fnRaf); _fnRaf = requestAnimationFrame(fitNames); }).observe($("#dCards")); }
