@@ -1075,19 +1075,28 @@ html:not(.wl-locked) #lockGo, html:not(.wl-locked) .locksub { visibility: hidden
 #dCards:has(> .acct:only-child) .acct .an .wi.lg { width: clamp(34px, 7cqw, 56px); height: clamp(34px, 7cqw, 56px); border-radius: 14px; }
 #dCards:has(> .acct:only-child) .acct .ab { font-size: clamp(22px, 10cqw, 60px); }
 #dCards:has(> .acct:only-child) .acct .as, #dCards:has(> .acct:only-child) .acct .ao { font-size: clamp(12px, 2.4cqw, 16px); }
-/* Background blur slider: a hairline along the bottom edge of the floating tab bar */
+/* Background blur slider: a transparent double rule along the bottom of the tab bar, filled with a flowing aurora */
 .navrow .tabs { padding-bottom: 26px; }
 @media (min-width: 1100px) { .navrow .tabs { padding-bottom: 32px; } }
-@media (max-width: 699px) { .navrow .tabs.mini { padding-bottom: 5px; } .navrow .tabs.mini .blurrng { opacity: 0; pointer-events: none; } }
-.blurrng { --p: 35%; position: absolute; left: 22px; right: 22px; bottom: 6px; width: auto; height: 16px; margin: 0; padding: 0; min-height: 0; border: 0; background: transparent; -webkit-appearance: none; appearance: none; cursor: pointer; touch-action: none; opacity: 0.8; transition: opacity .25s ease; }
-@media (min-width: 1100px) { .blurrng { left: 12px; right: 12px; bottom: 10px; } }
-.blurrng:hover, .blurrng:active, .blurrng:focus-visible { opacity: 1; }
+@media (max-width: 699px) { .navrow .tabs.mini { padding-bottom: 5px; } .navrow .tabs.mini .blurwrap { opacity: 0; pointer-events: none; } }
+.blurwrap { --p: 35%; position: absolute; left: 22px; right: 22px; bottom: 6px; height: 16px; opacity: 0.85; transition: opacity .3s ease; }
+@media (min-width: 1100px) { .blurwrap { left: 12px; right: 12px; bottom: 10px; } }
+.blurwrap:hover, .blurwrap:focus-within { opacity: 1; }
+.blurwrap::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 5px; margin-top: -3.5px; border-top: 1px solid rgba(255, 255, 255, 0.34); border-bottom: 1px solid rgba(255, 255, 255, 0.34); pointer-events: none; }
+.blurfill { position: absolute; left: 0; top: 50%; width: var(--p); height: 3px; margin-top: -2px; pointer-events: none; overflow: hidden; border-radius: 2px;
+  background: linear-gradient(90deg, #5cd1b2, #4fb3ff, #9a8cff, #ff8fd0, #5cd1b2, #4fb3ff, #9a8cff, #ff8fd0, #5cd1b2) 0 0 / 200% 100% repeat-x;
+  -webkit-mask: linear-gradient(90deg, #000 calc(100% - 16px), transparent); mask: linear-gradient(90deg, #000 calc(100% - 16px), transparent);
+  filter: drop-shadow(0 0 4px rgba(110, 200, 255, 0.7)); animation: auroraflow 7s linear infinite; }
+.blurfill::after { content: ""; position: absolute; inset: 0; background: linear-gradient(100deg, transparent 0 38%, rgba(255, 255, 255, 0.75) 50%, transparent 62% 100%) 0 0 / 60px 100% repeat-x; animation: auroraglint 2.6s linear infinite; }
+@keyframes auroraflow { to { background-position: 200% 0; } }
+@keyframes auroraglint { to { background-position: 60px 0; } }
+@media (prefers-reduced-motion: reduce) { .blurfill, .blurfill::after { animation: none; } }
+.blurrng { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; padding: 0; min-height: 0; border: 0; background: transparent; -webkit-appearance: none; appearance: none; cursor: pointer; touch-action: none; opacity: 1; }
 .blurrng:focus-visible { outline: 1px solid rgba(255, 255, 255, 0.5); outline-offset: 2px; border-radius: 6px; }
-.blurrng::-webkit-slider-runnable-track { height: 2px; border-radius: 2px; background: linear-gradient(to right, rgba(255, 255, 255, 0.85) var(--p), rgba(255, 255, 255, 0.22) var(--p)); }
-.blurrng::-moz-range-track { height: 2px; border-radius: 2px; background: rgba(255, 255, 255, 0.22); }
-.blurrng::-moz-range-progress { height: 2px; border-radius: 2px; background: rgba(255, 255, 255, 0.85); }
-.blurrng::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 12px; height: 12px; margin-top: -5px; border-radius: 50%; border: 0; background: #fff; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.45); }
-.blurrng::-moz-range-thumb { width: 12px; height: 12px; border-radius: 50%; border: 0; background: #fff; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.45); }
+.blurrng::-webkit-slider-runnable-track { height: 16px; background: transparent; }
+.blurrng::-moz-range-track { height: 16px; background: transparent; }
+.blurrng::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 2px; height: 16px; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+.blurrng::-moz-range-thumb { width: 2px; height: 16px; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
 </style>
 <script>
 (function () {
@@ -1143,7 +1152,7 @@ html:not(.wl-locked) #lockGo, html:not(.wl-locked) .locksub { visibility: hidden
       <button type="button" id="tabRep" aria-pressed="false" title="Reports"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg><span class="lb">Reports</span></button>
       <button type="button" id="tabRec" aria-pressed="false" title="Recurring"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span class="lb">Recurring</span></button>
       <button type="button" id="tabRates" aria-pressed="false" title="Rates"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h12l-3-3M17 17H5l3 3"/></svg><span class="lb">Rates</span></button>
-      <input type="range" id="blurRange" class="blurrng" min="0" max="40" step="1" value="14" aria-label="Background blur">
+      <div class="blurwrap" id="blurWrap"><i class="blurfill" aria-hidden="true"></i><input type="range" id="blurRange" class="blurrng" min="0" max="40" step="1" value="14" aria-label="Background blur"></div>
     </div>
   </div>
 
@@ -4604,7 +4613,7 @@ html:not(.wl-locked) #lockGo, html:not(.wl-locked) .locksub { visibility: hidden
   (function () {
     var r = document.getElementById("blurRange"); if (!r) return;
     var v = 14; try { var sv = localStorage.getItem("wl-blur"); if (sv !== null && sv !== "" && isFinite(+sv)) v = Math.max(0, Math.min(40, +sv)); } catch (e) {}
-    function apply(x) { document.documentElement.style.setProperty("--bgblur", x + "px"); r.style.setProperty("--p", (x / 40 * 100) + "%"); r.title = "Background blur: " + x; r.setAttribute("aria-valuetext", x + " pixels"); }
+    function apply(x) { document.documentElement.style.setProperty("--bgblur", x + "px"); r.parentNode.style.setProperty("--p", (x / 40 * 100) + "%"); r.parentNode.title = "Background blur: " + x; r.setAttribute("aria-valuetext", x + " pixels"); }
     r.value = v; apply(v);
     r.addEventListener("input", function () { apply(+r.value); });
     r.addEventListener("change", function () { try { localStorage.setItem("wl-blur", r.value); } catch (e) {} });
