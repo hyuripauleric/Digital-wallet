@@ -1461,8 +1461,11 @@ html:not(.wl-locked) #lockGo, html:not(.wl-locked) .locksub { visibility: hidden
       </div>
       <div class="acalc" id="aCalc" hidden role="group" aria-label="Calculator"><div class="acdisp"><div class="acexp num" id="aCalcExp"></div><div class="acres num" id="aCalcRes">0</div></div><div class="acgrid"><button type="button" data-ck="C" aria-label="Clear" class="clr">C</button><button type="button" data-ck="(" class="op">(</button><button type="button" data-ck=")" class="op">)</button><button type="button" data-ck="÷" class="op">÷</button><button type="button" data-ck="7">7</button><button type="button" data-ck="8">8</button><button type="button" data-ck="9">9</button><button type="button" data-ck="×" class="op">×</button><button type="button" data-ck="4">4</button><button type="button" data-ck="5">5</button><button type="button" data-ck="6">6</button><button type="button" data-ck="−" class="op">−</button><button type="button" data-ck="1">1</button><button type="button" data-ck="2">2</button><button type="button" data-ck="3">3</button><button type="button" data-ck="+" class="op">+</button><button type="button" data-ck="0">0</button><button type="button" data-ck="." id="aCalcDot">.</button><button type="button" data-ck="back" aria-label="Backspace"><span aria-hidden="true">⌫</span></button><button type="button" data-ck="=" class="eq">=</button></div><p class="acerr" id="aCalcErr" role="alert"></p><div class="acfoot"><button type="button" class="btn" id="aCalcCancel">Cancel</button><button type="button" class="btn primary" id="aCalcUse">Use amount</button></div></div>
       <div class="field" id="aDirBox" hidden><label for="aDir">Effect on balance</label><select id="aDir"><option value="in">Increase the balance</option><option value="out">Decrease the balance</option></select><small class="hint" id="aDirHint"></small></div>
-      <div class="row2" id="aXferRow" hidden>
-        <div class="field"><label for="aTo">To account</label><select id="aTo"></select></div>
+      <div id="aXferRow" hidden>
+        <div class="row2">
+          <div class="field"><label for="aFrom">From account</label><select id="aFrom"></select></div>
+          <div class="field"><label for="aTo">To account</label><select id="aTo"></select></div>
+        </div>
         <div class="field" id="aAmt2Box"><label for="aAmt2" id="aAmt2L">Amount received</label><input type="text" id="aAmt2" inputmode="decimal" placeholder="auto" autocomplete="off"></div>
       </div>
       <small class="hint" id="aXferHint"></small>
@@ -2373,31 +2376,43 @@ html:not(.wl-locked) #lockGo, html:not(.wl-locked) .locksub { visibility: hidden
     document.querySelector('label[for="aXfer"]').textContent = isCredit(w) ? "Pay card" : "Transfer";
     $("#aOut").checked = true; $("#aAmt").value = ""; $("#aAmt2").value = ""; $("#aCat").value = ""; $("#aSub").value = ""; $("#aDate").value = todayStr;
     $("#aPay").value = isCredit(w) ? "Credit card" : "Cash"; $("#aPayee").value = ""; $("#aLabels").value = ""; $("#aNote").value = ""; $("#aErr").textContent = "";
-    $("#aTo").innerHTML = acctOptions(w.id, isCredit(w));
+    var AEXT = '<option value="__ext">Out of wallet</option>', aMe = '<option value="' + esc(w.id) + '">' + esc(w.name) + " (" + w.cur + ")</option>", aOth = acctOptions(w.id, isCredit(w));
+    if (isCredit(w)) { $("#aFrom").innerHTML = aOth + AEXT; $("#aTo").innerHTML = aMe; $("#aTo").disabled = true; }
+    else { $("#aFrom").innerHTML = aMe + AEXT + aOth; $("#aTo").innerHTML = aOth + AEXT + aMe; $("#aTo").disabled = false; }
     updateAcctTx();
+  }
+  /* one side of a transfer is always the account this popup was opened from; the other side is another account or "Out of wallet" */
+  function syncXfer(side) {
+    var w = wmap[wEditId]; if (!w || isCredit(w)) return;
+    var f = $("#aFrom"), t = $("#aTo"), me = side === "from" ? f : t, other = side === "from" ? t : f;
+    function pick(sel) { var o = Array.prototype.filter.call(sel.options, function (x) { return x.value !== w.id && x.value !== "__ext"; })[0]; sel.value = o ? o.value : "__ext"; }
+    if (me.value === w.id) { if (other.value === w.id) pick(other); }
+    else other.value = w.id;
   }
   function updateAcctTx() {
     var w = wmap[wEditId]; if (!w) return;
-    var k = aKind(), to = wmap[$("#aTo").value], diff = k === "xfer" && to && to.cur !== w.cur, adjK = k === "adj";
+    var k = aKind(), fv = $("#aFrom").value, tv = $("#aTo").value, inc = tv === w.id, to = wmap[inc ? fv : tv], diff = k === "xfer" && to && to.cur !== w.cur, adjK = k === "adj";
     $("#aXferRow").hidden = k !== "xfer"; $("#aCatBox").hidden = k === "xfer" || adjK; $("#aPayeeBox").hidden = k === "xfer" || adjK;
     $("#aPay").closest(".field").hidden = adjK; $("#aLabels").closest(".field").hidden = adjK; $("#aDirBox").hidden = !adjK;
     if (adjK) { $("#aSubRow").hidden = true; $("#aDirHint").textContent = "Corrects the balance. Not counted as income or spending in your reports."; }
     $("#aSave").textContent = k === "adj" ? "Add adjustment" : "Add transaction";
     $("#aAmt2Box").hidden = !diff;
     $("#aAmtL").textContent = (isCredit(w) && k === "xfer" ? "Payment amount (" : k === "adj" ? "Adjustment amount (" : "Amount (") + w.cur + ")";
-    document.querySelector('label[for="aTo"]').textContent = isCredit(w) ? "Pay from account" : "To account";
+    document.querySelector('label[for="aFrom"]').textContent = isCredit(w) ? "Pay from account" : "From account"; document.querySelector('label[for="aTo"]').textContent = "To account";
     $("#aPayeeL").textContent = k === "in" ? "Payer" : "Payee";
     $("#aPayee").placeholder = k === "in" ? "Who paid you" : "Who you paid";
     if (diff) {
-      $("#aAmt2L").textContent = (isCredit(w) ? "Amount debited (" : "Amount received (") + to.cur + ")";
+      $("#aAmt2L").textContent = (inc ? "Amount debited (" : "Amount received (") + to.cur + ")";
       var a = evalExpr($("#aAmt").value, w.cur);
       $("#aAmt2").placeholder = isFinite(a) && a > 0 ? "about " + rnd(conv(a, w.cur, to.cur), to.cur) : "auto";
     }
-    $("#aXferHint").textContent = k === "xfer" ? (!to ? (isCredit(w) ? "Add a bank or cash account to pay from." : "Add another account to make a transfer.") : diff ? "Leave the received amount blank to use the current rate." : "") : "";
+    $("#aXferHint").textContent = k === "xfer" ? (diff ? "Leave the " + (inc ? "debited" : "received") + " amount blank to use the current rate." : (fv === "__ext" || tv === "__ext") ? "Out of wallet moves money in or out of your accounts without counting it as income or spending." : "") : "";
     if (!adjK) refreshSub("#aCat", "#aSubList", k); var dl = $("#aCatList"), want = k === "in" ? CATS["in"] : CATS.out.concat(state.budgets.map(function (u) { return u.name; }).filter(function (n) { return n && CATS.out.indexOf(n) < 0; })), sig = k + "|" + want.join();
     if (dl.getAttribute("data-k") !== sig) { dl.setAttribute("data-k", sig); dl.innerHTML = want.map(function (c) { return '<option value="' + esc(c) + '">'; }).join(""); }
   }
-  ["#aAmt", "#aTo"].forEach(function (s) { $(s).addEventListener("input", updateAcctTx); $(s).addEventListener("change", updateAcctTx); });
+  ["#aAmt", "#aFrom", "#aTo"].forEach(function (s) { $(s).addEventListener("input", updateAcctTx); $(s).addEventListener("change", updateAcctTx); });
+  $("#aFrom").addEventListener("change", function () { syncXfer("from"); updateAcctTx(); });
+  $("#aTo").addEventListener("change", function () { syncXfer("to"); updateAcctTx(); });
   /* calculator for the New transaction popup: fills Amount only, uses the same evalExpr as typed sums */
   function closeACalc() { var b = $("#aCalc"); if (!b || b.hidden) return; b.hidden = true; $("#aCalcBtn").setAttribute("aria-expanded", "false"); $("#aCalcErr").textContent = ""; }
   (function () {
@@ -2473,21 +2488,26 @@ html:not(.wl-locked) #lockGo, html:not(.wl-locked) .locksub { visibility: hidden
       pay: $("#aPay").value || "Cash", payee: k === "xfer" ? "" : $("#aPayee").value.trim(),
       labels: $("#aLabels").value.split(",").map(function (s) { return s.trim(); }).filter(Boolean).join(", "), createdAt: Date.now() };
     if (k === "xfer") {
-      var to = wmap[$("#aTo").value];
-      if (!to || to.id === w.id) { err.textContent = "Pick a different account to transfer to."; return; }
-      t.to = to.id;
-      if (to.cur === w.cur) t.toAmount = t.amount;
-      else {
-        var r2 = $("#aAmt2").value.trim() === "" ? NaN : evalExpr($("#aAmt2").value, to.cur);
-        t.toAmount = isFinite(r2) && r2 > 0 ? rnd(r2, to.cur) : rnd(conv(raw, w.cur, to.cur), to.cur);
+      var fv = $("#aFrom").value, tv = $("#aTo").value, inc = tv === w.id, ov = inc ? fv : tv, o = wmap[ov];
+      if (fv === tv || (fv !== w.id && tv !== w.id)) { err.textContent = "Pick a different account for the other side of the transfer."; return; }
+      if (ov === "__ext") {
+        /* out of wallet: only this account's balance moves; it is not income or spending */
+        t.kind = inc ? "in" : "out"; t.adj = "ext"; t.cat = inc ? "Transfer from out of wallet" : "Transfer to out of wallet"; t.sub = ""; t.payee = ""; t.to = ""; t.toAmount = 0;
+      } else if (!o || o.id === w.id) { err.textContent = "Pick a different account to transfer " + (inc ? "from." : "to."); return; }
+      else if (!inc) {
+        t.to = o.id;
+        if (o.cur === w.cur) t.toAmount = t.amount;
+        else {
+          var r2 = $("#aAmt2").value.trim() === "" ? NaN : evalExpr($("#aAmt2").value, o.cur);
+          t.toAmount = isFinite(r2) && r2 > 0 ? rnd(r2, o.cur) : rnd(conv(raw, w.cur, o.cur), o.cur);
+        }
+      } else {
+        var amtIn = rnd(raw, w.cur), rr = $("#aAmt2").value.trim() === "" ? NaN : evalExpr($("#aAmt2").value, o.cur);
+        t.wallet = o.id; t.to = w.id; t.toAmount = amtIn;
+        t.amount = o.cur === w.cur ? amtIn : (isFinite(rr) && rr > 0 ? rnd(rr, o.cur) : rnd(conv(raw, w.cur, o.cur), o.cur));
       }
     } else if (!adjK) { t.cat = $("#aCat").value.trim() || (k === "in" ? "Income" : "Other"); t.sub = $("#aSub").value.trim(); }
     if (adjK) { t.kind = $("#aDir").value === "out" ? "out" : "in"; t.adj = "adj"; t.cat = "Adjustment"; t.sub = ""; t.payee = ""; t.pay = "Other"; t.labels = ""; }
-    if (k === "xfer" && isCredit(w)) {
-      var o2 = wmap[t.to], amtCard = rnd(raw, w.cur), rr = $("#aAmt2").value.trim() === "" ? NaN : evalExpr($("#aAmt2").value, o2.cur);
-      t.wallet = o2.id; t.to = w.id; t.toAmount = amtCard;
-      t.amount = o2.cur === w.cur ? amtCard : (isFinite(rr) && rr > 0 ? rnd(rr, o2.cur) : rnd(conv(raw, w.cur, o2.cur), o2.cur));
-    }
     err.textContent = ""; $("#aSave").disabled = true; if (isLocalW(t.wallet)) state.lastWallet = t.wallet;
     put("t", t).then(function (id) {
       $("#aSave").disabled = false;
@@ -3685,7 +3705,7 @@ html:not(.wl-locked) #lockGo, html:not(.wl-locked) .locksub { visibility: hidden
     state.tx.forEach(function (t) {
       if (!t) return; var ok = validT(t), w = wmap[t.wallet];
       if (!ok) out.push([t.date || "", t.kind === "in" ? "Income" : t.kind === "out" ? "Expense" : t.kind === "xfer" ? "Transfer" : String(t.kind || ""), w ? w.name : String(t.wallet || ""), t.amount, t.cat || "", "Could not be read: " + (w ? "invalid type, amount or date" : "account not found")]);
-      else if (t.date >= rep.from && t.date <= rep.to && (w.noRep || t.adj)) out.push([t.date, t.adj ? "Adjustment" : t.kind === "in" ? "Income" : t.kind === "out" ? "Expense" : "Transfer", w.name, t.amount, t.cat || "", t.adj ? "Balance adjustment (left out of income and spending by design)" : "Account switched off from reports"]);
+      else if (t.date >= rep.from && t.date <= rep.to && (w.noRep || t.adj)) out.push([t.date, t.adj === "ext" ? "Transfer (out of wallet)" : t.adj ? "Adjustment" : t.kind === "in" ? "Income" : t.kind === "out" ? "Expense" : "Transfer", w.name, t.amount, t.cat || "", t.adj === "ext" ? "Money moved in or out of your accounts (left out of income and spending by design)" : t.adj ? "Balance adjustment (left out of income and spending by design)" : "Account switched off from reports"]);
     });
     out = out.slice(0, 300); var s0 = sec3 + 3, s1 = s0 + Math.max(out.length, 1) - 1, bad = out.filter(function (x) { return x[5].indexOf("Could not") === 0; }).length;
     xTitle(K, "SUPPORTING DOCUMENTS", LAST);
