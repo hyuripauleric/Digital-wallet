@@ -47,7 +47,7 @@ body {
   padding-right: max(16px, env(safe-area-inset-right, 0px));
 }
 body::before {
-  content: ""; position: fixed; inset: -40px; z-index: -1; pointer-events: none; filter: blur(14px);
+  content: ""; position: fixed; inset: calc(var(--bgblur, 14px) * -2 - 20px); z-index: -1; pointer-events: none; filter: blur(var(--bgblur, 14px));
   background:
     radial-gradient(55% 45% at 12% 8%, var(--blob1), transparent 70%),
     radial-gradient(50% 45% at 92% 18%, var(--blob2), transparent 70%),
@@ -1075,6 +1075,19 @@ html:not(.wl-locked) #lockGo, html:not(.wl-locked) .locksub { visibility: hidden
 #dCards:has(> .acct:only-child) .acct .an .wi.lg { width: clamp(34px, 7cqw, 56px); height: clamp(34px, 7cqw, 56px); border-radius: 14px; }
 #dCards:has(> .acct:only-child) .acct .ab { font-size: clamp(22px, 10cqw, 60px); }
 #dCards:has(> .acct:only-child) .acct .as, #dCards:has(> .acct:only-child) .acct .ao { font-size: clamp(12px, 2.4cqw, 16px); }
+/* Background blur slider: a hairline along the bottom edge of the floating tab bar */
+.navrow .tabs { padding-bottom: 26px; }
+@media (min-width: 1100px) { .navrow .tabs { padding-bottom: 32px; } }
+@media (max-width: 699px) { .navrow .tabs.mini { padding-bottom: 5px; } .navrow .tabs.mini .blurrng { opacity: 0; pointer-events: none; } }
+.blurrng { --p: 35%; position: absolute; left: 22px; right: 22px; bottom: 6px; width: auto; height: 16px; margin: 0; padding: 0; min-height: 0; border: 0; background: transparent; -webkit-appearance: none; appearance: none; cursor: pointer; touch-action: none; opacity: 0.8; transition: opacity .25s ease; }
+@media (min-width: 1100px) { .blurrng { left: 12px; right: 12px; bottom: 10px; } }
+.blurrng:hover, .blurrng:active, .blurrng:focus-visible { opacity: 1; }
+.blurrng:focus-visible { outline: 1px solid rgba(255, 255, 255, 0.5); outline-offset: 2px; border-radius: 6px; }
+.blurrng::-webkit-slider-runnable-track { height: 2px; border-radius: 2px; background: linear-gradient(to right, rgba(255, 255, 255, 0.85) var(--p), rgba(255, 255, 255, 0.22) var(--p)); }
+.blurrng::-moz-range-track { height: 2px; border-radius: 2px; background: rgba(255, 255, 255, 0.22); }
+.blurrng::-moz-range-progress { height: 2px; border-radius: 2px; background: rgba(255, 255, 255, 0.85); }
+.blurrng::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 12px; height: 12px; margin-top: -5px; border-radius: 50%; border: 0; background: #fff; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.45); }
+.blurrng::-moz-range-thumb { width: 12px; height: 12px; border-radius: 50%; border: 0; background: #fff; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.45); }
 </style>
 <script>
 (function () {
@@ -1082,6 +1095,7 @@ html:not(.wl-locked) #lockGo, html:not(.wl-locked) .locksub { visibility: hidden
   try { t = localStorage.getItem("wl-theme"); } catch (e) {}
   if (t !== "light" && t !== "dark") t = window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
   document.documentElement.setAttribute("data-theme", t);
+  try { var bl = localStorage.getItem("wl-blur"); if (bl !== null && bl !== "" && isFinite(+bl)) document.documentElement.style.setProperty("--bgblur", Math.max(0, Math.min(40, +bl)) + "px"); } catch (e) {}
   var m = document.getElementById("themeColor"); if (m) m.setAttribute("content", t === "dark" ? "#0b0b0c" : "#f2f5f4");
 })();
 </script>
@@ -1129,6 +1143,7 @@ html:not(.wl-locked) #lockGo, html:not(.wl-locked) .locksub { visibility: hidden
       <button type="button" id="tabRep" aria-pressed="false" title="Reports"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg><span class="lb">Reports</span></button>
       <button type="button" id="tabRec" aria-pressed="false" title="Recurring"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span class="lb">Recurring</span></button>
       <button type="button" id="tabRates" aria-pressed="false" title="Rates"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h12l-3-3M17 17H5l3 3"/></svg><span class="lb">Rates</span></button>
+      <input type="range" id="blurRange" class="blurrng" min="0" max="40" step="1" value="14" aria-label="Background blur">
     </div>
   </div>
 
@@ -4585,6 +4600,15 @@ html:not(.wl-locked) #lockGo, html:not(.wl-locked) .locksub { visibility: hidden
   renderAccounts = function () { _rAcc.apply(this, arguments); fitNames(); };
   renderCards = function () { _rCrd.apply(this, arguments); fitNames(); };
   window.addEventListener("resize", fitNames);
+  /* background blur slider (saved on this device) */
+  (function () {
+    var r = document.getElementById("blurRange"); if (!r) return;
+    var v = 14; try { var sv = localStorage.getItem("wl-blur"); if (sv !== null && sv !== "" && isFinite(+sv)) v = Math.max(0, Math.min(40, +sv)); } catch (e) {}
+    function apply(x) { document.documentElement.style.setProperty("--bgblur", x + "px"); r.style.setProperty("--p", (x / 40 * 100) + "%"); r.title = "Background blur: " + x; r.setAttribute("aria-valuetext", x + " pixels"); }
+    r.value = v; apply(v);
+    r.addEventListener("input", function () { apply(+r.value); });
+    r.addEventListener("change", function () { try { localStorage.setItem("wl-blur", r.value); } catch (e) {} });
+  })();
   /* re-fit names and amounts whenever the credit cards grid changes size (panel resized, cards added or removed) */
   if (window.ResizeObserver) { var _fnRaf = 0; new ResizeObserver(function () { cancelAnimationFrame(_fnRaf); _fnRaf = requestAnimationFrame(fitNames); }).observe($("#dCards")); }
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitNames);
