@@ -343,9 +343,9 @@ html, body { max-width: 100%; overflow-x: clip; }
 .asort { display: none; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); margin-left: auto; } .asort select { width: auto; padding: 4px 26px 4px 10px; font-size: 12.5px; border-radius: 10px; background-color: var(--glass-strong); }
 #dAccts .acct { cursor: pointer; user-select: none; -webkit-user-select: none; }
 #dCards .acct{ cursor: pointer; user-select: none; -webkit-user-select: none; }
-#acctDlg, #txDlg, #recDlg, #catDlg, #pickDlg, #rcDlg, #expDlg { width: min(520px, calc(100vw - 28px)); max-height: calc(100vh - 28px); padding: 18px 20px 20px; border: 1px solid var(--glass-line); border-radius: 22px; color: var(--ink); background: linear-gradient(180deg, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.02)), var(--surface); box-shadow: inset 0 1px 0 var(--edge), 0 30px 70px -20px rgba(0, 0, 0, 0.6); overflow: auto; }
-#acctDlg::backdrop, #txDlg::backdrop, #recDlg::backdrop, #catDlg::backdrop, #pickDlg::backdrop, #rcDlg::backdrop, #expDlg::backdrop { background: rgba(5, 10, 9, 0.55); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
-#acctDlg[open], #txDlg[open], #recDlg[open], #catDlg[open], #pickDlg[open], #rcDlg[open], #expDlg[open] { animation: dlgin 0.16s ease-out; } @keyframes dlgin { from { opacity: 0; transform: translateY(8px) scale(0.98); } to { opacity: 1; transform: none; } }
+#acctDlg, #txDlg, #recDlg, #catDlg, #pickDlg, #rcDlg, #expDlg, #moveDlg { width: min(520px, calc(100vw - 28px)); max-height: calc(100vh - 28px); padding: 18px 20px 20px; border: 1px solid var(--glass-line); border-radius: 22px; color: var(--ink); background: linear-gradient(180deg, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.02)), var(--surface); box-shadow: inset 0 1px 0 var(--edge), 0 30px 70px -20px rgba(0, 0, 0, 0.6); overflow: auto; }
+#acctDlg::backdrop, #txDlg::backdrop, #recDlg::backdrop, #catDlg::backdrop, #pickDlg::backdrop, #rcDlg::backdrop, #expDlg::backdrop, #moveDlg::backdrop { background: rgba(5, 10, 9, 0.55); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+#acctDlg[open], #txDlg[open], #recDlg[open], #catDlg[open], #pickDlg[open], #rcDlg[open], #expDlg[open], #moveDlg[open] { animation: dlgin 0.16s ease-out; } @keyframes dlgin { from { opacity: 0; transform: translateY(8px) scale(0.98); } to { opacity: 1; transform: none; } }
 /* bulk select + delete */
 .bulkbar { position: sticky; top: 0; z-index: 3; display: flex; align-items: center; gap: 8px; margin: 0 0 8px; padding: 6px 8px 6px 12px; border: 1px solid var(--accent); border-radius: 12px; background: color-mix(in srgb, var(--accent) 14%, var(--surface)); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
 .bulkbar .btn { flex: none; white-space: nowrap; }
@@ -399,7 +399,7 @@ html, body { max-width: 100%; overflow-x: clip; }
   #aHist { margin-top: 16px; padding: 14px 0 0; border: 0; border-top: 1px solid var(--hair); border-radius: 0; background: none; box-shadow: none; }
   #aHist .hlist { max-height: 340px; }
 }
-@media (prefers-reduced-motion: reduce) { #acctDlg[open], #txDlg[open], #recDlg[open], #catDlg[open], #pickDlg[open], #rcDlg[open], #expDlg[open] { animation: none; } }
+@media (prefers-reduced-motion: reduce) { #acctDlg[open], #txDlg[open], #recDlg[open], #catDlg[open], #pickDlg[open], #rcDlg[open], #expDlg[open], #moveDlg[open] { animation: none; } }
 .dlghead { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 12px; } .dlghead h3 { font-family: var(--font-display); font-size: 18px; margin: 0; }
 #acctDlg form, #txDlg form, #recDlg form { display: flex; flex-direction: column; gap: 12px; border-top: 0; padding-top: 0; }
 .catform { display: flex; flex-direction: column; gap: 14px; }
@@ -653,7 +653,7 @@ table.t { width: 100%; border-collapse: collapse; font-size: 13.5px; }
 }
 
 /* Popups: stay inside the visible screen (iOS-safe), scroll inside themselves, never scroll the page behind */
-#acctDlg, #txDlg, #recDlg, #catDlg, #pickDlg, #rcDlg, #expDlg {
+#acctDlg, #txDlg, #recDlg, #catDlg, #pickDlg, #rcDlg, #expDlg, #moveDlg {
   box-sizing: border-box; position: fixed; inset: 0; margin: auto; height: fit-content;
   width: min(520px, calc(100% - 24px)); max-width: calc(100% - 24px);
   max-height: calc(100vh - 24px); max-height: calc(100dvh - 24px);
@@ -686,7 +686,7 @@ table.t { width: 100%; border-collapse: collapse; font-size: 13.5px; }
 @media (max-width: 699px) { #rcDlg { min-height: min(640px, calc(var(--vvh, 100dvh) - env(safe-area-inset-top, 0px) - 12px)); } }
 @media (min-width: 960px) { #acctDlg { overflow: visible; } #acctDlg .dlgmain { max-height: calc(100dvh - 72px); overflow-y: auto; overscroll-behavior: contain; } }
 .row2 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-#acctDlg input, #acctDlg select, #txDlg input, #txDlg select, #recDlg input, #recDlg select, #catDlg input, #catDlg select, #pickDlg input, #rcDlg input, #expDlg input, #expDlg select { min-width: 0; max-width: 100%; }
+#acctDlg input, #acctDlg select, #txDlg input, #txDlg select, #recDlg input, #recDlg select, #catDlg input, #catDlg select, #pickDlg input, #rcDlg input, #expDlg input, #expDlg select, #moveDlg input, #moveDlg select { min-width: 0; max-width: 100%; }
 #aTxForm .aamtwrap { position: relative; }
 #aTxForm .aamtwrap input { padding-right: 46px; }
 #aCalcBtn { position: absolute; right: 4px; top: 50%; transform: translateY(-50%); width: 32px; height: 32px; min-height: 0; padding: 0; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--line); border-radius: 7px; background: var(--glass-strong); color: var(--accent); touch-action: manipulation; }
@@ -716,7 +716,7 @@ body.dlg-lock { position: fixed; left: 0; right: 0; width: 100%; overflow: hidde
   input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), select, textarea { font-size: 16px !important; }
 }
 /* Popup header (with the close button) stays pinned while the popup scrolls, and the popup respects the iPhone notch / home bar and keyboard */
-#acctDlg, #txDlg, #recDlg, #catDlg, #pickDlg, #rcDlg, #expDlg {
+#acctDlg, #txDlg, #recDlg, #catDlg, #pickDlg, #rcDlg, #expDlg, #moveDlg {
   inset: env(safe-area-inset-top, 0px) 0 env(safe-area-inset-bottom, 0px) 0;
   max-height: calc(100dvh - 24px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
   max-height: calc(var(--vvh, 100dvh) - 24px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
@@ -777,6 +777,10 @@ dialog .dlghead { position: sticky; top: -18px; z-index: 6; margin: -18px -20px 
 .ledgerbar select { flex: 1 1 auto; width: auto; min-width: 0; min-height: 36px; background: var(--glass-strong); font-weight: 600; }
 .ledgerbar .btn.icon { flex: none; width: 36px; min-height: 36px; font-size: 16px; }
 .ledgerinc { flex: 1 1 100%; margin-top: -6px; }
+#moveList { max-height: min(40vh, 320px); overflow-y: auto; overscroll-behavior: contain; margin-top: 4px; }
+#moveList .chk span { min-width: 0; overflow-wrap: anywhere; }
+#moveList .chk small { color: var(--muted); }
+.movetop { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 #ledgerInAll[aria-pressed="true"] { color: var(--accent); background: color-mix(in srgb, var(--accent) 16%, var(--glass-strong)); }
 #ledgerInAll[aria-pressed="false"] { color: var(--muted); }
 #ledgerInAll .off { display: none; }
@@ -902,7 +906,7 @@ header.top .pills { flex: 1 1 100%; margin-top: 0; }
 /* Bottom sheets on phones (respects the Dynamic Island and the home bar) */
 @keyframes sheetin { from { transform: translateY(100%); } to { transform: none; } }
 @keyframes bdin { from { opacity: 0; } to { opacity: 1; } }
-@media (prefers-reduced-motion: reduce) { #acctDlg[open], #txDlg[open], #recDlg[open], #catDlg[open], #pickDlg[open], #rcDlg[open], #expDlg[open], dialog[open]::backdrop { animation: none !important; } }
+@media (prefers-reduced-motion: reduce) { #acctDlg[open], #txDlg[open], #recDlg[open], #catDlg[open], #pickDlg[open], #rcDlg[open], #expDlg[open], #moveDlg[open], dialog[open]::backdrop { animation: none !important; } }
 
 /* Swipe left on a transaction to delete (touch) */
 .act[data-id], .act[data-hid] { position: relative; touch-action: pan-y; }
@@ -955,14 +959,14 @@ header.top .pills { flex: 1 1 100%; margin-top: 0; }
 :root { --kb: 0px; --sbar: 0px; }
 @media (max-width: 699px) and (display-mode: browser) { :root { --sbar: 76px; } :root.kbopen { --sbar: 0px; } }
 @media (max-width: 699px) {
-  #acctDlg, #txDlg, #recDlg, #catDlg, #pickDlg, #rcDlg, #expDlg {
+  #acctDlg, #txDlg, #recDlg, #catDlg, #pickDlg, #rcDlg, #expDlg, #moveDlg {
     inset: auto 0 var(--kb, 0px) 0; margin: 0 auto; width: 100%; max-width: 560px; height: auto;
     max-height: calc(var(--vvh, 100dvh) - env(safe-area-inset-top, 0px) - 12px);
     border-radius: 22px 22px 0 0; border-bottom: 0;
     padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px) + var(--sbar, 0px));
     scroll-padding-bottom: 24px; overscroll-behavior: contain; will-change: transform;
   }
-  #acctDlg[open], #txDlg[open], #recDlg[open], #catDlg[open], #pickDlg[open], #rcDlg[open], #expDlg[open] { animation: sheetin 0.26s cubic-bezier(0.2, 0.85, 0.25, 1); }
+  #acctDlg[open], #txDlg[open], #recDlg[open], #catDlg[open], #pickDlg[open], #rcDlg[open], #expDlg[open], #moveDlg[open] { animation: sheetin 0.26s cubic-bezier(0.2, 0.85, 0.25, 1); }
   dialog[open]::backdrop { animation: bdin 0.2s ease-out; }
   dialog .dlghead { padding-top: 22px; }
   dialog .dlghead::before { content: ""; position: absolute; top: 8px; left: 50%; width: 40px; height: 5px; margin-left: -20px; border-radius: 3px; background: var(--muted); opacity: 0.5; }
@@ -1141,6 +1145,7 @@ html:not(.wl-locked) #lockGo, html:not(.wl-locked) .locksub { visibility: hidden
       <button type="button" class="btn icon" id="ledgerNew" aria-label="New ledger" title="New ledger">+</button>
       <button type="button" class="btn icon" id="ledgerRen" aria-label="Rename this ledger" title="Rename this ledger">✎</button>
       <button type="button" class="btn icon" id="ledgerDel" aria-label="Delete this ledger" title="Delete this ledger">🗑</button>
+      <button type="button" class="btn icon" id="ledgerMove" aria-label="Move accounts to another ledger" title="Move accounts to another ledger" hidden>⇄</button>
       <button type="button" class="btn icon" id="ledgerInAll" aria-pressed="true" aria-label="Included in All ledgers" title="Included in “All ledgers”"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 3 8l9 5 9-5-9-5z"/><path d="m3 13 9 5 9-5"/><path class="off" d="M4 20 20 4"/></svg></button>
     </div>
     <div class="ledgerinc" id="ledgerIncBox" hidden>
@@ -1577,6 +1582,19 @@ html:not(.wl-locked) #lockGo, html:not(.wl-locked) .locksub { visibility: hidden
     <div class="dlghead"><h3 id="rcT">Category</h3><button type="button" class="btn icon sm" id="rcClose" aria-label="Close">✕</button></div>
     <p class="pickhint" id="rcSum"></p>
     <div id="rcList"></div>
+  </dialog>
+
+  <dialog id="moveDlg" aria-labelledby="moveT">
+    <div class="dlghead"><h3 id="moveT">Move accounts to another ledger</h3><button type="button" class="btn icon sm" id="moveClose" aria-label="Close">✕</button></div>
+    <p class="pickhint" id="moveSum"></p>
+    <div class="field"><label for="moveTo">Move to</label><select id="moveTo"></select></div>
+    <fieldset class="field"><legend>Accounts to move</legend>
+      <div class="movetop"><span class="pickhint" id="moveCount"></span><button type="button" class="btn sm" id="moveAll">Select all</button></div>
+      <div id="moveList"></div>
+    </fieldset>
+    <p class="pickhint" id="moveInfo"></p>
+    <p class="err" id="moveErr" role="alert"></p>
+    <div class="formbtns"><button class="btn primary" type="button" id="moveGo">Move</button><button class="btn" type="button" id="moveCancel">Cancel</button></div>
   </dialog>
 
   <dialog id="expDlg" aria-labelledby="expT">
@@ -5117,7 +5135,7 @@ html:not(.wl-locked) #lockGo, html:not(.wl-locked) .locksub { visibility: hidden
       sel.innerHTML = ledgerOptions(ledgerId) + '<option value="all"' + (ledgerId === "all" ? " selected" : "") + ">All ledgers (combined)</option>";
       var all = ledgerId === "all";
       var inOn = inAllOK(ledgerId), tg = $("#ledgerInAll");
-      tg.hidden = all || LEDGERS.length < 2; tg.setAttribute("aria-pressed", String(inOn));
+      tg.hidden = all || LEDGERS.length < 2; tg.setAttribute("aria-pressed", String(inOn)); $("#ledgerMove").hidden = LEDGERS.length < 2;
       tg.title = inOn ? "Included in “All ledgers”. Tap to leave this ledger out." : "Not in “All ledgers”. Tap to include it.";
       tg.setAttribute("aria-label", tg.title);
       var inc = LEDGERS.filter(function (l) { return l.inAll !== false; }).map(function (l) { return l.name; });
@@ -5150,9 +5168,77 @@ html:not(.wl-locked) #lockGo, html:not(.wl-locked) .locksub { visibility: hidden
       if (ledgerId === "all") { window.alert("Pick a single ledger first, then delete it."); return; }
       if (ledgerId === "main") { window.alert("The first ledger can't be deleted, but you can rename it."); return; }
       var used = RAW.wallets.some(function (w) { return (w.ledger || "main") === ledgerId; });
-      if (used) { window.alert("This ledger still has accounts. Move them to another ledger (Account maintenance, Ledger) or delete them first."); return; }
+      if (used) { window.alert("This ledger still has accounts. Move them to another ledger (the \u21C4 button) or delete them first."); return; }
       if (!window.confirm("Delete the ledger \u201c" + name(ledgerId) + "\u201d?")) return;
       var gone = ledgerId; LEDGERS = LEDGERS.filter(function (l) { return l.id !== gone; }); switchTo("main");
+    });
+
+    /* ===== Move accounts between ledgers. An account's transactions and recurring items follow it automatically,
+       because they belong to a ledger through their account. Goals and budgets stay where they are. ===== */
+    var moveDlg = $("#moveDlg"), movePick = {};
+    function moveList(dest) {
+      return RAW.wallets.filter(function (w) {
+        var l = w.ledger || "main";
+        if (l === dest) return false;
+        return ledgerId === "all" ? inAllOK(l) : l === ledgerId;
+      });
+    }
+    function moveIds(dest) { return moveList(dest).filter(function (w) { return movePick[w.id]; }).map(function (w) { return w.id; }); }
+    function moveInfo() {
+      var dest = $("#moveTo").value, list = moveList(dest), ids = moveIds(dest), set = {};
+      ids.forEach(function (i) { set[i] = 1; });
+      var nTx = RAW.tx.filter(function (t) { return set[t.wallet]; }).length, nRec = RAW.recs.filter(function (r) { return set[r.wallet]; }).length;
+      $("#moveCount").textContent = ids.length + " of " + list.length + " selected";
+      $("#moveAll").textContent = list.length && ids.length === list.length ? "Clear" : "Select all";
+      $("#moveAll").disabled = !list.length;
+      $("#moveGo").disabled = !ids.length;
+      $("#moveInfo").textContent = ids.length ? "They move to \u201c" + ledgerName(dest) + "\u201d with " + nTx + " transaction" + (nTx === 1 ? "" : "s") + (nRec ? " and " + nRec + " recurring item" + (nRec === 1 ? "" : "s") : "") + ". A transfer between a moved account and one left behind still shows in both ledgers." : "";
+    }
+    function moveRender() {
+      var dest = $("#moveTo").value, list = moveList(dest), keep = {};
+      list.forEach(function (w) { if (movePick[w.id]) keep[w.id] = true; });
+      movePick = keep;
+      $("#moveList").innerHTML = list.length ? list.map(function (w) {
+        return '<label class="chk"><input type="checkbox" value="' + esc(w.id) + '"' + (movePick[w.id] ? " checked" : "") + "><span>" + esc(w.name) + " (" + esc(w.cur) + ")" + (ledgerId === "all" ? " <small>\u00B7 " + esc(ledgerName(w.ledger || "main")) + "</small>" : "") + (w.hidden ? " <small>\u00B7 hidden</small>" : "") + "</span></label>";
+      }).join("") : '<p class="pickhint">No accounts to move to this ledger.</p>';
+      $("#moveErr").textContent = "";
+      moveInfo();
+    }
+    $("#ledgerMove").addEventListener("click", function () {
+      if (LEDGERS.length < 2) { window.alert("Create a second ledger first (the + button)."); return; }
+      var opts = LEDGERS.filter(function (l) { return ledgerId === "all" || l.id !== ledgerId; });
+      $("#moveTo").innerHTML = opts.map(function (l) { return '<option value="' + esc(l.id) + '">' + esc(l.name) + "</option>"; }).join("");
+      $("#moveSum").textContent = ledgerId === "all" ? "Choose accounts from any ledger counted in All ledgers." : "From \u201c" + name(ledgerId) + "\u201d. Pick the accounts to move.";
+      movePick = {}; moveRender();
+      if (!moveDlg.open) moveDlg.showModal();
+    });
+    $("#moveTo").addEventListener("change", moveRender);
+    $("#moveList").addEventListener("change", function (e) {
+      var cb = e.target; if (!cb || cb.type !== "checkbox") return;
+      if (cb.checked) movePick[cb.value] = true; else delete movePick[cb.value];
+      $("#moveErr").textContent = ""; moveInfo();
+    });
+    $("#moveAll").addEventListener("click", function () {
+      var list = moveList($("#moveTo").value), all = list.length && moveIds($("#moveTo").value).length === list.length;
+      movePick = {}; if (!all) list.forEach(function (w) { movePick[w.id] = true; });
+      moveRender();
+    });
+    $("#moveClose").addEventListener("click", function () { moveDlg.close(); });
+    $("#moveCancel").addEventListener("click", function () { moveDlg.close(); });
+    $("#moveGo").addEventListener("click", function () {
+      var btn = this, dest = $("#moveTo").value, ids = moveIds(dest), err = $("#moveErr");
+      if (!LEDGERS.some(function (l) { return l.id === dest; })) { err.textContent = "Pick the ledger to move to."; return; }
+      if (!ids.length) { err.textContent = "Tick at least one account."; return; }
+      var set = {}; ids.forEach(function (i) { set[i] = 1; });
+      var nTx = RAW.tx.filter(function (t) { return set[t.wallet]; }).length;
+      btn.disabled = true;
+      Promise.all(ids.map(function (id) { return patch("w", id, { ledger: dest }); })).then(function (res) {
+        var done = ids.filter(function (id, i) { return res[i] !== false; }), bad = ids.length - done.length;
+        if (done.some(function (id) { return id === state.wSel || id === state.lastWallet; })) { state.wSel = null; state.lastWallet = null; }
+        bumpView(); moveDlg.close(); fill(); render();
+        if (bad) setStatus("Moved " + done.length + " of " + ids.length + " accounts. " + bad + " could not be saved, so try those again.", true);
+        else setStatus(done.length + (done.length === 1 ? " account" : " accounts") + " moved to \u201c" + ledgerName(dest) + "\u201d with " + nTx + " transaction" + (nTx === 1 ? "." : "s."));
+      }).catch(function () { setStatus("Could not move the accounts. Try again.", true); }).then(function () { btn.disabled = false; });
     });
     fill();
   })();
