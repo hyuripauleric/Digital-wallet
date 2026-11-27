@@ -477,6 +477,9 @@ table.t { width: 100%; border-collapse: collapse; font-size: 13.5px; }
 .t tr.rcl { cursor: pointer; -webkit-tap-highlight-color: transparent; transition: background .15s; }
 .t tr.rcl:hover, .t tr.rcl:active { background: var(--hover); }
 .t tr.rcl .linkbtn { font-family: var(--font-body); }
+.rcscope { display: flex; gap: 8px; margin: 2px 0 10px; }
+.rcscope .btn { flex: 1 1 0; min-width: 0; }
+.rcscope .btn[aria-pressed="true"] { color: var(--accent); background: color-mix(in srgb, var(--accent) 16%, var(--glass-strong)); font-weight: 600; }
 .rcrow { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; padding: 11px 0; border-top: 1px solid var(--hair); }
 .rcrow:first-child { border-top: 0; }
 .rcrow .rt { font-weight: 600; min-width: 0; overflow-wrap: anywhere; }
@@ -1575,6 +1578,7 @@ html:not(.wl-locked) #lockGo, html:not(.wl-locked) .locksub { visibility: hidden
 
   <dialog id="rcDlg" aria-labelledby="rcT">
     <div class="dlghead"><h3 id="rcT">Category</h3><button type="button" class="btn icon sm" id="rcClose" aria-label="Close">✕</button></div>
+    <div class="rcscope" id="rcScope" role="group" aria-label="Which ledgers to count" hidden><button type="button" class="btn sm" data-scope="all">All ledgers</button><button type="button" class="btn sm" data-scope="cur">This ledger only</button></div>
     <p class="pickhint" id="rcSum"></p>
     <div id="rcList"></div>
   </dialog>
@@ -2035,8 +2039,16 @@ html:not(.wl-locked) #lockGo, html:not(.wl-locked) .locksub { visibility: hidden
 
   /* ===== Header, stats, budget ===== */
   function monthPrefix() { return state.y + "-" + pad(state.m + 1) + "-"; }
+  /* today's expenses: from every ledger by default (ledgers switched off for "All ledgers" stay out, like in the combined view), or only the ledger being viewed */
+  var todayScope = "all"; /* "all" = every ledger, "cur" = only the ledger being viewed; remembered on this device */
+  try { if (localStorage.getItem("wl-todayscope") === "cur") todayScope = "cur"; } catch (e) {}
+  function todayExpList() {
+    var src = todayScope === "all" ? RAW.tx.filter(function (t) { return inAllOK(scopeOf("tx", t)); }) : state.tx;
+    return src.filter(function (t) { return validR(t) && t.kind === "out" && t.date === todayStr; });
+  }
+  function todayExpTotal() { var s = 0; todayExpList().forEach(function (t) { s += conv(t.amount, wmap[t.wallet].cur, null, t.date); }); return s; }
   function renderHeader(days) {
-    var nw = netWorth(balances()), td = days[todayStr], ex = td ? td.exp : 0;
+    var nw = netWorth(balances()), ex = todayExpTotal();
     $("#pills").innerHTML =
       '<span class="pill">Net worth <b>' + D(nw) + '</b></span>' +
       '<button type="button" class="pill pillbtn" id="pillToday" aria-haspopup="dialog" title="Show today\'s expenses">Today\'s expense <b class="' + (ex > 0 ? "loss" : "") + '">' + D(ex) + '</b><span class="pcar" aria-hidden="true">\u203a</span></button>';
@@ -3098,7 +3110,7 @@ html:not(.wl-locked) #lockGo, html:not(.wl-locked) .locksub { visibility: hidden
     var rep = state.rep; if (!rep) return;
     var list = rep.r.rows.filter(function (t) { return t.kind === kind && (t.cat || (kind === "in" ? "Income" : "Other")) === cat; }).slice().reverse();
     var total = 0; list.forEach(function (t) { total += conv(t.amount, wmap[t.wallet].cur, null, t.date); });
-    $("#rcT").textContent = cat;
+    $("#rcT").textContent = cat; $("#rcScope").hidden = true;
     $("#rcSum").textContent = fmtDate(rep.from) + " \u2013 " + fmtDate(rep.to) + " \u00b7 " + list.length + (list.length === 1 ? " transaction" : " transactions") + " \u00b7 " + D(total);
     $("#rcList").innerHTML = list.length ? list.map(function (t) {
       var w = wmap[t.wallet], a = conv(t.amount, w.cur, null, t.date), parts = [fmtDate(t.date), esc(w.name)];
@@ -3118,12 +3130,14 @@ html:not(.wl-locked) #lockGo, html:not(.wl-locked) .locksub { visibility: hidden
   $("#rcClose").addEventListener("click", function () { rcDlg.close(); });
   /* tap "Today's expense" to see the transactions behind the number */
   function openTodayTx() {
-    var list = state.tx.filter(function (t) { return validR(t) && t.kind === "out" && t.date === todayStr; }).sort(function (a, b) { return (b.createdAt || 0) - (a.createdAt || 0); });
+    var list = todayExpList().sort(function (a, b) { return (b.createdAt || 0) - (a.createdAt || 0); });
     var total = 0; list.forEach(function (t) { total += conv(t.amount, wmap[t.wallet].cur, null, t.date); });
     $("#rcT").textContent = "Today\u2019s expense";
+    $("#rcScope").hidden = LEDGERS.length < 2;
+    Array.prototype.forEach.call(document.querySelectorAll("#rcScope .btn"), function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-scope") === todayScope)); });
     $("#rcSum").textContent = fmtDate(todayStr) + " \u00b7 " + list.length + (list.length === 1 ? " transaction" : " transactions") + " \u00b7 " + D(total);
     $("#rcList").innerHTML = list.length ? list.map(function (t) {
-      var w = wmap[t.wallet], a = conv(t.amount, w.cur, null, t.date), cat = t.cat || "Other", parts = [esc(w.name)];
+      var w = wmap[t.wallet], a = conv(t.amount, w.cur, null, t.date), cat = t.cat || "Other", parts = [esc(w.name) + (LEDGERS.length > 1 ? " (" + esc(ledgerName(w.ledger || "main")) + ")" : "")];
       if (t.sub) parts.push(esc(t.sub)); if (t.payee) parts.push(esc(t.payee)); if (t.note) parts.push(esc(t.note));
       return '<div class="rcrow"><span class="rt">' + esc(cat) + '</span><span class="ra loss">' + D(a) + "</span>" +
         '<span class="rs">' + parts.join(" \u00b7 ") + "</span>" + (w.cur !== state.disp ? '<span class="ro">' + money(t.amount, w.cur) + "</span>" : "") + "</div>";
@@ -3132,6 +3146,12 @@ html:not(.wl-locked) #lockGo, html:not(.wl-locked) .locksub { visibility: hidden
     rcDlg.scrollTop = 0;
   }
   $("#pills").addEventListener("click", function (e) { if (e.target.closest && e.target.closest("#pillToday")) openTodayTx(); });
+  $("#rcScope").addEventListener("click", function (e) {
+    var b = e.target.closest && e.target.closest("[data-scope]"); if (!b) return;
+    todayScope = b.getAttribute("data-scope") === "cur" ? "cur" : "all";
+    try { localStorage.setItem("wl-todayscope", todayScope); } catch (x) {}
+    renderHeader(byDay()); openTodayTx();
+  });
   /* same as the New transaction popup: stays open until you tap the X (backdrop taps and Esc do nothing); swipe down on phones still closes it */
   rcDlg.addEventListener("cancel", function (e) { e.preventDefault(); });
   function rmsg(text, warn) { var el = $("#rMsg"); el.textContent = text; el.className = "status" + (warn ? " warn" : ""); }
