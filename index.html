@@ -477,9 +477,10 @@ table.t { width: 100%; border-collapse: collapse; font-size: 13.5px; }
 .t tr.rcl { cursor: pointer; -webkit-tap-highlight-color: transparent; transition: background .15s; }
 .t tr.rcl:hover, .t tr.rcl:active { background: var(--hover); }
 .t tr.rcl .linkbtn { font-family: var(--font-body); }
-.rcscope { display: flex; gap: 8px; margin: 2px 0 10px; }
-.rcscope .btn { flex: 1 1 0; min-width: 0; }
-.rcscope .btn[aria-pressed="true"] { color: var(--accent); background: color-mix(in srgb, var(--accent) 16%, var(--glass-strong)); font-weight: 600; }
+.rcscope { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0 0 8px; padding: 8px 0 10px; border-bottom: 1px solid var(--hair); font-size: 13px; color: var(--muted); }
+.rcscope .sw { width: 38px; height: 22px; }
+.rcscope .sw::after { width: 16px; height: 16px; }
+.rcscope .sw[aria-checked="true"]::after { transform: translateX(16px); }
 .rcrow { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; padding: 11px 0; border-top: 1px solid var(--hair); }
 .rcrow:first-child { border-top: 0; }
 .rcrow .rt { font-weight: 600; min-width: 0; overflow-wrap: anywhere; }
@@ -1578,7 +1579,7 @@ html:not(.wl-locked) #lockGo, html:not(.wl-locked) .locksub { visibility: hidden
 
   <dialog id="rcDlg" aria-labelledby="rcT">
     <div class="dlghead"><h3 id="rcT">Category</h3><button type="button" class="btn icon sm" id="rcClose" aria-label="Close">✕</button></div>
-    <div class="rcscope" id="rcScope" role="group" aria-label="Which ledgers to count" hidden><button type="button" class="btn sm" data-scope="all">All ledgers</button><button type="button" class="btn sm" data-scope="cur">This ledger only</button></div>
+    <div class="rcscope" id="rcScope" hidden><span id="rcScopeT">All ledgers</span><button type="button" class="sw" id="rcScopeSw" role="switch" aria-checked="true" aria-labelledby="rcScopeT"></button></div>
     <p class="pickhint" id="rcSum"></p>
     <div id="rcList"></div>
   </dialog>
@@ -3134,7 +3135,7 @@ html:not(.wl-locked) #lockGo, html:not(.wl-locked) .locksub { visibility: hidden
     var total = 0; list.forEach(function (t) { total += conv(t.amount, wmap[t.wallet].cur, null, t.date); });
     $("#rcT").textContent = "Today\u2019s expense";
     $("#rcScope").hidden = LEDGERS.length < 2;
-    Array.prototype.forEach.call(document.querySelectorAll("#rcScope .btn"), function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-scope") === todayScope)); });
+    $("#rcScopeSw").setAttribute("aria-checked", String(todayScope === "all"));
     $("#rcSum").textContent = fmtDate(todayStr) + " \u00b7 " + list.length + (list.length === 1 ? " transaction" : " transactions") + " \u00b7 " + D(total);
     $("#rcList").innerHTML = list.length ? list.map(function (t) {
       var w = wmap[t.wallet], a = conv(t.amount, w.cur, null, t.date), cat = t.cat || "Other", parts = [esc(w.name) + (LEDGERS.length > 1 ? " (" + esc(ledgerName(w.ledger || "main")) + ")" : "")];
@@ -3146,9 +3147,8 @@ html:not(.wl-locked) #lockGo, html:not(.wl-locked) .locksub { visibility: hidden
     rcDlg.scrollTop = 0;
   }
   $("#pills").addEventListener("click", function (e) { if (e.target.closest && e.target.closest("#pillToday")) openTodayTx(); });
-  $("#rcScope").addEventListener("click", function (e) {
-    var b = e.target.closest && e.target.closest("[data-scope]"); if (!b) return;
-    todayScope = b.getAttribute("data-scope") === "cur" ? "cur" : "all";
+  $("#rcScopeSw").addEventListener("click", function () {
+    todayScope = todayScope === "all" ? "cur" : "all";
     try { localStorage.setItem("wl-todayscope", todayScope); } catch (x) {}
     renderHeader(byDay()); openTodayTx();
   });
